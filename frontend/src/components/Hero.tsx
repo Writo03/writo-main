@@ -1,55 +1,63 @@
 import { ArrowRight, Brain, Video } from "lucide-react";
 import { Button } from "./ui/button";
+import HeroSlider from "./Home/HomeSlider";
 
 const Hero = () => {
   return (
-    <div className="pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div className="pt-10">
+      <div className="mt-[5vh] h-[20vh] w-full md:h-[30vh] lg:h-[40vh]">
+        <HeroSlider
+          items={Array.from({ length: 9 }).map(
+            (_, i) => `https://picsum.photos/1920/1080?random=${i}`,
+          )}
+        />
+      </div>
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="mb-6 text-5xl font-bold text-gray-900">
             Master Your Studies with
             <span className="text-indigo-600"> Writo Education</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">
             Comprehensive test series and live doubt-solving sessions to help
             you achieve academic excellence.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <button className="inline-flex items-center rounded-lg bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700">
               Start Learning <ArrowRight className="ml-2 h-5 w-5" />
             </button>
             <Button size="lg">
               Start Learning <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <button className="inline-flex items-center px-6 py-3 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50">
+            <button className="inline-flex items-center rounded-lg border-2 border-indigo-600 px-6 py-3 text-indigo-600 hover:bg-indigo-50">
               Watch Demo
             </button>
           </div>
         </div>
 
-        <div className="mt-20 grid md:grid-cols-2 gap-8">
-          <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-            <Brain className="h-12 w-12 text-indigo-600 mb-4" />
-            <h3 className="text-2xl font-bold mb-4">
+        <div className="mt-20 grid gap-8 md:grid-cols-2">
+          <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl">
+            <Brain className="mb-4 h-12 w-12 text-indigo-600" />
+            <h3 className="mb-4 text-2xl font-bold">
               Comprehensive Test Series
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="mb-4 text-gray-600">
               Practice with our expertly crafted tests, get instant feedback,
               and track your progress on the leaderboard.
             </p>
-            <button className="text-indigo-600 font-semibold inline-flex items-center">
+            <button className="inline-flex items-center font-semibold text-indigo-600">
               Explore Tests <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-            <Video className="h-12 w-12 text-indigo-600 mb-4" />
-            <h3 className="text-2xl font-bold mb-4">Live Doubt Sessions</h3>
-            <p className="text-gray-600 mb-4">
+          <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl">
+            <Video className="mb-4 h-12 w-12 text-indigo-600" />
+            <h3 className="mb-4 text-2xl font-bold">Live Doubt Sessions</h3>
+            <p className="mb-4 text-gray-600">
               Connect with expert mentors through chat or video calls for
               real-time doubt resolution and screen sharing.
             </p>
-            <button className="text-indigo-600 font-semibold inline-flex items-center">
+            <button className="inline-flex items-center font-semibold text-indigo-600">
               Join Sessions <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>

@@ -1,20 +1,80 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
+import axios from 'axios';
+import axiosInstance from '@/utils/axiosInstance';
+import { AuthState, UserState } from '@/types/user';
+import { useAppDispatch } from '@/redux/hooks';
+import { login } from '@/redux/auth';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [error, setError] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+  const [isloading, setisloading] = useState<boolean>(false)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
+
+    if (!email || !password ) {
+      setError('All fields are required');
+      return;
+    }
+
     try {
-      navigate('/');
-    } catch (error) {
-      console.error('Sign in failed:', error);
+      setisloading(true)
+      const response = await axiosInstance.post('/user/login', {
+        email,
+        password,
+      });
+      if (response.status === 200) {
+        console.log(response.data.data.user)
+        const user= response.data?.data.user;
+        const accessToken: string = response.data?.data.accessToken;
+        const refreshToken: string = response.data?.data.refreshToken;
+        console.log(user)
+        await Promise.all([
+          localStorage.setItem("accessToken", accessToken),
+          localStorage.setItem("refreshToken", refreshToken),
+        ]);
+
+        const userState: UserState = {
+          userId: user?._id,
+          email: user?.email,
+          fullName:user?.fullName,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          isLoggedIn: true,
+        };
+        const loginPayload: AuthState = {
+          isAuthenticated: true,
+          user: userState,
+          error: null,
+        };
+        dispatch(login(loginPayload));
+        navigate('/'); // Redirect on success
+        setisloading(false)
+      }
+    } catch (err: unknown) {
+      setisloading(false)
+
+      if (axios.isAxiosError(err)) {
+        console.log(err.response)
+        setError(err.response?.data?.message || 'Login failed');
+      } else {
+        setError('An unknown error occurred');
+      }
+      console.error('Sign in failed:', err);
     }
   };
+  if(isloading){
+    <h1>loading</h1>
+  }
 
   return (
     <div className="min-h-screen pt-20 pb-12 flex flex-col bg-gray-50">
@@ -25,6 +85,8 @@ const SignIn = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address

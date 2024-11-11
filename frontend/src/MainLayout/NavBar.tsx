@@ -26,6 +26,9 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "framer-motion";
+import { useSelector } from "react-redux";
+import { RootState } from "@/types/state";
+// import { setIsAuthenticated } from "@/redux/auth";
 
 const communityComponents: {
   title: string;
@@ -87,7 +90,7 @@ const mentorshipComponents: {
 ];
 
 function Navbar() {
-  const [islogin, setIslogin] = useState(false);
+  const isAuthenticated= useSelector((state : RootState)=> state.auth.isAuthenticated)
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
@@ -244,11 +247,11 @@ function Navbar() {
               </NavigationMenuItem>
             </div>
             {/* Login/Signin */}
-            {!islogin ? (
-              <NavigationMenuItem onClick={() => setIslogin(true)}>
-                {/* <Link to="/"> */}
-                <Button onClick={() => setIslogin(true)}>Login</Button>
-                {/* </Link> */}
+            {!isAuthenticated ? (
+              <NavigationMenuItem >
+                <Link to="/signin"> 
+                <Button >Login</Button>
+                </Link>
               </NavigationMenuItem>
             ) : (
               <NavigationMenuItem className="flex items-center justify-center">
@@ -277,7 +280,7 @@ function Navbar() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setIslogin(false)}>
+                    <DropdownMenuItem >
                       <LogOut className="mr-2 h-4 w-4" />
                       Logout
                     </DropdownMenuItem>

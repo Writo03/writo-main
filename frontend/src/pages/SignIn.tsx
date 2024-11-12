@@ -6,6 +6,7 @@ import axiosInstance from '@/utils/axiosInstance';
 import { AuthState, UserState } from '@/types/user';
 import { useAppDispatch } from '@/redux/hooks';
 import { login } from '@/redux/auth';
+import Loading from '@/components/ui/Loading';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -72,7 +73,7 @@ const SignIn = () => {
     }
   };
   if(isloading){
-    return <h1>loading</h1>
+    return <Loading />
   }
 
   return (

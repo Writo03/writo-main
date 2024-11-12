@@ -1,5 +1,5 @@
 import Router from "express";
-import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin } from "../controllers/user.controller.js";
+import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf } from "../controllers/user.controller.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
 

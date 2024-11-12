@@ -4,6 +4,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { AuthState, UserState } from '@/types/user';
 import axiosInstance from '@/utils/axiosInstance';
 import React, { useEffect, useState } from 'react'
+import Loading from './ui/Loading';
 
 const State = () => {
 
@@ -24,7 +25,6 @@ const State = () => {
           const response = await axiosInstance.get('/user/self')
           if (response.data) {
             const user= response.data?.data;
-  
             const userState: UserState = {
                 userId: user?._id,
                 email: user?.email,
@@ -56,7 +56,7 @@ const State = () => {
     }, [dispatch])
   
     if (isloading) {
-      return <h1>loading</h1>;
+      return <Loading />;
     }
     return <App />
   }

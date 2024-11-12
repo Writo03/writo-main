@@ -31,6 +31,7 @@ import { RootState } from "@/types/state";
 import { useAppDispatch } from "@/redux/hooks";
 import axiosInstance from "@/utils/axiosInstance";
 import { logout } from "@/redux/auth";
+import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
 
 const communityComponents: {
@@ -133,29 +134,6 @@ function Navbar() {
 
   //   window.scrollbars.visible = false;
 
-  // const logoutHandler = () => {
-  //   ApiCall({
-  //     url: "/api/v1/users/logout",
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((response) => {
-  //       if (response.data) {
-  //         dispatch(logout());
-         
-  //         localStorage.removeItem("accessToken");
-  //         localStorage.removeItem("refreshToken");
-  //         navigate("/login");
-  //       } else {
-  //         toast.error("Error while logging out");
-  //       }
-  //     })
-  //     .catch(() => {
-  //       toast.error("Error while logging out");
-  //     });
-  // };
 
   const logoutHandler = async() => {
     try {
@@ -176,9 +154,6 @@ function Navbar() {
     
   }
 
- if(isloading){
-  return <h1>loading</h1>
- }
   return (
     <AnimatePresence mode="wait">
       <motion.div

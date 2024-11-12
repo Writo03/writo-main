@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   motion,
   AnimatePresence,
@@ -35,6 +35,10 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
 import { isMobile } from "@/lib/utils";
+import { useAppDispatch } from "@/redux/hooks";
+import axiosInstance from "@/utils/axiosInstance";
+import { logout } from "@/redux/auth";
+import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
 
 const mentorshipComponents: {
@@ -79,9 +83,16 @@ function Navbar() {
     (state: RootState) => state.auth.isAuthenticated,
   );
 
+  const user = useSelector((state: RootState) => state.auth.user);
+
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+  const [isloading, setisloading] = useState<boolean>(false);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = scrollYProgress.get();
@@ -110,6 +121,24 @@ function Navbar() {
   });
 
   //   window.scrollbars.visible = false;
+
+  const logoutHandler = async () => {
+    try {
+      console.log("hi");
+      setisloading(true);
+      const response = await axiosInstance.get("/user/logout");
+      if (response.status === 200) {
+        dispatch(logout());
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate("/");
+        setisloading(false);
+      }
+    } catch (error: any) {
+      console.log(error.response?.data?.message);
+      setisloading(false);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -370,7 +399,7 @@ function Sidebar({
           className="relative w-full"
         >
           {/* Login/Signin */}
-          {auth ? (
+          {!auth ? (
             <NavigationMenuItem>
               <Link to="/signin">
                 <Button size="lg" className="w-full text-2xl">

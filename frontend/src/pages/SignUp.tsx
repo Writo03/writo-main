@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, User } from 'lucide-react';
 import axiosInstance from '@/utils/axiosInstance';
 import axios from 'axios';
+import Loading from '@/components/ui/Loading';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -49,7 +50,7 @@ const SignUp: React.FC = () => {
     }
   };
   if(isloading){
-    <h1>loading</h1>
+    return <Loading />
   }
 
   return (

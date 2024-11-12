@@ -6,6 +6,7 @@ import axiosInstance from '@/utils/axiosInstance';
 import { AuthState, UserState } from '@/types/user';
 import { useAppDispatch } from '@/redux/hooks';
 import { login } from '@/redux/auth';
+import Loading from '@/components/ui/Loading';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +34,6 @@ const SignIn = () => {
         password,
       });
       if (response.status === 200) {
-        console.log(response.data.data.user)
         const user= response.data?.data.user;
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
@@ -73,7 +73,7 @@ const SignIn = () => {
     }
   };
   if(isloading){
-    <h1>loading</h1>
+    return <Loading />
   }
 
   return (

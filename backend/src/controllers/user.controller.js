@@ -211,4 +211,83 @@ const deleteMentor = asyncHandler(async (req, res) => {
   }
 })
 
-export { userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor }
+const userLogout = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .clearCookie('accessToken', options)
+    .clearCookie('refreshToken', options)
+    .json(new ApiResponse(200, 'User logged out'));
+});
+
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, 'Unauthorized request');
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    const user = await User.findById(decodedToken?._id);
+    if (!user) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+
+    // check if incoming refresh token is same as the refresh token attached in the user document
+    // This shows that the refresh token is used or not
+    // Once it is used, we are replacing it with new refresh token below
+    if (incomingRefreshToken !== user?.refreshToken) {
+      // If token is valid but is used already
+      throw new ApiError(401, 'Refresh token is expired or used');
+    }
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    };
+
+    const { accessToken, refreshToken: newRefreshToken } =
+      await generateTokens(user._id);
+
+    return res
+      .status(200)
+      .cookie('accessToken', accessToken, options)
+      .cookie('refreshToken', newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshToken },
+          'Access token refreshed'
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || 'Invalid refresh token');
+  }
+});
+
+const userSelf =asyncHandler(async(req,res)=>{
+  return res
+  .status(200)
+  .json(new ApiResponse(200,'User fetched successfully', req.user));
+});
+
+export { userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor,refreshAccessToken,userSelf,userLogout }
+   
+ 
+
+
+
+

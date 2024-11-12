@@ -22,16 +22,13 @@ const Hero = () => {
             Comprehensive test series and live doubt-solving sessions to help
             you achieve academic excellence.
           </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <button className="inline-flex items-center rounded-lg bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700">
-              Start Learning <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
-            <Button size="lg">
+          <div className="flex flex-col justify-center gap-6 sm:flex-row">
+            <Button size="xl">
               Start Learning <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <button className="inline-flex items-center rounded-lg border-2 border-indigo-600 px-6 py-3 text-indigo-600 hover:bg-indigo-50">
+            <Button size="xl" variant="outline">
               Watch Demo
-            </button>
+            </Button>
           </div>
         </div>
 

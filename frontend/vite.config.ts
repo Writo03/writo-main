@@ -10,5 +10,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-
+  server: {
+    port: 3001,
+  },
+  // build: {
+  //   // This will ignore ESLint errors during build
+  //   rollupOptions: {
+  //     onwarn(warning, warn) {
+  //       if (warning.code === 'ESLINT_ERROR') return;
+  //       warn(warning);
+  //     }
+  //   }
+  // }
 });

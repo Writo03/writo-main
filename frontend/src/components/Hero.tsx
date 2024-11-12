@@ -4,7 +4,7 @@ import HeroSlider from "./Home/HomeSlider";
 
 const Hero = () => {
   return (
-    <div className="pt-10">
+    <div className="pt-4 md:pt-10">
       <div className="mt-[5vh] h-[20vh] w-full md:h-[30vh] lg:h-[40vh]">
         <HeroSlider
           items={Array.from({ length: 9 }).map(

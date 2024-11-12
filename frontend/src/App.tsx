@@ -4,14 +4,9 @@ import { ReactLenis } from "lenis/react";
 
 import Navbar from "@/MainLayout/NavBar";
 import Footer from "@/components/Footer";
-import NavbarMobile from "@/MainLayout/NavbarMobile";
-import { isMobile } from "@/lib/utils";
 
 // Memoize Navbar to prevent unnecessary re-renders
-let MemoizedNavbar = React.memo(Navbar);
-if (isMobile()) {
-  MemoizedNavbar = React.memo(NavbarMobile);
-}
+const MemoizedNavbar = React.memo(Navbar);
 
 // Memoize Footer to prevent unnecessary re-renders
 const MemoizedFooter = React.memo(Footer);

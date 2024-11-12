@@ -7,9 +7,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 'primary': '#4f46e5',
-        // 'background': '#111827',
-        // 'text': '#fff',
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

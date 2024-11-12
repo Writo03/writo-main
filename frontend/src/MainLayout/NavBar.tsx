@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   motion,
   AnimatePresence,
@@ -28,6 +28,9 @@ import {
 } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
+import { useAppDispatch } from "@/redux/hooks";
+import axiosInstance from "@/utils/axiosInstance";
+import { logout } from "@/redux/auth";
 // import { setIsAuthenticated } from "@/redux/auth";
 
 const communityComponents: {
@@ -91,9 +94,16 @@ const mentorshipComponents: {
 
 function Navbar() {
   const isAuthenticated= useSelector((state : RootState)=> state.auth.isAuthenticated)
+  const user= useSelector((state : RootState)=> state.auth.user)
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
+
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+  const [isloading, setisloading] = useState<boolean>(false)
+
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = scrollYProgress.get();
@@ -123,6 +133,52 @@ function Navbar() {
 
   //   window.scrollbars.visible = false;
 
+  // const logoutHandler = () => {
+  //   ApiCall({
+  //     url: "/api/v1/users/logout",
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => {
+  //       if (response.data) {
+  //         dispatch(logout());
+         
+  //         localStorage.removeItem("accessToken");
+  //         localStorage.removeItem("refreshToken");
+  //         navigate("/login");
+  //       } else {
+  //         toast.error("Error while logging out");
+  //       }
+  //     })
+  //     .catch(() => {
+  //       toast.error("Error while logging out");
+  //     });
+  // };
+
+  const logoutHandler = async() => {
+    try {
+      console.log("hi")
+      setisloading(true)
+      const response =await axiosInstance.get('/user/logout')
+      if (response.status === 200) {
+        dispatch(logout());
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate("/");
+        setisloading(false)
+      }
+    } catch (error: unknown) {
+      console.log(error.response?.data?.message)
+      setisloading(false)
+    }
+    
+  }
+
+ if(isloading){
+  return <h1>loading</h1>
+ }
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -270,7 +326,7 @@ function Navbar() {
                   <DropdownMenuContent align="start">
                     <DropdownMenuItem>
                       <Link to="/profile" className="flex w-full items-center">
-                        kaushiksahu18.dev
+                        {user.fullName}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
@@ -281,7 +337,7 @@ function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem >
-                      <LogOut className="mr-2 h-4 w-4" />
+                      <LogOut onClick={logoutHandler} className="mr-2 h-4 w-4" />
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>

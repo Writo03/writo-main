@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
     }
   };
   if(isloading){
-    <h1>loading</h1>
+    return <h1>loading</h1>
   }
 
   return (

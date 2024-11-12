@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App";
 import "./index.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -11,15 +10,25 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Protected from "./components/Protected";
+import State from "./components/State.js";
+import Profile from "./components/Profile.js";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <State />,
     children: [
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <Protected authentication={false}>
+            <Profile />
+          </Protected>
+        ),
       },
       {
         path: "/signin",

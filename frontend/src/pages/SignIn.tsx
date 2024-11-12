@@ -33,7 +33,6 @@ const SignIn = () => {
         password,
       });
       if (response.status === 200) {
-        console.log(response.data.data.user)
         const user= response.data?.data.user;
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
@@ -73,7 +72,7 @@ const SignIn = () => {
     }
   };
   if(isloading){
-    <h1>loading</h1>
+    return <h1>loading</h1>
   }
 
   return (

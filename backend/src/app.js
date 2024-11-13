@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import bodyParser from 'body-parser'
 
 import userRouter from './routes/user.routes.js'
+import serviceRouter from "./routes/service.routes.js"
 import {errorHandler} from "./middlewares/error.middleware.js"
 
 
@@ -27,6 +28,7 @@ app.use(express.static("public"))
 app.use(bodyParser.json());
 
 app.use('/api/v1/user',userRouter)
+app.use('/api/v1/service', serviceRouter)
 
 app.use(errorHandler)
 export {app}

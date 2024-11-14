@@ -35,64 +35,28 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
 import { isMobile } from "@/lib/utils";
-import { useAppDispatch } from "@/redux/hooks";
-import axiosInstance from "@/utils/axiosInstance";
-import { logout } from "@/redux/auth";
-import Loading from "@/components/ui/Loading";
+import Hero from "@/components/Hero";
+// import { useAppDispatch } from "@/redux/hooks";
+// import axiosInstance from "@/utils/axiosInstance";
+// import { logout } from "@/redux/auth";
+// import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
-
-const mentorshipComponents: {
-  title: string;
-  href: string;
-  icon: React.ReactNode;
-}[] = [
-  {
-    title: "6-12 Classes",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "JEE",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "NEET",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "Programming",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "Art & Design",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "Languages",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-];
 
 function Navbar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
 
-  const user = useSelector((state: RootState) => state.auth.user);
+  // const user = useSelector((state: RootState) => state.auth.user);
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
-  const [isloading, setisloading] = useState<boolean>(false);
+  // const [isloading, setisloading] = useState<boolean>(false);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = scrollYProgress.get();
@@ -120,25 +84,23 @@ function Navbar() {
     }
   });
 
-  //   window.scrollbars.visible = false;
-
-  const logoutHandler = async () => {
-    try {
-      console.log("hi");
-      setisloading(true);
-      const response = await axiosInstance.get("/user/logout");
-      if (response.status === 200) {
-        dispatch(logout());
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        navigate("/");
-        setisloading(false);
-      }
-    } catch (error: any) {
-      console.log(error.response?.data?.message);
-      setisloading(false);
-    }
-  };
+  // const logoutHandler = async () => {
+  //   try {
+  //     console.log("hi");
+  //     setisloading(true);
+  //     const response = await axiosInstance.get("/user/logout");
+  //     if (response.status === 200) {
+  //       dispatch(logout());
+  //       localStorage.removeItem("accessToken");
+  //       localStorage.removeItem("refreshToken");
+  //       navigate("/");
+  //       setisloading(false);
+  //     }
+  //   } catch (error: any) {
+  //     console.log(error.response?.data?.message);
+  //     setisloading(false);
+  //   }
+  // };
 
   return (
     <AnimatePresence mode="wait">
@@ -173,7 +135,10 @@ function Navbar() {
                 {/* Navigation Menu */}
                 <div className="flex">
                   {/* Test Series */}
-                  <NavigationMenuItem className="relative">
+                  <NavigationMenuItem
+                    className="relative"
+                    onClick={() => navigate("/test-series")}
+                  >
                     <NavigationMenuTrigger className="bg-transparent">
                       Test Series
                     </NavigationMenuTrigger>
@@ -183,7 +148,7 @@ function Navbar() {
                           <NavigationMenuLink asChild>
                             <a
                               className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                              href="/waits"
+                              href="/test-series"
                             >
                               <GraduationCap className="h-6 w-6" />
                               <div className="mb-2 mt-4 text-lg font-medium">
@@ -197,17 +162,17 @@ function Navbar() {
                             </a>
                           </NavigationMenuLink>
                         </li>
-                        <ListItem href="/docs" title="NEET Exam">
+                        <ListItem href="/test-series/neet" title="NEET Exam">
                           Re-usable components built using Radix UI and Tailwind
                           CSS.
                         </ListItem>
                         <ListItem
-                          href="/docs/installation"
+                          href="/test-series/neet"
                           title="JEE(Main + Adv)"
                         >
                           How to install dependencies and structure your app.
                         </ListItem>
-                        <ListItem href="/waits" title="Learn More">
+                        <ListItem href="/test-series" title="Learn More">
                           Styles for headings, paragraphs, lists...etc
                         </ListItem>
                       </ul>
@@ -335,6 +300,7 @@ function Sidebar({
   setOpen: any;
   auth: boolean;
 }) {
+  const navigate = useNavigate();
   return (
     <motion.div
       className={cn(
@@ -364,18 +330,22 @@ function Sidebar({
             {
               title: "Test Series",
               icon: <ArrowUpRight />,
+              href: "/test-series",
             },
             {
               title: "Dought Sessions",
               icon: <ArrowUpRight />,
+              href: "/dought-sessions",
             },
             {
               title: "About",
               icon: <ArrowUpRight />,
+              href: "/about",
             },
             {
               title: "Contact",
               icon: <ArrowUpRight />,
+              href: "/contact",
             },
           ].map((item, idx) => (
             <motion.div
@@ -387,6 +357,7 @@ function Sidebar({
               }}
               key={idx}
               className="group relative flex w-full flex-col items-start justify-start active:bg-primary active:text-white"
+              onClick={() => navigate(item.href)}
             >
               <motion.hr className="h-[2px] w-full bg-primary" />
               <motion.h1 className="text-left text-[2rem] font-bold leading-tight">

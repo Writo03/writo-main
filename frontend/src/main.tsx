@@ -1,10 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "./redux/store.js";
 
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
@@ -12,6 +9,10 @@ import SignUp from "./pages/SignUp";
 import Protected from "./components/Protected";
 import State from "./components/State.js";
 import Profile from "./components/Profile.js";
+import TestSeriesPage from "@/components/ServiceShowPages/TestSeries.js";
+
+import { store } from "./redux/store.js";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
             <SignUp />
           </Protected>
         ),
+      },
+      {
+        path: "test-series",
+        element: <TestSeriesPage />,
       },
     ],
   },

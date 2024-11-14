@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 
 import userRouter from './routes/user.routes.js'
 import serviceRouter from "./routes/service.routes.js"
+import subscriptionRouter from "./routes/subscription.routes.js"
 import {errorHandler} from "./middlewares/error.middleware.js"
 
 
@@ -29,6 +30,7 @@ app.use(bodyParser.json());
 
 app.use('/api/v1/user',userRouter)
 app.use('/api/v1/service', serviceRouter)
+app.use("/api/v1/subscription", subscriptionRouter)
 
 app.use(errorHandler)
 export {app}

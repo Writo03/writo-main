@@ -2,17 +2,34 @@ import { ArrowRight, Brain, Video } from "lucide-react";
 import { Button } from "./ui/button";
 import HeroSlider from "./Home/HomeSlider";
 
+import sliderimg1 from "@/assets/slider!img/1.png";
+import sliderimg2 from "@/assets/slider!img/2.png";
+import sliderimg3 from "@/assets/slider!img/3.png";
+import sliderimg4 from "@/assets/slider!img/4.png";
+import sliderimg5 from "@/assets/slider!img/5.png";
+
+import { Suspense, memo } from "react";
+
+export function Fallback() {
+  return (
+    <div className="h-full w-full bg-primary text-center text-2xl text-primary-foreground">
+      Loading...
+    </div>
+  );
+}
+const MemoizedFallback = memo(Fallback);
+
 const Hero = () => {
   return (
     <div className="pt-4 md:pt-10">
-      <div className="mt-[5vh] h-[20vh] w-full md:h-[30vh] lg:h-[40vh]">
-        <HeroSlider
-          items={Array.from({ length: 9 }).map(
-            (_, i) => `https://picsum.photos/1920/1080?random=${i}`,
-          )}
-        />
+      <div className="mt-[5vh] h-[12vh] w-full md:h-[20vh] lg:h-[35vh]">
+        <Suspense fallback={<MemoizedFallback />}>
+          <HeroSlider
+            items={[sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5]}
+          />
+        </Suspense>
       </div>
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:py-20 lg:px-8">
         <div className="text-center">
           <h1 className="mb-6 text-5xl font-bold text-gray-900">
             Master Your Studies with

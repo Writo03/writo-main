@@ -213,24 +213,6 @@ function Navbar() {
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
-                  {/* Mentorship */}
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent">
-                      Mentorship
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[200px] grid-cols-1 gap-2 p-4">
-                        {mentorshipComponents.map((component) => (
-                          <ListItem
-                            key={component.title}
-                            title={component.title}
-                            href={component.href}
-                            className="py-3"
-                          />
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
                   {/* Dought Sessions */}
                   <NavigationMenuItem>
                     <Link to="/docs">
@@ -241,6 +223,32 @@ function Navbar() {
                         )}
                       >
                         Dought Sessions
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  {/* About Us */}
+                  <NavigationMenuItem>
+                    <Link to="/docs">
+                      <NavigationMenuLink
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "bg-transparent",
+                        )}
+                      >
+                        About
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  {/* Contect Us */}
+                  <NavigationMenuItem>
+                    <Link to="/docs">
+                      <NavigationMenuLink
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "bg-transparent",
+                        )}
+                      >
+                        Contact
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
@@ -358,11 +366,15 @@ function Sidebar({
               icon: <ArrowUpRight />,
             },
             {
-              title: "Mentorship",
+              title: "Dought Sessions",
               icon: <ArrowUpRight />,
             },
             {
-              title: "Dought Sessions",
+              title: "About",
+              icon: <ArrowUpRight />,
+            },
+            {
+              title: "Contact",
               icon: <ArrowUpRight />,
             },
           ].map((item, idx) => (
@@ -377,7 +389,7 @@ function Sidebar({
               className="group relative flex w-full flex-col items-start justify-start active:bg-primary active:text-white"
             >
               <motion.hr className="h-[2px] w-full bg-primary" />
-              <motion.h1 className="text-left text-[2.5rem] font-bold leading-tight">
+              <motion.h1 className="text-left text-[2rem] font-bold leading-tight">
                 {item.title}
                 {item.icon && (
                   <div className="absolute right-0 top-0 flex h-full w-4 items-center justify-center text-primary">
@@ -402,7 +414,7 @@ function Sidebar({
           {!auth ? (
             <NavigationMenuItem>
               <Link to="/signin">
-                <Button size="lg" className="w-full text-2xl">
+                <Button size="lg" className="w-full text-xl">
                   Login
                 </Button>
               </Link>

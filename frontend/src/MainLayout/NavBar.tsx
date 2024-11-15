@@ -139,9 +139,7 @@ function Navbar() {
                     className="relative"
                     onClick={() => navigate("/test-series")}
                   >
-                    <NavigationMenuTrigger className="bg-transparent">
-                      Test Series
-                    </NavigationMenuTrigger>
+                    <NavigationMenuTrigger>Test Series</NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
                         <li className="row-span-3">

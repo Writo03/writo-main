@@ -33,7 +33,7 @@ const Hero = () => {
         <div className="text-center">
           <h1 className="mb-6 text-5xl font-bold text-gray-900">
             Master Your Studies with
-            <span className="text-indigo-600"> Writo Education</span>
+            <span className="text-primary"> Writo Education</span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">
             Comprehensive test series and live doubt-solving sessions to help
@@ -51,7 +51,7 @@ const Hero = () => {
 
         <div className="mt-20 grid gap-8 md:grid-cols-2">
           <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl">
-            <Brain className="mb-4 h-12 w-12 text-indigo-600" />
+            <Brain className="mb-4 h-12 w-12 text-primary" />
             <h3 className="mb-4 text-2xl font-bold">
               Comprehensive Test Series
             </h3>
@@ -59,19 +59,19 @@ const Hero = () => {
               Practice with our expertly crafted tests, get instant feedback,
               and track your progress on the leaderboard.
             </p>
-            <button className="inline-flex items-center font-semibold text-indigo-600">
+            <button className="inline-flex items-center font-semibold text-primary">
               Explore Tests <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>
 
           <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl">
-            <Video className="mb-4 h-12 w-12 text-indigo-600" />
+            <Video className="mb-4 h-12 w-12 text-primary" />
             <h3 className="mb-4 text-2xl font-bold">Live Doubt Sessions</h3>
             <p className="mb-4 text-gray-600">
               Connect with expert mentors through chat or video calls for
               real-time doubt resolution and screen sharing.
             </p>
-            <button className="inline-flex items-center font-semibold text-indigo-600">
+            <button className="inline-flex items-center font-semibold text-primary">
               Join Sessions <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>

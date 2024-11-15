@@ -1,5 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
+import { useSelector } from "react-redux";
 import {
   GraduationCap,
   CornerRightUp,
@@ -7,6 +14,9 @@ import {
   Settings,
   ArrowUpRight,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -24,18 +34,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useMotionValueEvent,
-} from "framer-motion";
-import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
 import { isMobile } from "@/lib/utils";
-import Hero from "@/components/Hero";
 // import { useAppDispatch } from "@/redux/hooks";
 // import axiosInstance from "@/utils/axiosInstance";
 // import { logout } from "@/redux/auth";

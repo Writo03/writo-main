@@ -12,7 +12,7 @@ const createQuiz = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Only admins and mentors can create quiz")
         }
 
-        if([name, description, duration, questions, subjects, isSubjectTest, services].some((field) => field?.trim() === "")){
+        if(!name || !description || !duration || !questions.length || !subjects.length || !services.length){
             throw new ApiError(400, "All fields are required")
         }
 
@@ -39,7 +39,6 @@ const getQuizes = asyncHandler(async (req, res) => {
         const {isSubjectTest, serviceId} = req.query
 
         const quizes = await Quiz.find({isSubjectTest, services : {$in : [serviceId]}})
-        console.log(quizes)
 
         if(!quizes.length){
             throw new ApiError(404, "No quizes found")
@@ -73,9 +72,25 @@ const updateQuiz = asyncHandler(async (req, res) => {
         if(!req.user.isAdmin && !req.user.isMentor){
             throw new ApiError(400, "Only admins and mentors can update quiz")
         }
-        const updatedData = req.body
+        const {name, description, duration, questions, subjects, isSubjectTest, services} = req.body
         const {quizId} = req.params
-        const quiz = await Quiz.findByIdAndUpdate(quizId, updatedData, {new : true})
+
+        if(!name || !description || !duration || !questions.length || !subjects.length || !services.length){
+            throw new ApiError(400, "All fields are required")
+        }
+
+        const quiz = await Quiz.findByIdAndUpdate(quizId, {
+            $set : {
+                name,
+                description,
+                duration,
+                subjects,
+                isSubjectTest,
+                services,
+                questionNumber : questions.length,
+                questions
+            }
+        }, {new : true})
 
         if(!quiz){
             throw new ApiError(404, "Quiz not found")

@@ -1,5 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
+import { useSelector } from "react-redux";
 import {
   GraduationCap,
   CornerRightUp,
@@ -7,6 +14,9 @@ import {
   Settings,
   ArrowUpRight,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -24,75 +34,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useMotionValueEvent,
-} from "framer-motion";
-import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
 import { isMobile } from "@/lib/utils";
-import { useAppDispatch } from "@/redux/hooks";
-import axiosInstance from "@/utils/axiosInstance";
-import { logout } from "@/redux/auth";
-import Loading from "@/components/ui/Loading";
+// import { useAppDispatch } from "@/redux/hooks";
+// import axiosInstance from "@/utils/axiosInstance";
+// import { logout } from "@/redux/auth";
+// import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
-
-const mentorshipComponents: {
-  title: string;
-  href: string;
-  icon: React.ReactNode;
-}[] = [
-  {
-    title: "6-12 Classes",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "JEE",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "NEET",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "Programming",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "Art & Design",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    title: "Languages",
-    href: "/docs/components/progress",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-];
 
 function Navbar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
 
-  const user = useSelector((state: RootState) => state.auth.user);
+  // const user = useSelector((state: RootState) => state.auth.user);
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
-  const [isloading, setisloading] = useState<boolean>(false);
+  // const [isloading, setisloading] = useState<boolean>(false);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = scrollYProgress.get();
@@ -120,25 +84,23 @@ function Navbar() {
     }
   });
 
-  //   window.scrollbars.visible = false;
-
-  const logoutHandler = async () => {
-    try {
-      console.log("hi");
-      setisloading(true);
-      const response = await axiosInstance.get("/user/logout");
-      if (response.status === 200) {
-        dispatch(logout());
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        navigate("/");
-        setisloading(false);
-      }
-    } catch (error: any) {
-      console.log(error.response?.data?.message);
-      setisloading(false);
-    }
-  };
+  // const logoutHandler = async () => {
+  //   try {
+  //     console.log("hi");
+  //     setisloading(true);
+  //     const response = await axiosInstance.get("/user/logout");
+  //     if (response.status === 200) {
+  //       dispatch(logout());
+  //       localStorage.removeItem("accessToken");
+  //       localStorage.removeItem("refreshToken");
+  //       navigate("/");
+  //       setisloading(false);
+  //     }
+  //   } catch (error: any) {
+  //     console.log(error.response?.data?.message);
+  //     setisloading(false);
+  //   }
+  // };
 
   return (
     <AnimatePresence mode="wait">
@@ -173,17 +135,18 @@ function Navbar() {
                 {/* Navigation Menu */}
                 <div className="flex">
                   {/* Test Series */}
-                  <NavigationMenuItem className="relative">
-                    <NavigationMenuTrigger className="bg-transparent">
-                      Test Series
-                    </NavigationMenuTrigger>
+                  <NavigationMenuItem
+                    className="relative"
+                    onClick={() => navigate("/test-series")}
+                  >
+                    <NavigationMenuTrigger>Test Series</NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
                         <li className="row-span-3">
                           <NavigationMenuLink asChild>
                             <a
                               className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                              href="/waits"
+                              href="/test-series"
                             >
                               <GraduationCap className="h-6 w-6" />
                               <div className="mb-2 mt-4 text-lg font-medium">
@@ -197,37 +160,19 @@ function Navbar() {
                             </a>
                           </NavigationMenuLink>
                         </li>
-                        <ListItem href="/docs" title="NEET Exam">
+                        <ListItem href="/test-series/neet" title="NEET Exam">
                           Re-usable components built using Radix UI and Tailwind
                           CSS.
                         </ListItem>
                         <ListItem
-                          href="/docs/installation"
+                          href="/test-series/neet"
                           title="JEE(Main + Adv)"
                         >
                           How to install dependencies and structure your app.
                         </ListItem>
-                        <ListItem href="/waits" title="Learn More">
+                        <ListItem href="/test-series" title="Learn More">
                           Styles for headings, paragraphs, lists...etc
                         </ListItem>
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  {/* Mentorship */}
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent">
-                      Mentorship
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[200px] grid-cols-1 gap-2 p-4">
-                        {mentorshipComponents.map((component) => (
-                          <ListItem
-                            key={component.title}
-                            title={component.title}
-                            href={component.href}
-                            className="py-3"
-                          />
-                        ))}
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
@@ -241,6 +186,32 @@ function Navbar() {
                         )}
                       >
                         Dought Sessions
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  {/* About Us */}
+                  <NavigationMenuItem>
+                    <Link to="/docs">
+                      <NavigationMenuLink
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "bg-transparent",
+                        )}
+                      >
+                        About
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  {/* Contect Us */}
+                  <NavigationMenuItem>
+                    <Link to="/docs">
+                      <NavigationMenuLink
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "bg-transparent",
+                        )}
+                      >
+                        Contact
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
@@ -327,6 +298,7 @@ function Sidebar({
   setOpen: any;
   auth: boolean;
 }) {
+  const navigate = useNavigate();
   return (
     <motion.div
       className={cn(
@@ -356,14 +328,22 @@ function Sidebar({
             {
               title: "Test Series",
               icon: <ArrowUpRight />,
-            },
-            {
-              title: "Mentorship",
-              icon: <ArrowUpRight />,
+              href: "/test-series",
             },
             {
               title: "Dought Sessions",
               icon: <ArrowUpRight />,
+              href: "/dought-sessions",
+            },
+            {
+              title: "About",
+              icon: <ArrowUpRight />,
+              href: "/about",
+            },
+            {
+              title: "Contact",
+              icon: <ArrowUpRight />,
+              href: "/contact",
             },
           ].map((item, idx) => (
             <motion.div
@@ -375,9 +355,10 @@ function Sidebar({
               }}
               key={idx}
               className="group relative flex w-full flex-col items-start justify-start active:bg-primary active:text-white"
+              onClick={() => navigate(item.href)}
             >
               <motion.hr className="h-[2px] w-full bg-primary" />
-              <motion.h1 className="text-left text-[2.5rem] font-bold leading-tight">
+              <motion.h1 className="text-left text-[2rem] font-bold leading-tight">
                 {item.title}
                 {item.icon && (
                   <div className="absolute right-0 top-0 flex h-full w-4 items-center justify-center text-primary">
@@ -402,7 +383,7 @@ function Sidebar({
           {!auth ? (
             <NavigationMenuItem>
               <Link to="/signin">
-                <Button size="lg" className="w-full text-2xl">
+                <Button size="lg" className="w-full text-xl">
                   Login
                 </Button>
               </Link>

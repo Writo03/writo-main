@@ -14,7 +14,7 @@ function HeroSlider({ items }: { items: string[] }) {
         {
           "--swiper-navigation-color": "hsl(var(--primary))",
           "--swiper-pagination-color": "hsl(var(--primary))",
-          "--swiper-navigation-size": isMobile() ? "25px" : "35px",
+          "--swiper-navigation-size": isMobile() ? "15px" : "35px",
         } as React.CSSProperties
       }
       autoplay={true}
@@ -31,7 +31,7 @@ function HeroSlider({ items }: { items: string[] }) {
           <img
             src={item}
             alt={`Slider ${idx}`}
-            className="h-full w-full object-cover object-center lg:transition-all lg:duration-700 lg:ease-in-out lg:group-hover:scale-[1.01]"
+            className="h-full w-full md:object-cover object-center lg:transition-all lg:duration-700 lg:ease-in-out lg:group-hover:scale-[1.01]"
           />
         </SwiperSlide>
       ))}

@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { ReactLenis } from "lenis/react";
 
 import Navbar from "@/MainLayout/NavBar";
-import Footer from "@/components/Footer";
+import Footer from "@/MainLayout/Footer";
 
 // Memoize Navbar to prevent unnecessary re-renders
 const MemoizedNavbar = React.memo(Navbar);

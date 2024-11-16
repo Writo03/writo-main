@@ -272,7 +272,7 @@ function Navbar() {
                             to="/profile"
                             className="flex w-full items-center"
                           >
-                            kaushiksahu18.dev
+                            {user.fullName}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
@@ -285,7 +285,7 @@ function Navbar() {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={logoutHandler}>
                           <LogOut className="mr-2 h-4 w-4" />
                           Logout
                         </DropdownMenuItem>

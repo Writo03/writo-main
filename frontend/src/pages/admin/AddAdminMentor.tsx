@@ -21,7 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { UserPlus, Presentation } from 'lucide-react';
+import { UserPlus, Presentation, Loader2 } from 'lucide-react';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
+import { ErrorApiRes } from '@/types/all';
+import axiosInstance from '@/utils/axiosInstance';
 
 // Subject options for mentors
 const subjects = [
@@ -64,6 +68,8 @@ const AddAdminMentor = () => {
   const isAdmin = role === 'admin';
   const { toast } = useToast()
 
+  const [isCreating, setIsCreating] = useState(false)
+
   const form = useForm<FormData>({
     resolver: zodResolver(isAdmin ? baseSchema : mentorSchema),
     defaultValues: {
@@ -76,28 +82,36 @@ const AddAdminMentor = () => {
   });
 
   const onSubmit = async (data: FormData) => {
+    setIsCreating(true)
     try {
-      // Here you would typically make an API call to create the user
-      console.log('Form data:', data);
+      let res;
+      if(isAdmin){
+        res = await axiosInstance.post("/user/add-admin", data)
+      }else {
+        res = await axiosInstance.post("/user/add-mentor", data)
+      }
       
       toast({
         title: 'Success!',
-        description: `${isAdmin ? 'Admin' : 'Mentor'} created successfully.`,
+        description: res.data.message || `${isAdmin ? 'Admin' : 'Mentor'} created successfully.`,
         variant: 'default',
       });
       
       form.reset();
     } catch (error) {
+      const axiosError = error as AxiosError<ErrorApiRes>
       toast({
         title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        description: axiosError.response?.data.message || 'Something went wrong. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsCreating(false)
     }
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 pt-32">
       <Card className="max-w-2xl mx-auto p-6">
         <div className="flex items-center space-x-4 mb-6">
           <div className="p-3 rounded-full bg-primary/10">
@@ -197,8 +211,13 @@ const AddAdminMentor = () => {
               />
             )}
 
-            <Button type="submit" className="w-full">
-              Create {isAdmin ? 'Admin' : 'Mentor'}
+            <Button disabled={isCreating} type="submit" className="w-full disabled:opacity-50">
+              {
+                isCreating ? (<Loader2 className='animate-spin'/>) : (
+                  <span>Create {isAdmin ? 'Admin' : 'Mentor'}</span>
+                )
+              }
+              
             </Button>
           </form>
         </Form>

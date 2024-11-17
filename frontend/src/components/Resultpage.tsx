@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-// import { Progress } from "@/components/ui/progress";
+import { Progress } from "@/components/ui/progress";
 import { Clock, Award, Check, X } from "lucide-react";
 import axiosInstance from '@/utils/axiosInstance';
 import { Button } from './ui/button';
@@ -102,7 +102,7 @@ const QuizResultPage: React.FC = () => {
                 <span className="text-2xl font-bold text-blue-600">{result.score}/{result.questions.length}</span>
               </div>
               <p className="text-sm text-gray-600">Score</p>
-              {/* <Progress className="mt-2" value={scorePercentage} /> */}
+              <Progress className="mt-2" value={scorePercentage} />
             </div>
 
             {/* Time Card */}
@@ -176,7 +176,7 @@ const QuizResultPage: React.FC = () => {
         ))}
           <Button onClick={()=>{
             navigate(`/leaderboard/${quizId}`)
-          }} className='mx-auto' size="xl">
+          }} className='mx-auto' size="lg">
       LeaderBoard      
       </Button>
       </div>

@@ -7,12 +7,15 @@ import { AuthState, UserState } from '@/types/user';
 import { useAppDispatch } from '@/redux/hooks';
 import { login } from '@/redux/auth';
 import Loading from '@/components/ui/Loading';
+import { useToast } from '@/components/hooks/use-toast';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
 
+  const { toast } = useToast()
+  
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -68,10 +71,25 @@ const SignIn = () => {
       if (axios.isAxiosError(err)) {
         console.log(err.response)
         setError(err.response?.data?.message || 'Login failed');
+        toast({
+          title: 'Error while Login!',
+          description: error,
+          variant: 'destructive',
+        });
       } else {
         setError('An unknown error occurred');
+        toast({
+          title: 'Error while Login!',
+          description: error,
+          variant: 'destructive',
+        });
       }
       console.error('Sign in failed:', err);
+      toast({
+        title: 'Error while Login!',
+        description: error,
+        variant: 'destructive',
+      });
     }
   };
   if(isloading){

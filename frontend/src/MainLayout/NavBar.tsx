@@ -39,6 +39,7 @@ import { isMobile } from "@/lib/utils";
 import { useAppDispatch } from "@/redux/hooks";
 import axiosInstance from "@/utils/axiosInstance";
 import { logout } from "@/redux/auth";
+import { useToast } from "@/components/hooks/use-toast";
 // import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
 
@@ -54,6 +55,7 @@ function Navbar() {
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
 
   const dispatch = useAppDispatch();
+  const { toast } = useToast()
 
   const navigate = useNavigate();
   const [isloading, setisloading] = useState<boolean>(false);
@@ -98,6 +100,11 @@ function Navbar() {
       }
     } catch (error: any) {
       console.log(error.response?.data?.message);
+      toast({
+        title: 'Error while Logout!',
+        description: error.response?.data?.message,
+        variant: 'default',
+      });
       setisloading(false);
     }
   };

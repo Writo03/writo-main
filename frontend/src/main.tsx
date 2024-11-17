@@ -11,6 +11,9 @@ import State from "./components/State.js";
 import Profile from "./components/Profile.js";
 import TestSeriesPage from "@/components/ServiceShowPages/TestSeries.js";
 import AdminHome from "@/pages/admin/AdminHome.js"
+import CheckAdmin from "./components/Admin/CheckAdmin.js";
+import AddAdminMentor from "./pages/admin/AddAdminMentor.js";
+import { Toaster } from "./components/ui/toaster.js";
 
 import { store } from "./redux/store.js";
 import "./index.css";
@@ -52,6 +55,20 @@ const router = createBrowserRouter([
         path: "test-series",
         element: <TestSeriesPage />,
       },
+      {
+        path : "admin",
+        element : <CheckAdmin/>,
+        children : [
+          {
+            path : "",
+            element : <AdminHome/>
+          },
+          {
+            path : "add-admin-mentor/:role",
+            element : <AddAdminMentor/>
+          }
+        ]
+      }
     ],
   },
 ]);

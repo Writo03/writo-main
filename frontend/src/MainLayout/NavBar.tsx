@@ -36,9 +36,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RootState } from "@/types/state";
 import { isMobile } from "@/lib/utils";
-// import { useAppDispatch } from "@/redux/hooks";
-// import axiosInstance from "@/utils/axiosInstance";
-// import { logout } from "@/redux/auth";
+import { useAppDispatch } from "@/redux/hooks";
+import axiosInstance from "@/utils/axiosInstance";
+import { logout } from "@/redux/auth";
 // import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
 
@@ -47,16 +47,16 @@ function Navbar() {
     (state: RootState) => state.auth.isAuthenticated,
   );
 
-  // const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
 
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
-  // const [isloading, setisloading] = useState<boolean>(false);
+  const [isloading, setisloading] = useState<boolean>(false);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = scrollYProgress.get();
@@ -84,23 +84,23 @@ function Navbar() {
     }
   });
 
-  // const logoutHandler = async () => {
-  //   try {
-  //     console.log("hi");
-  //     setisloading(true);
-  //     const response = await axiosInstance.get("/user/logout");
-  //     if (response.status === 200) {
-  //       dispatch(logout());
-  //       localStorage.removeItem("accessToken");
-  //       localStorage.removeItem("refreshToken");
-  //       navigate("/");
-  //       setisloading(false);
-  //     }
-  //   } catch (error: any) {
-  //     console.log(error.response?.data?.message);
-  //     setisloading(false);
-  //   }
-  // };
+  const logoutHandler = async () => {
+    try {
+      console.log("hi");
+      setisloading(true);
+      const response = await axiosInstance.get("/user/logout");
+      if (response.status === 200) {
+        dispatch(logout());
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate("/");
+        setisloading(false);
+      }
+    } catch (error: any) {
+      console.log(error.response?.data?.message);
+      setisloading(false);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -243,7 +243,7 @@ function Navbar() {
                             to="/profile"
                             className="flex w-full items-center"
                           >
-                            kaushiksahu18.dev
+                            {user.fullName}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
@@ -256,7 +256,7 @@ function Navbar() {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={logoutHandler}>
                           <LogOut className="mr-2 h-4 w-4" />
                           Logout
                         </DropdownMenuItem>
@@ -299,6 +299,8 @@ function Sidebar({
   auth: boolean;
 }) {
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.user);
+
   return (
     <motion.div
       className={cn(
@@ -405,8 +407,7 @@ function Sidebar({
                 <DropdownMenuContent align="start">
                   <DropdownMenuItem>
                     <Link to="/profile" className="flex w-full items-center">
-                      kaushiksahu18.dev
-                    </Link>
+{user.fullName}                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link to="/settings" className="flex w-full items-center">

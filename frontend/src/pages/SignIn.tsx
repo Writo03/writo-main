@@ -37,7 +37,7 @@ const SignIn = () => {
         const user= response.data?.data.user;
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
-        console.log(user)
+        // console.log(user)
         await Promise.all([
           localStorage.setItem("accessToken", accessToken),
           localStorage.setItem("refreshToken", refreshToken),
@@ -47,6 +47,8 @@ const SignIn = () => {
           userId: user?._id,
           email: user?.email,
           fullName:user?.fullName,
+          isAdmin:user?.isAdmin,
+          isMentor:user?.isMentor,
           accessToken: accessToken,
           refreshToken: refreshToken,
           isLoggedIn: true,

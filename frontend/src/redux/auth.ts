@@ -10,6 +10,8 @@ const initialState: AuthState = {
     fullName: "",
     email: "",
     userId: "",
+    isMentor:false,
+    isAdmin:false,
     isLoggedIn: false
   },
   error: null,
@@ -25,6 +27,8 @@ const userReducer = createSlice({
         refreshToken,
         fullName,
         email,
+        isMentor,
+        isAdmin,
         userId
       } = action.payload.user;
       state.isAuthenticated = true;
@@ -33,6 +37,8 @@ const userReducer = createSlice({
         refreshToken,
         fullName,
         email,
+        isMentor,
+        isAdmin,
         userId,
         isLoggedIn: true
       };

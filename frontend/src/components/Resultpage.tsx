@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 // import { Progress } from "@/components/ui/progress";
 import { Clock, Award, Check, X } from "lucide-react";
@@ -26,12 +26,13 @@ const QuizResultPage: React.FC = () => {
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate=useNavigate()
   useEffect(() => {
     const fetchResult = async () => {
       try {
         const response = await axiosInstance.get(`/result/get-result/${quizId}`);
         setResult(response.data.data[0]);
+        // console.log(response)
         setLoading(false);
       } catch (err: any) {
         setError(err.response?.data?.message || 'Failed to fetch result');
@@ -173,7 +174,9 @@ const QuizResultPage: React.FC = () => {
             </CardContent>
           </Card>
         ))}
-          <Button className='mx-auto' size="xl">
+          <Button onClick={()=>{
+            navigate(`/leaderboard/${quizId}`)
+          }} className='mx-auto' size="xl">
       LeaderBoard      
       </Button>
       </div>

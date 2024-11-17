@@ -7,6 +7,8 @@
     email: string;
     userId: string;
     isLoggedIn: boolean;
+    isAdmin:boolean,
+    isMentor:boolean,
   }
   
   export interface AuthState {

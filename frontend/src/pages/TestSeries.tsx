@@ -44,7 +44,7 @@ export const TestSeries: React.FC = () => {
       try {
         const response = await axiosInstance.get<ApiResponse>(`/quiz/get-quiz/${quizId}`);
         const fetchedQuiz = response.data.data;
-        console.log(fetchedQuiz)
+        // console.log(fetchedQuiz)
         setQuiz(fetchedQuiz);
         setAnswers(new Array(fetchedQuiz.questions.length).fill(-1));
       } catch (error) {
@@ -89,7 +89,7 @@ export const TestSeries: React.FC = () => {
   
     try {
       const response = await axiosInstance.post('/result/submit-test', requestBody);
-      console.log(response.data.message);
+      // console.log(response.data.message);
       navigate(`/quizresult/${quizId}`);
     } catch (error) {
       console.error('Error submitting test:', error.response?.data || error.message);

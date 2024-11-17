@@ -13,6 +13,9 @@ import TestSeriesPage from "@/components/ServiceShowPages/TestSeries.js";
 
 import { store } from "./redux/store.js";
 import "./index.css";
+import TestSeries from "./pages/TestSeries.js";
+import Leaderboard from "./pages/Leaderboard.js";
+import QuizResultPage from "./components/Resultpage.js";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +54,19 @@ const router = createBrowserRouter([
         path: "test-series",
         element: <TestSeriesPage />,
       },
+      {
+        path:"test",
+        element:<TestSeries />
+      },
+      {
+        path:"leaderboard/:quizId",
+        element:<Leaderboard />
+      },
+      {
+        path:"quizresult/:quizId",
+        element:<QuizResultPage />
+      },
+
     ],
   },
 ]);

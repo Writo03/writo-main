@@ -62,7 +62,7 @@ const AdminHome = () => {
               <h3 className="text-xl font-semibold text-card-foreground">Quiz Management</h3>
               <p className="text-sm text-muted-foreground mt-2">Create and manage quizzes</p>
             </div>
-            <Button variant={"outline"} className="w-full">Manage Quizzes</Button>
+            <Button onClick={() => navigate("manage-quiz")} variant={"outline"} className="w-full">Manage Quizzes</Button>
           </div>
         </Card>
 

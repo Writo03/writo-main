@@ -21,6 +21,7 @@ import "./index.css";
 import TestSeries from "./pages/TestSeries.js";
 import Leaderboard from "./pages/Leaderboard.js";
 import QuizResultPage from "./components/Resultpage.js";
+import ManageQuiz from "./pages/admin/ManageQuiz.js";
 
 const App = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -97,6 +98,10 @@ const App = () => {
             {
               path: "add-admin-mentor/:role",
               element: <AddAdminMentor />,
+            },
+            {
+              path: "manage-quiz",
+              element: <ManageQuiz />,
             },
           ],
         },

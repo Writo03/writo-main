@@ -167,12 +167,12 @@ function Navbar() {
                             </a>
                           </NavigationMenuLink>
                         </li>
-                        <ListItem href="/test-series/neet" title="NEET Exam">
+                        <ListItem href="/test-series/details/neet" title="NEET Exam">
                           Re-usable components built using Radix UI and Tailwind
                           CSS.
                         </ListItem>
                         <ListItem
-                          href="/test-series/neet"
+                          href="/test-series/details/jee"
                           title="JEE(Main + Adv)"
                         >
                           How to install dependencies and structure your app.
@@ -479,7 +479,7 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
   ({ className, title, children, href, ...props }, ref) => {
     return (
       <li>
-        <NavigationMenuLink>
+        <NavigationMenuLink href={href}>
           <a
             ref={ref}
             className={cn(

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import axiosInstance from '../utils/axiosInstance'; // Adjust based on your project structure
 
 interface LeaderboardEntry {
   rank: number;
@@ -9,17 +10,38 @@ interface LeaderboardEntry {
   time: string;
 }
 
-const mockLeaderboard: LeaderboardEntry[] = [
-  { rank: 1, name: 'Priya Sharma', score: 95, time: '25:30' },
-  { rank: 2, name: 'Rahul Kumar', score: 92, time: '27:15' },
-  { rank: 3, name: 'Amit Patel', score: 88, time: '28:45' },
-  { rank: 4, name: 'Sneha Gupta', score: 85, time: '29:20' },
-  { rank: 5, name: 'Raj Malhotra', score: 82, time: '26:10' },
-];
-
 const Leaderboard = () => {
   const location = useLocation();
-  const userScore = location.state?.score || 0;
+  const userScore = location.state?.scorePercentage || 0;
+
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [userRank, setUserRank] = useState<number | null>(null);
+  const { quizId } = useParams<{ quizId: string }>();
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await axiosInstance.get(`/result/get-leaderboard/${quizId}`);
+        const data = response.data.data;
+        console.log(data)
+
+        // Map leaderboard data to the required format
+        const formattedLeaderboard = data.leaderboard.map((entry: any, index: number) => ({
+          rank: index + 1,
+          name: entry.student.fullName,
+          score: entry.score,
+          time: `${Math.floor(entry.timeTaken / 60)}:${(entry.timeTaken % 60).toString().padStart(2, '0')}`,
+        }));
+
+        setLeaderboard(formattedLeaderboard);
+        setUserRank(data.studentRank + 1); // Add 1 for 0-based index
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      }
+    };
+
+    fetchLeaderboard();
+  }, [quizId]);
 
   return (
     <div className="min-h-screen pt-20 pb-12 bg-gray-50">
@@ -34,7 +56,9 @@ const Leaderboard = () => {
             </div>
             <div className="text-center">
               <p className="text-gray-600">Rank</p>
-              <p className="text-4xl font-bold text-indigo-600">#4</p>
+              <p className="text-4xl font-bold text-indigo-600">
+                {userRank ? `#${userRank}` : 'N/A'}
+              </p>
             </div>
           </div>
         </div>
@@ -51,7 +75,7 @@ const Leaderboard = () => {
           <div className="p-6">
             {/* Top 3 */}
             <div className="grid grid-cols-3 gap-4 mb-8">
-              {mockLeaderboard.slice(0, 3).map((entry, index) => (
+              {leaderboard.slice(0, 3).map((entry, index) => (
                 <div
                   key={index}
                   className={`text-center p-4 rounded-lg ${
@@ -70,7 +94,7 @@ const Leaderboard = () => {
                     <Award className="h-8 w-8 mx-auto text-orange-500" />
                   )}
                   <p className="font-semibold mt-2">{entry.name}</p>
-                  <p className="text-gray-600">{entry.score}%</p>
+                  <p className="text-gray-600">{entry.score}</p>
                 </div>
               ))}
             </div>
@@ -95,7 +119,7 @@ const Leaderboard = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {mockLeaderboard.map((entry, index) => (
+                  {leaderboard.map((entry, index) => (
                     <tr key={index}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm font-medium text-gray-900">
@@ -106,9 +130,7 @@ const Leaderboard = () => {
                         <span className="text-sm text-gray-900">{entry.name}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900">
-                          {entry.score}%
-                        </span>
+                        <span className="text-sm text-gray-900">{entry.score}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-900">{entry.time}</span>

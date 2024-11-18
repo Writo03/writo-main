@@ -31,6 +31,8 @@ const State = () => {
                 fullName:user?.fullName,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
+                isAdmin:user?.isAdmin,
+                isMentor:user?.isMentor,
                 isLoggedIn: true,
               };
               const loginPayload: AuthState = {

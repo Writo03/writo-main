@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Clock } from 'lucide-react';
 
 interface QuizTimerProps {
-  duration: number;
+  duration: number; // in minutes
   onTimeUp: () => void;
+  onTimeUpdate?: (timeLeft: number) => void; // Optional callback for time updates
 }
 
-export const QuizTimer = ({ duration, onTimeUp }: QuizTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(duration * 60);
+export const QuizTimer = ({ duration, onTimeUp, onTimeUpdate }: QuizTimerProps) => {
+  const [timeLeft, setTimeLeft] = useState(duration * 60); // Convert to seconds
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -16,11 +17,17 @@ export const QuizTimer = ({ duration, onTimeUp }: QuizTimerProps) => {
     }
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => {
+        const updatedTime = prev - 1;
+        if (onTimeUpdate) {
+          onTimeUpdate(updatedTime); // Call the update function
+        }
+        return updatedTime;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp]);
+  }, [timeLeft, onTimeUp, onTimeUpdate]);
 
   return (
     <div className="flex items-center space-x-2 text-white">

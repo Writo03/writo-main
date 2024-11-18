@@ -13,6 +13,9 @@ export default defineConfig({
   server: {
     port: 3001,
   },
+  define: {
+    'process.env': {}
+  }
   // build: {
   //   // This will ignore ESLint errors during build
   //   rollupOptions: {

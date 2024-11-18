@@ -1,226 +1,529 @@
-import React, { useState } from 'react';
-import { Plus, X, Upload, Save } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useToast } from "@/components/hooks/use-toast";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2, Plus, Trash2 } from "lucide-react";
+import axiosInstance from "@/utils/axiosInstance";
+import { ErrorApiRes } from "@/types/all";
+import axios, { AxiosError } from "axios";
 
-interface Question {
-  text: string;
-  imageUrl?: string;
-  options: string[];
-  correctAnswer: number;
-}
+
+const SUBJECTS = ["Physics", "Chemistry", "Biology", "Mathematics"] as const;
+
+const SERVICES = [
+  { label: "NEET", value: "673440f8f547c1a59e6d2a78" },
+  { label: "JEE", value: "jee" },
+] as const;
+
+const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
+
+
+const questionSchema = z.object({
+  question: z.string().optional(),
+  image: z.string().optional(),
+  options: z.array(z.string()).length(4, "Exactly 4 options are required"),
+  correct: z.enum(["A", "B", "C", "D"], {
+    required_error: "Please select the correct answer",
+  }),
+});
+
+const formSchema = z.object({
+  name: z.string().min(3, "Quiz name must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  duration: z.number().min(5, "Duration must be at least 5 minutes"),
+  subjects: z.array(z.string()).min(1, "Select at least one subject"),
+  isSubjectTest: z.boolean(),
+  services: z.array(z.string()).min(1, "Select at least one service"),
+  questions: z.array(questionSchema).min(1, "Add at least one question"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 const QuizCreator = () => {
-  const [title, setTitle] = useState('');
-  const [duration, setDuration] = useState(30);
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      text: '',
-      options: ['', '', '', ''],
-      correctAnswer: 0,
+  const { quizId } = useParams();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [initialData, setInitialData] = useState<FormData | null>(null);
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      duration: 30,
+      subjects: [],
+      isSubjectTest: false,
+      services: [],
+      questions: [
+        {
+          question: "",
+          image: "",
+          options: ["", "", "", ""],
+          correct: "A",
+        },
+      ],
     },
-  ]);
+  });
 
-  const handleAddQuestion = () => {
-    setQuestions([
-      ...questions,
-      {
-        text: '',
-        options: ['', '', '', ''],
-        correctAnswer: 0,
-      },
-    ]);
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "questions",
+  });
+
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      if (!quizId) return;
+
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get(`/quiz/get-quiz/${quizId}`);
+        const data = response.data.data;
+        setInitialData(data);
+        form.reset(data);
+      } catch (error) {
+        const axiosError = error as AxiosError<ErrorApiRes>;
+        toast({
+          title: "Error",
+          description:
+            axiosError.response?.data.message || "Failed to fetch quiz data",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuiz();
+  }, [quizId, form, toast]);
+
+
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    try {
+      let response;
+      if (quizId) {
+        response = await axiosInstance.patch(`/quiz/get-quiz/${quizId}`, data);
+      } else {
+        response = await axiosInstance.post(`/quiz/create-quiz`, data);
+      }
+      toast({
+        title: "Success",
+        description:
+          response.data.message ||
+          `Quiz ${quizId ? "updated" : "created"} successfully`,
+      });
+      navigate("/admin/manage-quiz");
+    } catch (error) {
+      const axiosError = error as AxiosError<ErrorApiRes>;
+      toast({
+        title: "Error",
+        description: axiosError.response?.data.message || "Failed to save quiz",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleRemoveQuestion = (index: number) => {
-    setQuestions(questions.filter((_, i) => i !== index));
-  };
-
-  const handleQuestionChange = (index: number, field: keyof Question, value: any) => {
-    const newQuestions = [...questions];
-    newQuestions[index] = { ...newQuestions[index], [field]: value };
-    setQuestions(newQuestions);
-  };
-
-  const handleOptionChange = (questionIndex: number, optionIndex: number, value: string) => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex].options[optionIndex] = value;
-    setQuestions(newQuestions);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle quiz submission to backend
-    console.log({ title, duration, questions });
-  };
+  // Loading state
+  if (loading && !initialData && quizId) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen pt-20 pb-12 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="bg-indigo-600 p-6">
-            <h1 className="text-2xl font-bold text-white">Create New Quiz</h1>
-          </div>
+    <div className="container mx-auto p-6 pt-28">
+      <Card className="mx-auto max-w-4xl p-6">
+        <h1 className="mb-6 text-2xl font-bold">
+          {quizId ? "Edit Quiz" : "Create New Quiz"}
+        </h1>
 
-          <form onSubmit={handleSubmit} className="p-6">
-            {/* Quiz Details */}
-            <div className="space-y-4 mb-8">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Quiz Title
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Duration (minutes)
-                </label>
-                <input
-                  type="number"
-                  value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                  required
-                />
-              </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {/* Basic Quiz Information Section */}
+            <div className="grid gap-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quiz Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter quiz name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter quiz description"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration (minutes)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="subjects"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Subjects</FormLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                      {SUBJECTS.map((subject) => (
+                        <FormField
+                          key={subject}
+                          control={form.control}
+                          name="subjects"
+                          render={({ field }) => (
+                            <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(subject)}
+                                  onCheckedChange={(checked) => {
+                                    const value = field.value || [];
+                                    if (checked) {
+                                      field.onChange([...value, subject]);
+                                    } else {
+                                      field.onChange(
+                                        value.filter((val) => val !== subject),
+                                      );
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {subject}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isSubjectTest"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      This is a subject-specific test
+                    </FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Services Selection */}
+              <FormField
+                control={form.control}
+                name="services"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Services</FormLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                      {SERVICES.map((service) => (
+                        <FormField
+                          key={service.value}
+                          control={form.control}
+                          name="services"
+                          render={({ field }) => (
+                            <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(service.value)}
+                                  onCheckedChange={(checked) => {
+                                    const value = field.value || [];
+                                    if (checked) {
+                                      field.onChange([...value, service.value]);
+                                    } else {
+                                      field.onChange(
+                                        value.filter(
+                                          (val) => val !== service.value,
+                                        ),
+                                      );
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {service.label}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
-            {/* Questions */}
-            <div className="space-y-8">
-              {questions.map((question, questionIndex) => (
-                <div
-                  key={questionIndex}
-                  className="border border-gray-200 rounded-lg p-4"
+            {/* Questions Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Questions</h2>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    append({
+                      question: "",
+                      image: "",
+                      options: ["", "", "", ""],
+                      correct: "A",
+                    })
+                  }
                 >
-                  <div className="flex justify-between items-start mb-4">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Question
+                </Button>
+              </div>
+
+              {/* Dynamic Question Fields */}
+              {fields.map((field, index) => (
+                <Card key={field.id} className="p-4">
+                  <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-lg font-medium">
-                      Question {questionIndex + 1}
+                      Question {index + 1}
                     </h3>
-                    {questions.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveQuestion(questionIndex)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => remove(index)}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
 
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Question Text
-                      </label>
-                      <textarea
-                        value={question.text}
-                        onChange={(e) =>
-                          handleQuestionChange(questionIndex, 'text', e.target.value)
-                        }
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        rows={3}
-                        required
-                      />
-                    </div>
+                  <div className="grid gap-4">
+                    {/* Question Text */}
+                    <FormField
+                      control={form.control}
+                      name={`questions.${index}.question`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Question Text</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Image URL (optional)
-                      </label>
-                      <div className="mt-1 flex items-center space-x-2">
-                        <input
-                          type="text"
-                          value={question.imageUrl || ''}
-                          onChange={(e) =>
-                            handleQuestionChange(
-                              questionIndex,
-                              'imageUrl',
-                              e.target.value
-                            )
-                          }
-                          className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                          placeholder="https://example.com/image.jpg"
-                        />
-                        <button
-                          type="button"
-                          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                        >
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload
-                        </button>
-                      </div>
-                    </div>
+                    {/* Question Image URL */}
+                    <FormField
+                      control={form.control}
+                      name={`questions.${index}.image`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Question Image</FormLabel>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Options
-                      </label>
-                      <div className="space-y-2">
-                        {question.options.map((option, optionIndex) => (
-                          <div key={optionIndex} className="flex items-center space-x-2">
-                            <input
-                              type="radio"
-                              name={`correct-${questionIndex}`}
-                              checked={question.correctAnswer === optionIndex}
-                              onChange={() =>
-                                handleQuestionChange(
-                                  questionIndex,
-                                  'correctAnswer',
-                                  optionIndex
-                                )
-                              }
-                              className="h-4 w-4 text-indigo-600"
+                          {/* Image URL Input */}
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="url"
+                              placeholder="Enter image URL or upload below"
                             />
-                            <input
-                              type="text"
-                              value={option}
-                              onChange={(e) =>
-                                handleOptionChange(
-                                  questionIndex,
-                                  optionIndex,
-                                  e.target.value
-                                )
-                              }
-                              className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                              placeholder={`Option ${optionIndex + 1}`}
-                              required
+                          </FormControl>
+
+                          {/* File Upload Option */}
+                          <div className="mt-2">
+                            <Input
+                              type="file"
+                              onChange={async (e) => {
+                                if (e.target.files?.[0]) {
+                                  setLoading(true);
+
+                                  try {
+                                    const formData = new FormData();
+                                    formData.append("file", e.target.files[0]);
+                                    formData.append(
+                                      "upload_preset",
+                                      "spx0jjqq",
+                                    );
+
+                                    const response = await axios.post(
+                                      `https://api.cloudinary.com/v1_1/dlsxjstxo/image/upload`,
+                                      formData,
+                                    );
+                                    field.onChange(response.data.secure_url);
+
+                                    toast({
+                                      title: "Success",
+                                      description:
+                                        "Image uploaded successfully",
+                                    });
+                                  } catch(error : any) {
+                                    toast({
+                                      title: "Error",
+                                      description: error.response.data.error.message || "Failed to upload image",
+                                      variant: "destructive",
+                                    });
+                                  } finally {
+                                    setLoading(false);
+                                  }
+                                }
+                              }}
+                              className="cursor-pointer file:mr-4 file:cursor-pointer file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-medium hover:file:bg-secondary/80"
                             />
                           </div>
-                        ))}
-                      </div>
+
+                          {/* Preview Image if URL exists */}
+                          {field.value && (
+                            <div className="mt-2">
+                              <img
+                                src={field.value}
+                                alt="Question preview"
+                                className="h-auto max-w-[200px] rounded-md"
+                              />
+                            </div>
+                          )}
+
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Options */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {[0, 1, 2, 3].map((optionIndex) => (
+                        <FormField
+                          key={optionIndex}
+                          control={form.control}
+                          name={`questions.${index}.options.${optionIndex}`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Option {OPTION_LETTERS[optionIndex]}
+                              </FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      ))}
                     </div>
+
+                    {/* Correct Answer Selection */}
+                    <FormField
+                      control={form.control}
+                      name={`questions.${index}.correct`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Correct Answer</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select correct answer" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {OPTION_LETTERS.map((letter) => (
+                                <SelectItem key={letter} value={letter}>
+                                  Option {letter}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
 
-            {/* Add Question Button */}
-            <button
-              type="button"
-              onClick={handleAddQuestion}
-              className="mt-6 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Question
-            </button>
-
             {/* Submit Button */}
-            <div className="mt-8">
-              <button
-                type="submit"
-                className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Save Quiz
-              </button>
-            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {quizId ? "Update Quiz" : "Create Quiz"}
+            </Button>
           </form>
-        </div>
-      </div>
+        </Form>
+      </Card>
     </div>
   );
 };

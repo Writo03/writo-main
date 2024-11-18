@@ -4,6 +4,7 @@ import { Mail, Lock, User } from 'lucide-react';
 import axiosInstance from '@/utils/axiosInstance';
 import axios from 'axios';
 import Loading from '@/components/ui/Loading';
+import { useToast } from '@/components/hooks/use-toast';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -14,6 +15,8 @@ const SignUp: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [isloading, setisloading] = useState<boolean>(false)
   const navigate = useNavigate();
+  const { toast } = useToast()
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,10 +46,25 @@ const SignUp: React.FC = () => {
       if (axios.isAxiosError(err)) {
         console.log(err.response)
         setError(err.response?.data?.message || 'Registration failed');
+        toast({
+          title: 'Error while signup!',
+          description: error,
+          variant: 'destructive',
+        });
       } else {
         setError('An unknown error occurred');
+        toast({
+          title: 'Error while signup!',
+          description: error,
+          variant: 'destructive',
+        });
       }
       console.error('Sign up failed:', err);
+      toast({
+        title: 'Error while signup!',
+        description: error,
+        variant: 'destructive',
+      });
     }
   };
   if(isloading){

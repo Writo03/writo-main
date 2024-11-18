@@ -5,7 +5,7 @@ import { getLeaderboard, getResult, submitTest } from "../controllers/result.con
 const router = Router()
 
 router.use(verifyJWT)
-router.route("/submit-test").post(submitTest)
+router.route("/submit-test").post(submitTest) 
 router.route("/get-result/:quizId").get(getResult)
 router.route("/get-leaderboard/:quizId").get(getLeaderboard)
 

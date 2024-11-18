@@ -51,6 +51,23 @@ const getQuizes = asyncHandler(async (req, res) => {
     }
 })
 
+const getQuizesAll = asyncHandler(async (req, res) => {
+    try {
+        const {serviceId} = req.query
+
+        const quizes = await Quiz.find({services : {$in : [serviceId]}})
+
+        if(!quizes.length){
+            throw new ApiError(404, "No quizes found")
+        }
+
+        res.status(200).json(new ApiResponse(200, "Quizes fetched successfully", quizes))
+
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Something went wrong while fetching quizes")
+    }
+})
+
 const getQuizById = asyncHandler(async (req, res) => {
     try {
         const {quizId} = req.params
@@ -117,4 +134,4 @@ const deleteQuiz = asyncHandler(async (req, res) => {
     }
 })
 
-export { createQuiz, getQuizes, getQuizById, updateQuiz, deleteQuiz }
+export { createQuiz, getQuizes, getQuizById, updateQuiz, deleteQuiz, getQuizesAll }

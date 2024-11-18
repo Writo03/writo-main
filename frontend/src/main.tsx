@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Home from "./pages/Home";
@@ -11,6 +11,7 @@ import State from "./components/State";
 import Profile from "./components/Profile";
 import TestSeriesPage from "@/components/ServiceShowPages/TestSeries";
 import DoubtSessionPage from "@/components/ServiceShowPages/DoughtSession";
+import Details from "@/components/TestSeries/Details";
 import AdminHome from "@/pages/admin/AdminHome";
 import CheckAdmin from "./components/Admin/CheckAdmin";
 import AddAdminMentor from "./pages/admin/AddAdminMentor";
@@ -23,6 +24,9 @@ import Leaderboard from "./pages/Leaderboard";
 import QuizResultPage from "./components/Resultpage";
 import ManageQuiz from "./pages/admin/ManageQuiz";
 import QuizCreator from "./pages/admin/QuizCreator";
+
+import AboutUs from "@/components/About";
+import ContactUs from "@/components/Contact";
 
 const router = createBrowserRouter([
   {
@@ -59,7 +63,17 @@ const router = createBrowserRouter([
       },
       {
         path: "test-series",
-        element: <TestSeriesPage />,
+        element: <><Outlet /></>,
+        children: [
+          {
+            path: "",
+            element: <TestSeriesPage />,
+          },
+          {
+            path: "details/:jeeorneet",
+            element: <Details />,
+          },
+        ],
       },
       {
         path: "doubt-sessions",
@@ -98,6 +112,14 @@ const router = createBrowserRouter([
             element: <QuizCreator />,
           },
         ],
+      },
+      {
+        path: "about",
+        element: <AboutUs />,
+      },
+      {
+        path: "contact",
+        element: <ContactUs />,
       },
     ],
   },

@@ -198,7 +198,7 @@ function Navbar() {
                   </NavigationMenuItem>
                   {/* About Us */}
                   <NavigationMenuItem>
-                    <Link to="/docs">
+                    <Link to="/about">
                       <NavigationMenuLink
                         className={cn(
                           navigationMenuTriggerStyle(),
@@ -209,9 +209,9 @@ function Navbar() {
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
-                  {/* Contect Us */}
+                  {/* Contact Us */}
                   <NavigationMenuItem>
-                    <Link to="/docs">
+                    <Link to="/contact">
                       <NavigationMenuLink
                         className={cn(
                           navigationMenuTriggerStyle(),

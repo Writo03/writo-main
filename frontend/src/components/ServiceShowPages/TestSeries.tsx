@@ -15,12 +15,14 @@ import {
   Microscope,
   Calculator,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function TestSeriesPage() {
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-grow">
-        <section className="bg-gradient-to-r from-blue-500 to-purple-600 py-20 text-white pt-[20vh]">
+        <section className="bg-gradient-to-r from-blue-500 to-purple-600 py-20 pt-[20vh] text-white">
           <div className="container mx-auto px-4 text-center">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">
               Ace Your Entrance Exams
@@ -60,7 +62,11 @@ export default function TestSeriesPage() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button size="lg" className="w-full">
+                  <Button
+                    size="lg"
+                    className="w-full"
+                    onClick={() => navigate("/test-series/details/neet")}
+                  >
                     Start NEET Preparation
                   </Button>
                 </CardFooter>
@@ -93,7 +99,11 @@ export default function TestSeriesPage() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button size="lg" className="w-full">
+                  <Button
+                    size="lg"
+                    className="w-full"
+                    onClick={() => navigate("/test-series/details/jee")}
+                  >
                     Start JEE Preparation
                   </Button>
                 </CardFooter>
@@ -138,7 +148,9 @@ export default function TestSeriesPage() {
                   className="text-center transition-shadow duration-300 hover:shadow-lg"
                 >
                   <CardContent className="pt-6">
-                    <div className="flex justify-center items-center mb-4">{feature.icon}</div>
+                    <div className="mb-4 flex items-center justify-center">
+                      {feature.icon}
+                    </div>
                     <h3 className="mb-2 text-xl font-semibold">
                       {feature.title}
                     </h3>
@@ -162,6 +174,7 @@ export default function TestSeriesPage() {
                 <Button
                   size="lg"
                   className="mt-4 bg-green-500 text-white hover:bg-green-600"
+                  onClick={() => navigate("/test-series/details/neet")}
                 >
                   Get NEET Tests
                 </Button>
@@ -174,6 +187,7 @@ export default function TestSeriesPage() {
                 <Button
                   size="lg"
                   className="mt-4 bg-green-500 text-white hover:bg-green-600"
+                  onClick={() => navigate("/test-series/details/jee")}
                 >
                   Get JEE Tests
                 </Button>
@@ -194,11 +208,7 @@ export default function TestSeriesPage() {
               Our test series has helped countless students achieve their dreams
               in both medical and engineering fields. You could be next!
             </p>
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-lg text-black"
-            >
+            <Button variant="outline" size="lg" className="text-lg text-black">
               Learn More About Our Success Stories
             </Button>
           </div>

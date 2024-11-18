@@ -176,16 +176,16 @@ function Navbar() {
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
-                  {/* Dought Sessions */}
+                  {/* Doubt Sessions */}
                   <NavigationMenuItem>
-                    <Link to="/docs">
+                    <Link to="/doubt-sessions">
                       <NavigationMenuLink
                         className={cn(
                           navigationMenuTriggerStyle(),
                           "bg-transparent",
                         )}
                       >
-                        Dought Sessions
+                        Doubt Sessions
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
@@ -331,9 +331,9 @@ function Sidebar({
               href: "/test-series",
             },
             {
-              title: "Dought Sessions",
+              title: "Doubt Sessions",
               icon: <ArrowUpRight />,
-              href: "/dought-sessions",
+              href: "/doubt-sessions",
             },
             {
               title: "About",

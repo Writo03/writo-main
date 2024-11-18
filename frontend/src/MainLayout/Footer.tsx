@@ -18,7 +18,7 @@ const Footer = () => {
             </div>
             <p className="mb-4 text-gray-400">
               Empowering students with comprehensive test series and
-              personalized doubt resolution.
+              personalized Doubt resolution.
             </p>
             <div className="flex space-x-4">
               {[

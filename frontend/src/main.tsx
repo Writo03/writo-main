@@ -7,11 +7,12 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Protected from "./components/Protected";
-import State from "./components/State.js";
-import Profile from "./components/Profile.js";
-import TestSeriesPage from "@/components/ServiceShowPages/TestSeries.js";
+import State from "./components/State";
+import Profile from "./components/Profile";
+import TestSeriesPage from "@/components/ServiceShowPages/TestSeries";
+import DoubtSessionPage from "@/components/ServiceShowPages/DoughtSession";
 
-import { store } from "./redux/store.js";
+import { store } from "./redux/store";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "test-series",
         element: <TestSeriesPage />,
+      },
+      {
+        path: "doubt-sessions",
+        element: <DoubtSessionPage />,
       },
     ],
   },

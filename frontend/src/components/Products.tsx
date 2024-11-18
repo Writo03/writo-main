@@ -54,11 +54,11 @@ const Products = () => {
               <h3 className="ml-4 text-2xl font-bold">Live Doubts</h3>
             </div>
             <p className="mb-6 text-gray-600">
-              Real-time doubt resolution with expert mentors through chat and
+              Real-time Doubt resolution with expert mentors through chat and
               video calls.
             </p>
             <div className="mb-8 space-y-4">
-              <Feature icon={MessageSquare} text="24/7 chat support" />
+              <Feature icon={MessageSquare} text="Daily 14-hours chat support" />
               <Feature icon={Share2} text="Screen sharing capability" />
               <Feature icon={Crown} text="Premium mentor access" />
             </div>

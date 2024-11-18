@@ -18,7 +18,7 @@ const Features = () => {
           />
           <FeatureCard
             icon={Clock}
-            title="24/7 Support"
+            title="Daily 14-hours Support"
             description="Get help anytime with our round-the-clock support system"
           />
           <FeatureCard

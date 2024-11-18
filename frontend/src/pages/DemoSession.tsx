@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { MessageSquare, Video, Share2 } from 'lucide-react';
+import React, { useState } from "react";
+import { MessageSquare, Video, Share2 } from "lucide-react";
 
 const DemoSession = () => {
-  const [message, setMessage] = useState('');
-  const [chat, setChat] = useState<{ text: string; sender: 'user' | 'mentor' }[]>([
-    { text: 'Hello! Welcome to the demo session. How can I help you today?', sender: 'mentor' },
+  const [message, setMessage] = useState("");
+  const [chat, setChat] = useState<
+    { text: string; sender: "user" | "mentor" }[]
+  >([
+    {
+      text: "Hello! Welcome to the demo session. How can I help you today?",
+      sender: "mentor",
+    },
   ]);
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -12,40 +17,47 @@ const DemoSession = () => {
     if (!message.trim()) return;
 
     // Add user message
-    setChat(prev => [...prev, { text: message, sender: 'user' }]);
+    setChat((prev) => [...prev, { text: message, sender: "user" }]);
 
     // Simulate mentor response
     setTimeout(() => {
-      setChat(prev => [...prev, {
-        text: "Thanks for your message! This is a demo response. In a real session, you'll be connected with our expert mentors.",
-        sender: 'mentor'
-      }]);
+      setChat((prev) => [
+        ...prev,
+        {
+          text: "Thanks for your message! This is a demo response. In a real session, you'll be connected with our expert mentors.",
+          sender: "mentor",
+        },
+      ]);
     }, 1000);
 
-    setMessage('');
+    setMessage("");
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-12 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="min-h-screen bg-gray-50 pb-12 pt-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="overflow-hidden rounded-lg bg-white shadow-lg">
           {/* Header */}
           <div className="bg-indigo-600 p-6">
-            <h1 className="text-2xl font-bold text-white">Demo Doubt Session</h1>
-            <p className="text-indigo-100 mt-2">Experience our live doubt-solving platform</p>
+            <h1 className="text-2xl font-bold text-white">
+              Demo Doubt Session
+            </h1>
+            <p className="mt-2 text-indigo-100">
+              Experience our live Doubt Solving platform
+            </p>
           </div>
 
           {/* Features */}
-          <div className="grid md:grid-cols-3 gap-6 p-6 bg-indigo-50">
-            <div className="flex items-center space-x-3 p-4 bg-white rounded-lg shadow-sm">
+          <div className="grid gap-6 bg-indigo-50 p-6 md:grid-cols-3">
+            <div className="flex items-center space-x-3 rounded-lg bg-white p-4 shadow-sm">
               <MessageSquare className="h-6 w-6 text-indigo-600" />
               <span className="text-gray-700">Real-time Chat</span>
             </div>
-            <div className="flex items-center space-x-3 p-4 bg-white rounded-lg shadow-sm">
+            <div className="flex items-center space-x-3 rounded-lg bg-white p-4 shadow-sm">
               <Video className="h-6 w-6 text-indigo-600" />
               <span className="text-gray-700">Video Calls</span>
             </div>
-            <div className="flex items-center space-x-3 p-4 bg-white rounded-lg shadow-sm">
+            <div className="flex items-center space-x-3 rounded-lg bg-white p-4 shadow-sm">
               <Share2 className="h-6 w-6 text-indigo-600" />
               <span className="text-gray-700">Screen Sharing</span>
             </div>
@@ -53,19 +65,19 @@ const DemoSession = () => {
 
           {/* Chat Interface */}
           <div className="p-6">
-            <div className="bg-gray-50 rounded-lg h-96 overflow-y-auto p-4 mb-4">
+            <div className="mb-4 h-96 overflow-y-auto rounded-lg bg-gray-50 p-4">
               {chat.map((msg, index) => (
                 <div
                   key={index}
                   className={`mb-4 ${
-                    msg.sender === 'user' ? 'text-right' : 'text-left'
+                    msg.sender === "user" ? "text-right" : "text-left"
                   }`}
                 >
                   <div
-                    className={`inline-block p-3 rounded-lg ${
-                      msg.sender === 'user'
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-200 text-gray-800'
+                    className={`inline-block rounded-lg p-3 ${
+                      msg.sender === "user"
+                        ? "bg-indigo-600 text-white"
+                        : "bg-gray-200 text-gray-800"
                     }`}
                   >
                     {msg.text}
@@ -80,11 +92,11 @@ const DemoSession = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <button
                 type="submit"
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="rounded-lg bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Send
               </button>
@@ -92,17 +104,18 @@ const DemoSession = () => {
           </div>
 
           {/* Demo Controls */}
-          <div className="p-6 bg-gray-50 border-t">
+          <div className="border-t bg-gray-50 p-6">
             <div className="flex justify-center space-x-4">
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Start Video Call
               </button>
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Share Screen
               </button>
             </div>
-            <p className="text-center text-sm text-gray-500 mt-4">
-              Note: This is a demo interface. Video calls and screen sharing are available in the full version.
+            <p className="mt-4 text-center text-sm text-gray-500">
+              Note: This is a demo interface. Video calls and screen sharing are
+              available in the full version.
             </p>
           </div>
         </div>

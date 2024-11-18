@@ -29,14 +29,14 @@ const Hero = () => {
           />
         </Suspense>
       </div>
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:py-20 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8 lg:py-20">
         <div className="text-center">
           <h1 className="mb-6 text-5xl font-bold text-gray-900">
             Master Your Studies with
             <span className="text-primary"> Writo Education</span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">
-            Comprehensive test series and live doubt-solving sessions to help
+            Comprehensive test series and live Doubt Solving sessions to help
             you achieve academic excellence.
           </p>
           <div className="flex flex-col justify-center gap-6 sm:flex-row">
@@ -69,7 +69,7 @@ const Hero = () => {
             <h3 className="mb-4 text-2xl font-bold">Live Doubt Sessions</h3>
             <p className="mb-4 text-gray-600">
               Connect with expert mentors through chat or video calls for
-              real-time doubt resolution and screen sharing.
+              real-time Doubt resolution and screen sharing.
             </p>
             <button className="inline-flex items-center font-semibold text-primary">
               Join Sessions <ArrowRight className="ml-2 h-4 w-4" />

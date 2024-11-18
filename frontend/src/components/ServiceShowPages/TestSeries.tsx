@@ -197,7 +197,7 @@ export default function TestSeriesPage() {
             <Button
               variant="outline"
               size="lg"
-              className="text-lg"
+              className="text-lg text-black"
             >
               Learn More About Our Success Stories
             </Button>

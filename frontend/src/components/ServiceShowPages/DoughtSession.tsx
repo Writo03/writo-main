@@ -13,6 +13,10 @@ import {
   Image as ImageIcon,
   Send,
   PaperclipIcon,
+  LogIn as LogInIcon,
+  UserCheck,
+  BadgeAlert,
+  Video as VideoIcon,
 } from "lucide-react";
 // import { Link } from "react-router-dom";
 
@@ -28,6 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const subjects = [
   {
@@ -307,7 +312,7 @@ export default function DoubtSessionPage() {
               Join our Doubt sessions today and experience the difference
               personalized mentoring can make!
             </p>
-            <Button variant="outline" size="lg" className="text-lg">
+            <Button variant="outline" size="lg" className="text-lg text-black">
               Get Started Now
             </Button>
           </div>
@@ -382,9 +387,9 @@ export function ChatSection() {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="mb-12 text-center text-3xl font-bold">
+      {/* <h2 className="mb-12 text-center text-3xl font-bold">
         Real-Time Chat Platform
-      </h2>
+      </h2> */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="space-y-6">
           <h3 className="text-2xl font-bold">Connect Instantly</h3>
@@ -429,13 +434,28 @@ export function ChatSection() {
               </Card>
             ))}
           </div>
+          <div className="mt-12 text-center">
+            <Badge variant="outline" className="px-4 py-2 text-lg">
+              Daily 14-hours Support Available
+            </Badge>
+          </div>
         </div>
-        {/* <Card className="mx-auto w-full max-w-md">
+
+        <Card className="mx-auto w-full max-w-md">
           <CardHeader>
-            <CardTitle>Live Chat</CardTitle>
+            <CardTitle>How to use</CardTitle>
           </CardHeader>
-          <CardContent className="h-96 space-y-4 overflow-y-auto">
-            {chatMessages.map((msg, idx) => (
+          <CardContent className="space-y-4 overflow-y-auto">
+            {DoubtSessionSteps.map((item, idx) => (
+              <Alert key={idx}>
+                <item.icon className="h-6 w-6 text-primary" />
+                <AlertTitle className="ml-2 text-lg font-medium">
+                  {item.title}
+                </AlertTitle>
+                <AlertDescription>{item.description}</AlertDescription>
+              </Alert>
+            ))}
+            {/* {chatMessages.map((msg, idx) => (
               <div
                 key={idx}
                 className={`flex items-start space-x-2 ${msg.sender === "Student" ? "justify-end" : ""}`}
@@ -452,10 +472,11 @@ export function ChatSection() {
                   <p className="mt-1 text-xs text-gray-500">{msg.time}</p>
                 </div>
               </div>
-            ))}
+            ))} */}
           </CardContent>
           <CardFooter>
-            <form
+            <Button className="w-full">Try Now</Button>
+            {/* <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
@@ -472,15 +493,33 @@ export function ChatSection() {
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Send message</span>
               </Button>
-            </form>
+            </form> */}
           </CardFooter>
-        </Card> */}
-      </div>
-      <div className="mt-12 text-center">
-        <Badge variant="outline" className="px-4 py-2 text-lg">
-          Daily 14-hours Support Available
-        </Badge>
+        </Card>
       </div>
     </div>
   );
 }
+
+const DoubtSessionSteps = [
+  {
+    title: "Sign In",
+    description: "Create an account to access the platform",
+    icon: LogInIcon,
+  },
+  {
+    title: "Subscribe to a Subject",
+    description: "Choose a subject to connect with your mentors",
+    icon: UserCheck,
+  },
+  {
+    title: "Share your Doubts",
+    description: "Share your doubts with your mentors",
+    icon: BadgeAlert,
+  },
+  {
+    title: "Video Call",
+    description: "Video call with the mentors",
+    icon: VideoIcon,
+  },
+];

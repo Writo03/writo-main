@@ -22,6 +22,7 @@ import TestSeries from "./pages/TestSeries.js";
 import Leaderboard from "./pages/Leaderboard.js";
 import QuizResultPage from "./components/Resultpage.js";
 import ManageQuiz from "./pages/admin/ManageQuiz.js";
+import QuizCreator from "./pages/admin/QuizCreator.js";
 
 const App = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -102,6 +103,10 @@ const App = () => {
             {
               path: "manage-quiz",
               element: <ManageQuiz />,
+            },
+            {
+              path: "add-quiz/:quizId?",
+              element: <QuizCreator />,
             },
           ],
         },

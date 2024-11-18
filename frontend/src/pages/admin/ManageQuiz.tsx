@@ -17,6 +17,8 @@ import {
 import axiosInstance from '@/utils/axiosInstance';
 import { AxiosError } from 'axios';
 import { ErrorApiRes } from '@/types/all';
+import { useToast } from '@/components/hooks/use-toast';
+import { Link } from 'react-router-dom';
 
 interface Question {
   question: string;
@@ -45,6 +47,7 @@ const ManageQuiz = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [deleteQuizId, setDeleteQuizId] = useState<string | null>(null);
 
+  const { toast } = useToast();
   const serviceId = activeTab === "neet" ? "673440f8f547c1a59e6d2a78" : ""
 
   useEffect(() => {
@@ -63,24 +66,27 @@ const ManageQuiz = () => {
     };
 
     fetchQuizzes();
-  }, [activeTab]);
+  }, [activeTab, serviceId]);
 
   const handleDeleteQuiz = async () => {
     if (!deleteQuizId) return;
 
     try {
-      // Replace with your actual delete API call
-      await fetch(`/api/quizzes/${deleteQuizId}`, {
-        method: 'DELETE',
-      });
-      
-      // Remove quiz from state
       setQuizzes(quizzes.filter(quiz => quiz._id !== deleteQuizId));
+      const response = await axiosInstance.delete(`quiz/get-quiz/${deleteQuizId}`)
+      toast({
+        title : "Success",
+        description : response.data.message || "Quiz deleted successfully",
+      })
     } catch (err) {
-      setError('Failed to delete quiz. Please try again.');
+      const axiosError = err as AxiosError<ErrorApiRes>
+      toast({
+        title : "Error",
+        description : axiosError.response?.data.message || "Failed to delete quiz. Please try again later.",
+      })
+    } finally {
+      setDeleteQuizId(null);
     }
-    
-    setDeleteQuizId(null);
   };
 
   const QuizCard = ({ quiz }: { quiz: Quiz }) => (
@@ -88,9 +94,11 @@ const ManageQuiz = () => {
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-semibold text-card-foreground">{quiz.name}</h3>
         <div className="flex space-x-2">
+          <Link to={`/admin/add-quiz/${quiz._id}`}>
           <Button variant="ghost" size="icon">
             <Edit2 className="h-4 w-4" />
           </Button>
+          </Link>
           <Button 
             variant="ghost" 
             size="icon" 
@@ -126,10 +134,12 @@ const ManageQuiz = () => {
     <div className="container mx-auto p-6 pt-32">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-foreground">Manage Quizzes</h1>
+        <Link to="/admin/add-quiz">
         <Button>
           <Plus className="h-4 w-4 mr-2" />
           Add New Quiz
         </Button>
+        </Link>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>

@@ -10,7 +10,7 @@ interface Question {
   id: string;
   text: string;
   options: string[];
-  correctAnswer: number;
+  correctAnswer: string;
 }
 
 interface Quiz {
@@ -30,7 +30,7 @@ interface ApiResponse {
 
 export const TestSeries: React.FC = () => {
   const navigate = useNavigate();
-  const quizId: string = "673834832d07e51fb5e3a0f5";
+  const quizId: string = "673ab5547c4ca0f4f7623868";
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -75,12 +75,20 @@ export const TestSeries: React.FC = () => {
   const handleSubmit = async (): Promise<void> => {
     if (!quiz) return;
   
-    const submittedQuestions = quiz.questions.map((question, index) => ({
-      ...question, // Spread all properties of the question
-      chosen: answers[index], // Add the user's chosen answer
-    }));
+    // const submittedQuestions = quiz.questions.map((question, index) => ({
+    //   ...question, // Spread all properties of the question
+    //   chosen: answers[index], // Add the user's chosen answer
+    // }));
     
+    const submittedQuestions = quiz.questions.map((question, index) => {
+      const answerIndex = answers[index];
+      const chosenAnswer = answerIndex === -1 ? "" : String.fromCharCode(65 + answerIndex); // Convert to A, B, C, D
   
+      return {
+       ...question,
+        chosen: chosenAnswer, // Store the user's chosen answer
+      }
+    });
     const requestBody = {
       quizId: quiz._id,
       questions: submittedQuestions,
@@ -89,7 +97,7 @@ export const TestSeries: React.FC = () => {
   
     try {
       const response = await axiosInstance.post('/result/submit-test', requestBody);
-      // console.log(response.data.message);
+      console.log(response.data.message);
       navigate(`/quizresult/${quizId}`);
     } catch (error) {
       console.error('Error submitting test:', error.response?.data || error.message);

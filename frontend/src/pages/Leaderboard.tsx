@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance'; // Adjust based on your project structure
 
 interface LeaderboardEntry {
@@ -12,17 +12,18 @@ interface LeaderboardEntry {
 
 const Leaderboard = () => {
   const location = useLocation();
-  const userScore = location.state?.score || 0;
+  const userScore = location.state?.scorePercentage || 0;
 
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [userRank, setUserRank] = useState<number | null>(null);
-  const quizId = '673834832d07e51fb5e3a0f5'; // Replace with actual quizId
+  const { quizId } = useParams<{ quizId: string }>();
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
         const response = await axiosInstance.get(`/result/get-leaderboard/${quizId}`);
         const data = response.data.data;
+        console.log(data)
 
         // Map leaderboard data to the required format
         const formattedLeaderboard = data.leaderboard.map((entry: any, index: number) => ({
@@ -93,7 +94,7 @@ const Leaderboard = () => {
                     <Award className="h-8 w-8 mx-auto text-orange-500" />
                   )}
                   <p className="font-semibold mt-2">{entry.name}</p>
-                  <p className="text-gray-600">{entry.score}%</p>
+                  <p className="text-gray-600">{entry.score}</p>
                 </div>
               ))}
             </div>
@@ -129,7 +130,7 @@ const Leaderboard = () => {
                         <span className="text-sm text-gray-900">{entry.name}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900">{entry.score}%</span>
+                        <span className="text-sm text-gray-900">{entry.score}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-900">{entry.time}</span>

@@ -1,24 +1,55 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Book, Globe, Target, CheckCircle, AlertCircle } from 'lucide-react'
+import React from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Clock,
+  Book,
+  Globe,
+  Target,
+  CheckCircle,
+  AlertCircle,
+  CornerDownRight,
+} from "lucide-react";
+
+import { ExclusiveSection } from "@/components/ServiceShowPages/DoughtSession";
 
 interface Subject {
-  name: string
-  topics: string[]
+  name: string;
+  topics: string[];
+}
+
+interface AboutProgram {
+  title:
+    | "All India Ranks"
+    | "Test Analysis"
+    | "Flexible Test Series"
+    | "Practice on the Go";
+  list: string[];
 }
 
 export interface ExamDetailsProps {
-  examName: string
-  description: string
-  subjects: Subject[]
-  languages: string[]
-  duration: string
-  price: number
-  benefits: string[]
-  aboutProgram: string
+  examName: string;
+  description: string;
+  subjects: Subject[];
+  languages: string[];
+  duration: string;
+  price: number;
+  benefits: string[];
+  aboutPrograms: AboutProgram[];
 }
 
 export default function TestSeriesDetails({
@@ -29,15 +60,19 @@ export default function TestSeriesDetails({
   duration,
   price,
   benefits,
-  aboutProgram
+  aboutPrograms,
 }: ExamDetailsProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white pt-20">
       <div className="container mx-auto px-4 py-8 md:py-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">{examName} Preparation Program</h1>
-        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">{description}</p>
+        <h1 className="mb-6 text-center text-4xl font-bold md:text-5xl">
+          {examName} Preparation Program
+        </h1>
+        <p className="mx-auto mb-12 max-w-3xl text-center text-xl text-gray-600">
+          {description}
+        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -57,7 +92,9 @@ export default function TestSeriesDetails({
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 {languages.map((lang, index) => (
-                  <Badge key={index} variant="secondary">{lang}</Badge>
+                  <Badge key={index} variant="secondary">
+                    {lang}
+                  </Badge>
                 ))}
               </div>
             </CardContent>
@@ -71,7 +108,9 @@ export default function TestSeriesDetails({
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 {subjects.map((subject, index) => (
-                  <Badge key={index} variant="outline">{subject.name}</Badge>
+                  <Badge key={index} variant="outline">
+                    {subject.name}
+                  </Badge>
                 ))}
               </div>
             </CardContent>
@@ -81,7 +120,9 @@ export default function TestSeriesDetails({
         <Card className="mb-12">
           <CardHeader>
             <CardTitle className="text-2xl">Subjects and Topics</CardTitle>
-            <CardDescription>Comprehensive coverage of all important areas</CardDescription>
+            <CardDescription>
+              Comprehensive coverage of all important areas
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible className="w-full">
@@ -101,7 +142,7 @@ export default function TestSeriesDetails({
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">What You'll Get</CardTitle>
@@ -110,7 +151,7 @@ export default function TestSeriesDetails({
               <ul className="space-y-2">
                 {benefits.map((benefit, index) => (
                   <li key={index} className="flex items-start">
-                    <CheckCircle className="mr-2 h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-green-500" />
                     <span>{benefit}</span>
                   </li>
                 ))}
@@ -122,20 +163,45 @@ export default function TestSeriesDetails({
               <CardTitle className="text-2xl">About the Program</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">{aboutProgram}</p>
+              <ul className="space-y-4">
+                {aboutPrograms.map((aboutProgram, index) => (
+                  <li key={index} className="flex flex-col">
+                    <h2 className="text-lg font-bold">{aboutProgram.title}</h2>
+                    <ul>
+                      {aboutProgram.list.map((litem, index) => (
+                        <li key={index} className="flex items-start">
+                          <CornerDownRight className="mr-2 h-[5vw] w-[5vw] md:h-4 md:w-4 text-primary" />
+                          <h3>{litem}</h3>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
             </CardContent>
           </Card>
         </div>
 
+        <section className="mb-12">
+          <ExclusiveSection />
+        </section>
+
         <Card>
           <CardHeader>
             <CardTitle className="text-3xl">Ready to Excel?</CardTitle>
-            <CardDescription>Join our program and take the first step towards your dream career</CardDescription>
+            <CardDescription>
+              Join our program and take the first step towards your dream career
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold text-center mb-4">₹{price.toLocaleString('en-IN')}</p>
+            <p className="mb-4 text-center text-4xl font-bold">
+              ₹{price.toLocaleString("en-IN")}
+            </p>
             <div className="flex justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              >
                 Enroll Now
               </Button>
             </div>
@@ -149,5 +215,5 @@ export default function TestSeriesDetails({
         </Card>
       </div>
     </div>
-  )
+  );
 }

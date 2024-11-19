@@ -208,7 +208,12 @@ export default function TestSeriesPage() {
               Our test series has helped countless students achieve their dreams
               in both medical and engineering fields. You could be next!
             </p>
-            <Button variant="outline" size="lg" className="text-lg text-black">
+            <Button
+              variant="outline"
+              size="lg"
+              className="text-lg text-black"
+              onClick={() => navigate("/about")}
+            >
               Learn More About Our Success Stories
             </Button>
           </div>

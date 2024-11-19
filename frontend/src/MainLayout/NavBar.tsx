@@ -167,7 +167,10 @@ function Navbar() {
                             </a>
                           </NavigationMenuLink>
                         </li>
-                        <ListItem href="/test-series/details/neet" title="NEET Exam">
+                        <ListItem
+                          href="/test-series/details/neet"
+                          title="NEET Exam"
+                        >
                           Re-usable components built using Radix UI and Tailwind
                           CSS.
                         </ListItem>

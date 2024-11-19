@@ -29,6 +29,7 @@ import AboutUs from "@/components/About";
 import ContactUs from "@/components/Contact";
 import ManageServices from "./pages/admin/ManageServices";
 import ServiceCreator from "./pages/admin/ServiceCreator";
+import ManageMentors from "./pages/admin/ViewMentors";
 
 const router = createBrowserRouter([
   {
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
           {
             path: "create-edit-service/:serviceId?",
             element : <ServiceCreator/>
+          },
+          {
+            path : "manage-mentors",
+            element : <ManageMentors/>
           }
         ],
       },

@@ -38,7 +38,7 @@ const TestimonialCard = ({
   image: string;
   content: string;
 }) => (
-  <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
+  <div className="lg:w-[30vw] md:w-[40vw] w-[90vw] rounded-xl border border-gray-100 bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
     <div className="mb-4 flex items-center">
       <img src={image} alt={name} className="h-12 w-12 rounded-full" />
       <div className="ml-4">

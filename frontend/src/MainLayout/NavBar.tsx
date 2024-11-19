@@ -55,7 +55,7 @@ function Navbar() {
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const navigate = useNavigate();
   const [isloading, setisloading] = useState<boolean>(false);
@@ -101,9 +101,9 @@ function Navbar() {
     } catch (error: any) {
       console.log(error.response?.data?.message);
       toast({
-        title: 'Error while Logout!',
+        title: "Error while Logout!",
         description: error.response?.data?.message,
-        variant: 'default',
+        variant: "default",
       });
       setisloading(false);
     }
@@ -167,12 +167,15 @@ function Navbar() {
                             </a>
                           </NavigationMenuLink>
                         </li>
-                        <ListItem href="/test-series/neet" title="NEET Exam">
+                        <ListItem
+                          href="/test-series/details/neet"
+                          title="NEET Exam"
+                        >
                           Re-usable components built using Radix UI and Tailwind
                           CSS.
                         </ListItem>
                         <ListItem
-                          href="/test-series/neet"
+                          href="/test-series/details/jee"
                           title="JEE(Main + Adv)"
                         >
                           How to install dependencies and structure your app.
@@ -198,7 +201,7 @@ function Navbar() {
                   </NavigationMenuItem>
                   {/* About Us */}
                   <NavigationMenuItem>
-                    <Link to="/docs">
+                    <Link to="/about">
                       <NavigationMenuLink
                         className={cn(
                           navigationMenuTriggerStyle(),
@@ -209,9 +212,9 @@ function Navbar() {
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
-                  {/* Contect Us */}
+                  {/* Contact Us */}
                   <NavigationMenuItem>
-                    <Link to="/docs">
+                    <Link to="/contact">
                       <NavigationMenuLink
                         className={cn(
                           navigationMenuTriggerStyle(),
@@ -364,7 +367,9 @@ function Sidebar({
               }}
               key={idx}
               className="group relative flex w-full flex-col items-start justify-start active:bg-primary active:text-white"
-              onClick={() => navigate(item.href)}
+              onClick={() => {
+                navigate(item.href), setOpen(false);
+              }}
             >
               <motion.hr className="h-[2px] w-full bg-primary" />
               <motion.h1 className="text-left text-[2rem] font-bold leading-tight">
@@ -392,7 +397,11 @@ function Sidebar({
           {!auth ? (
             <NavigationMenuItem>
               <Link to="/signin">
-                <Button size="lg" className="w-full text-xl">
+                <Button
+                  size="lg"
+                  className="w-full text-xl"
+                  onClick={() => setOpen(false)}
+                >
                   Login
                 </Button>
               </Link>
@@ -414,7 +423,8 @@ function Sidebar({
                 <DropdownMenuContent align="start">
                   <DropdownMenuItem>
                     <Link to="/profile" className="flex w-full items-center">
-{user.fullName}                    </Link>
+                      {user.fullName}
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link to="/settings" className="flex w-full items-center">
@@ -432,7 +442,11 @@ function Sidebar({
             </NavigationMenuItem>
           ) : (
             <div className="flex w-full items-center justify-between px-4">
-              <Link to="/profile" className="flex w-full items-center text-2xl">
+              <Link
+                to="/profile"
+                className="flex w-full items-center text-2xl"
+                onClick={() => setOpen(false)}
+              >
                 <Button
                   variant="ghost"
                   className="relative h-8 w-8 rounded-full"
@@ -444,10 +458,10 @@ function Sidebar({
                 </Button>
               </Link>
               <span className="flex space-x-4">
-                <Link to="/settings">
+                <Link to="/settings" onClick={() => setOpen(false)}>
                   <LogOut className="h-6 w-6" />
                 </Link>
-                <Link to="/settings">
+                <Link to="/settings" onClick={() => setOpen(false)}>
                   <Settings className="h-6 w-6" />
                 </Link>
               </span>
@@ -468,7 +482,7 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
   ({ className, title, children, href, ...props }, ref) => {
     return (
       <li>
-        <NavigationMenuLink>
+        <NavigationMenuLink href={href}>
           <a
             ref={ref}
             className={cn(

@@ -26,6 +26,7 @@ import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { ErrorApiRes } from '@/types/all';
 import axiosInstance from '@/utils/axiosInstance';
+import { baseSchema } from '@/Schema/admin';
 
 // Subject options for mentors
 const subjects = [
@@ -35,26 +36,7 @@ const subjects = [
   'Biology',
 ] as const;
 
-// Base schema for both admin and mentor
-const baseSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
-    ),
-  fullName: z
-    .string()
-    .min(3, 'Full name must be at least 3 characters')
-    .regex(/^[a-zA-Z\s]*$/, 'Full name can only contain letters and spaces'),
-  phone: z
-    .string()
-    .regex(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
-});
 
-// Extended schema for mentor including subject
 const mentorSchema = baseSchema.extend({
   subject: z.enum(subjects, {
     required_error: 'Please select a subject',

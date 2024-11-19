@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import {
   BookOpen,
   Calculator,
@@ -11,7 +11,7 @@ import {
   MessageSquare,
   UserPlus,
   Image as ImageIcon,
-  Send,
+  /* Send, */
   PaperclipIcon,
   LogIn as LogInIcon,
   UserCheck,
@@ -30,9 +30,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Input } from "@/components/ui/input";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
 const subjects = [
   {
@@ -206,42 +207,7 @@ export default function DoubtSessionPage() {
         </section>
 
         <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="overflow-hidden rounded-lg bg-white shadow-xl">
-              <div className="p-8 md:p-12 lg:flex lg:items-center lg:justify-between">
-                <div className="mb-8 lg:mb-0 lg:mr-8">
-                  <h2 className="mb-4 text-3xl font-bold">Exclusive Offer!</h2>
-                  <p className="mb-6 text-xl text-gray-600">
-                    Get access to Doubt sessions for all subjects and free Test
-                    Series
-                  </p>
-                  <div className="flex items-center space-x-4">
-                    <Clock className="text-primary" />
-                    <span className="text-lg">Limited Time Offer</span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="mb-4 text-5xl font-bold text-primary">
-                    ₹999
-                  </div>
-                  <p className="mb-6 text-lg text-gray-600">
-                    One-time payment for full access
-                  </p>
-                  <Button
-                    size="lg"
-                    className="bg-purple-600 text-white hover:bg-purple-700"
-                  >
-                    Claim Your Offer Now
-                  </Button>
-                </div>
-              </div>
-              <div className="bg-purple-100 p-6 text-center">
-                <p className="text-lg font-semibold text-purple-800">
-                  Bonus: Get Free Access to Our Comprehensive Test Series!
-                </p>
-              </div>
-            </div>
-          </div>
+          <ExclusiveSection className="px-4" />
         </section>
 
         <section className="py-16">
@@ -350,6 +316,44 @@ export default function DoubtSessionPage() {
           </div>
         </div>
       </footer> */}
+    </div>
+  );
+}
+
+export function ExclusiveSection({ className }: { className?: string }) {
+  return (
+    <div className={cn("container mx-auto", className)}>
+      <div className="overflow-hidden rounded-lg bg-white shadow-xl">
+        <div className="p-8 md:p-12 lg:flex lg:items-center lg:justify-between">
+          <div className="mb-8 lg:mb-0 lg:mr-8">
+            <h2 className="mb-4 text-3xl font-bold">Exclusive Offer!</h2>
+            <p className="mb-6 text-xl text-gray-600">
+              Get access to Doubt sessions for all subjects and free Test Series
+            </p>
+            <div className="flex items-center space-x-4">
+              <Clock className="text-primary" />
+              <span className="text-lg">Limited Time Offer</span>
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="mb-4 text-5xl font-bold text-primary">₹999</div>
+            <p className="mb-6 text-lg text-gray-600">
+              One-time payment for full access
+            </p>
+            <Button
+              size="lg"
+              className="bg-purple-600 text-white hover:bg-purple-700"
+            >
+              Claim Your Offer Now
+            </Button>
+          </div>
+        </div>
+        <div className="bg-purple-100 p-6 text-center">
+          <p className="text-lg font-semibold text-purple-800">
+            Bonus: Get Free Access to Our Comprehensive Test Series!
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

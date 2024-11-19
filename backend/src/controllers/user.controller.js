@@ -283,7 +283,70 @@ const userSelf =asyncHandler(async(req,res)=>{
   .json(new ApiResponse(200,'User fetched successfully', req.user));
 });
 
-export { userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor,refreshAccessToken,userSelf,userLogout }
+const updateUser = asyncHandler(async (req, res) => {
+  const userId = req.user._id; // Assumes user ID is set in req.user by an authentication middleware
+  const { fullName, email, phone, institution } = req.body;
+
+  // Validation (if not handled on the frontend)
+  if (!fullName || fullName.length < 2) {
+    throw new ApiError(400, 'Full name is required and must be at least 2 characters.');
+  }
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    throw new ApiError(400, 'A valid email address is required.');
+  }
+
+  try {
+    // Find and update the user's profile date
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { fullName, email, phone, institution },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    // Send updated user info back as a response
+    res.status(200)
+    .json(new ApiResponse(200,'User updated successfully', updatedUser));
+  } catch (error) {
+    throw new ApiError(500, error.message || 'Internal server error');
+  }
+});
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const userId = req.user._id; // Assumes user ID is set in req.user by an authentication middleware
+  const { profilePic } = req.body;
+ 
+
+
+  if (!profilePic) {
+    throw new ApiError(400, 'Profile Picture is Required');
+  }
+
+  try {
+    // Find and update the user's profile date
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic},
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    // Send updated user info back as a response
+    res.status(200)
+    .json(new ApiResponse(200,'Profile updated successfully', updatedUser.profilePic));
+  } catch (error) {
+    throw new ApiError(500, error.message || 'Internal server error');
+  }
+});
+
+
+export { userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor,refreshAccessToken,userSelf,userLogout,updateUser,updateUserProfile}
    
  
 

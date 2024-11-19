@@ -1,34 +1,173 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { motion } from "framer-motion";
+
+import { 
+  User as UserIcon, 
+  Edit3, 
+  Camera, 
+  Save, 
+  ChevronDown, 
+  Loader2, 
+  Mail, 
+  Phone, 
+  Building2, 
+  Check 
+} from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { RootState } from "@/types/state";
-import { User, Book, ChevronDown } from "lucide-react";
+import axiosInstance from "@/utils/axiosInstance";
+import { updateuser } from "@/redux/auth";
 
-const Profile: React.FC = () => {
+import { useToast } from '@/components/hooks/use-toast';
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription, 
+  DialogFooter 
+} from "@/components/ui/dialog";
+
+// Validation Schema
+const profileSchema = z.object({
+  fullName: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  institution: z.string().optional()
+});
+
+const Profile = () => {
+  const { toast } = useToast();
   const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const auth = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-  const [openItem, setOpenItem] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  useEffect(() => {
-    if (!auth) {
-      navigate("/signin");
+  // Form Hook
+  const form = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      fullName: user?.fullName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      institution: user?.institution || ""
     }
-  }, [auth, navigate]);
+  });
 
+  // Profile Picture Upload
+  const handleProfilePictureUpload = async (file: File) => {
+    try {
+      setIsUploading(true);
+      
+      // Cloudinary Upload
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "spx0jjqq");
+
+      const cloudinaryResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/dlsxjstxo/image/upload`,
+        formData
+      );
+
+      // Backend Update
+      const backendResponse = await axiosInstance.post('/user/updateprofile', { 
+        profilePic: cloudinaryResponse.data.url 
+      });
+
+      if (backendResponse.status === 200) {
+        setImagePreview(cloudinaryResponse.data.url);
+        dispatch(updateuser({ 
+          user: { 
+            ...user, 
+            profilePic: cloudinaryResponse.data.url 
+          } 
+        }));
+
+        toast({
+          title: "Profile Picture Updated",
+          description: "Your profile picture has been successfully updated.",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Upload Failed",
+        description: error.response?.data?.error?.message || "Failed to upload image",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Profile Update Submit Handler
+  const onSubmit = async (data: z.infer<typeof profileSchema>) => {
+    try {
+      const response = await axiosInstance.put('/user/self', data);
+      
+      if (response.status === 200) {
+        const updatedUser = response.data?.data;
+        
+        dispatch(updateuser({ 
+          user: {
+            userId: updatedUser._id,
+            email: updatedUser.email,
+            fullName: updatedUser.fullName,
+            institution: updatedUser.institution,
+            phone: updatedUser.phone,
+            target: updatedUser.target || "",
+            isAdmin: updatedUser.isAdmin,
+            isMentor: updatedUser.isMentor,
+            profilePic: updatedUser.profilePic || "",
+          } 
+        }));
+
+        toast({
+          title: "Profile Updated",
+          description: "Your profile has been successfully updated.",
+        });
+
+        setIsModalOpen(false);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Update Failed",
+        description: error.response?.data?.message || "An error occurred",
+        variant: "destructive",
+      });
+    }
+  };
+  const [openItem, setOpenItem] = useState<string | null>(null);
   const items = [
     {
       value: "personal-information",
       trigger: "Personal Information",
-      icon: <User className="h-6 w-6 text-white" />,
+      icon: <UserIcon className="h-6 w-6 text-white" />,
       content: (
         <div className="space-y-4">
           <div className="overflow-hidden rounded-lg bg-card shadow-sm">
             <div className="flex items-center space-x-3 border-l-4 border-primary bg-card p-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <User className="h-5 w-5" />
+                <UserIcon className="h-5 w-5" />
               </div>
               <div>
                 <p className="text-sm font-medium ">Name</p>
@@ -39,7 +178,7 @@ const Profile: React.FC = () => {
           <div className="overflow-hidden rounded-lg bg-card shadow-sm">
             <div className="flex items-center space-x-3 border-l-4 border-primary bg-card p-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <User className="h-5 w-5" />
+                <Mail className="h-5 w-5" />
               </div>
               <div>
                 <p className="text-sm font-medium ">Email</p>
@@ -47,7 +186,30 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
+          <div className="overflow-hidden rounded-lg bg-card shadow-sm">
+            <div className="flex items-center space-x-3 border-l-4 border-primary bg-card p-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <Phone className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-medium ">Phone</p>
+                <p className="text-foreground">{user?.phone}</p>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-lg bg-card shadow-sm">
+            <div className="flex items-center space-x-3 border-l-4 border-primary bg-card p-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <Building2 className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-medium ">Institution</p>
+                <p className="text-foreground">{user?.institution}</p>
+              </div>
+            </div>
+          </div>
         </div>
+        
       ),
     },
     // {
@@ -105,65 +267,259 @@ const Profile: React.FC = () => {
     setOpenItem(openItem === value ? null : value);
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-primary to-primary py-12 shadow-lg">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex justify-center">
-            <div className="text-center">
-              
-                <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-white shadow-lg">
-                  <User className="h-16 w-16 text-primary" />
-                </div>
-                  <h2 className="mt-4 text-2xl font-bold text-white">{user?.fullName}</h2>
-              <p className="mt-2 text-white">{user?.email}</p>
+  const ProfileSection = ({ 
+    title, 
+    icon: Icon, 
+    children, 
+    name 
+  }: { 
+    title: string; 
+    icon?: any; 
+    children: React.ReactNode;
+    name: string;
+  }) => (
+    <AccordionItem value={name} className="border-b">
+      <AccordionTrigger className="hover:no-underline py-4">
+        <div className="flex items-center space-x-3">
+          {Icon && <Icon className="w-5 h-5 text-muted-foreground" />}
+          <span className="text-lg font-medium">{title}</span>
+        </div>
+      </AccordionTrigger>
+      <AccordionContent className="pt-0">
+        {children}
+      </AccordionContent>
+    </AccordionItem>
+  );
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background p-6 animate-pulse">
+        <Card>
+          <CardContent className="p-8">
+            <div className="space-y-3">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
             </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background py-20">
+      {/* Profile Header */}
+      <div className="bg-gradient-to-r from-primary to-primary/80 py-12 shadow-lg">
+        <div className="container max-w-4xl mx-auto px-4 text-center">
+          <div className="relative group">
+            <Avatar className="h-32 w-32 mx-auto border-4 border-white shadow-xl">
+              <AvatarImage 
+                src={imagePreview || user.profilePic} 
+                alt="Profile Picture" 
+              />
+              <AvatarFallback>
+                <UserIcon className="h-16 w-16 text-gray-400" />
+              </AvatarFallback>
+              
+              <label 
+                htmlFor="profile-upload" 
+                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+              >
+                {isUploading ? (
+                  <Loader2 className="w-10 h-10 text-white animate-spin" />
+                ) : (
+                  <Camera className="w-10 h-10 text-white" />
+                )}
+                <Input
+                  id="profile-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleProfilePictureUpload(file);
+                  }}
+                />
+              </label>
+            </Avatar>
           </div>
+
+          <h2 className="mt-4 text-2xl font-bold text-white">{user.fullName}</h2>
+          <Badge variant="secondary" className="mt-2">
+            {user.target || "No target set"}
+          </Badge>
+          <p className="mt-2 text-white/80">{user.email}</p>
+          
+          <Button
+            variant="secondary"
+            className="mt-4"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <Edit3 className="w-4 h-4 mr-2" />
+            Edit Profile
+          </Button>
         </div>
       </div>
       <div className="mx-auto max-w-3xl px-4 py-8">
-        <div className="overflow-hidden rounded-lg bg-card shadow-lg">
-          <div className="divide-y divide-border">
-            {items.map((item) => (
-              <div
-                key={item.value}
-                className="border-b border-border last:border-none"
-                data-state={openItem === item.value ? "open" : "closed"}
-              >
-                <button
-                  className="group flex w-full items-center justify-between px-6 py-4 transition-all hover:bg-muted"
-                  onClick={() => toggleItem(item.value)}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-colors group-hover:bg-primary-foreground">
-                      {item.icon}
+                  <div className="overflow-hidden rounded-lg bg-card shadow-lg">
+                    <div className="divide-y divide-border">
+                      {items.map((item) => (
+                        <div
+                          key={item.value}
+                          className="border-b border-border last:border-none"
+                          data-state={openItem === item.value ? "open" : "closed"}
+                        >
+                          <button
+                            className="group flex w-full items-center justify-between px-6 py-4 transition-all hover:bg-muted"
+                            onClick={() => toggleItem(item.value)}
+                          >
+                            <div className="flex items-center space-x-4">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-colors ">
+                                {item.icon}
+                              </div>
+                              <span className="text-lg font-medium text-foreground">
+                                {item.trigger}
+                              </span>
+                            </div>
+                            <motion.div
+                              animate={{ rotate: openItem === item.value ? 90 : 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="text-muted"
+                            >
+                              <ChevronDown className="h-5 w-5" />
+                            </motion.div>
+                          </button>
+                          <div
+                            className="overflow-hidden bg-muted transition-all"
+                            style={{
+                              height: openItem === item.value ? "auto" : 0,
+                              opacity: openItem === item.value ? 1 : 0,
+                            }}
+                          >
+                            <div className="p-6">{item.content}</div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <span className="text-lg font-medium text-foreground">
-                      {item.trigger}
-                    </span>
                   </div>
-                  <motion.div
-                    animate={{ rotate: openItem === item.value ? 90 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="text-muted"
-                  >
-                    <ChevronDown className="h-5 w-5" />
-                  </motion.div>
-                </button>
-                <div
-                  className="overflow-hidden bg-muted transition-all"
-                  style={{
-                    height: openItem === item.value ? "auto" : 0,
-                    opacity: openItem === item.value ? 1 : 0,
-                  }}
-                >
-                  <div className="p-6">{item.content}</div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogDescription>
+              Update your personal information
+            </DialogDescription>
+          </DialogHeader>
+          <Accordion 
+            type="single" 
+            collapsible 
+            className="w-full"
+            // value={activeSection}
+            // onValueChange={setActiveSection}
+          >
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <ProfileSection 
+              title="Personal Information" 
+              icon={UserIcon} 
+              name="personal"
+            >
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Enter your email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              </ProfileSection>
+              <ProfileSection 
+              title="Contact Details" 
+              icon={Phone} 
+              name="contact"
+            >
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your phone number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="institution"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Institution</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your institution" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+             </ProfileSection>
+
+
+
+
+              <DialogFooter className="mt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+          </Accordion>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

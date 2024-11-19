@@ -29,10 +29,14 @@ const State = () => {
                 userId: user?._id,
                 email: user?.email,
                 fullName:user?.fullName,
+                institution:user?.institution,
+                phone:user?.phone,
+                target:user?.target,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
                 isAdmin:user?.isAdmin,
                 isMentor:user?.isMentor,
+                profilePic:user?.profilePic,
                 isLoggedIn: true,
               };
               const loginPayload: AuthState = {

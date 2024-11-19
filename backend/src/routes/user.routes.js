@@ -1,5 +1,5 @@
 import Router from "express";
-import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf } from "../controllers/user.controller.js";
+import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf, updateUser, updateUserProfile } from "../controllers/user.controller.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
 
@@ -12,6 +12,9 @@ router.route('/login').post(userLogin)
 router.route('/refresh-token').post(refreshAccessToken)
 router.route('/logout').get(verifyJWT,userLogout)
 router.route('/self').get(verifyJWT,userSelf)
+router.route('/self').put(verifyJWT,updateUser)
+router.route('/updateprofile').post(verifyJWT,updateUserProfile)
+
 
 router.route("/add-mentor").post(verifyJWT, registerMentor)
 router.route("/get-mentors").get(verifyJWT, getAllMentors)

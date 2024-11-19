@@ -9,7 +9,23 @@
     isLoggedIn: boolean;
     isAdmin:boolean,
     isMentor:boolean,
+    profilePic:string,
+    institution:string,
+    phone:number,
+    target:string
   }
+  export interface updateUserState {
+    fullName: string;
+    email: string;
+    userId: string;
+    isAdmin:boolean,
+    isMentor:boolean,
+    profilePic:string,
+    institution:string,
+    phone:number,
+    target:string
+  }
+  
   
   export interface AuthState {
     isAuthenticated: boolean;

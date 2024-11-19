@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import {AuthState} from '../types/user'
+import {AuthState, updateUserState} from '../types/user'
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -26,24 +26,36 @@ const userReducer = createSlice({
         accessToken,
         refreshToken,
         fullName,
+        institution,
+        phone,
+        target,
         email,
         isMentor,
         isAdmin,
-        userId
+        userId,
+        profilePic,
       } = action.payload.user;
       state.isAuthenticated = true;
       state.user = {
         accessToken,
         refreshToken,
         fullName,
+        institution,
+        phone,
+        target,
         email,
         isMentor,
         isAdmin,
         userId,
+        profilePic,
         isLoggedIn: true
       };
       state.error = null;
     },
+    updateuser(state, action: PayloadAction<{ user: updateUserState }>) {
+      state.user = { ...action.payload.user };
+    },
+    
     loginFailed(state, action: PayloadAction<string>) {
       state.error = action.payload;
       state.isAuthenticated = false;
@@ -62,5 +74,5 @@ const userReducer = createSlice({
   },
 });
 
-export const { setIsAuthenticated, login, loginFailed, logout, setUser } = userReducer.actions;
+export const { setIsAuthenticated, login, loginFailed, logout, setUser,updateuser } = userReducer.actions;
 export default userReducer.reducer;

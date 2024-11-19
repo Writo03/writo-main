@@ -38,9 +38,10 @@ const SignIn = () => {
       });
       if (response.status === 200) {
         const user= response.data?.data.user;
+        console.log(user)
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
-        // console.log(user)
+        console.log(user)
         await Promise.all([
           localStorage.setItem("accessToken", accessToken),
           localStorage.setItem("refreshToken", refreshToken),
@@ -50,10 +51,14 @@ const SignIn = () => {
           userId: user?._id,
           email: user?.email,
           fullName:user?.fullName,
+          institution:user?.institution,
+          phone:user?.phone,
+          target:user?.target,
           isAdmin:user?.isAdmin,
           isMentor:user?.isMentor,
           accessToken: accessToken,
           refreshToken: refreshToken,
+          profilePic:user?.profilePic,
           isLoggedIn: true,
         };
         const loginPayload: AuthState = {

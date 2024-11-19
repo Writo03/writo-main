@@ -27,6 +27,8 @@ import QuizCreator from "./pages/admin/QuizCreator";
 
 import AboutUs from "@/components/About";
 import ContactUs from "@/components/Contact";
+import ManageServices from "./pages/admin/ManageServices";
+import ServiceCreator from "./pages/admin/ServiceCreator";
 
 const router = createBrowserRouter([
   {
@@ -111,6 +113,14 @@ const router = createBrowserRouter([
             path: "add-quiz/:quizId?",
             element: <QuizCreator />,
           },
+          {
+            path : "manage-services",
+            element : <ManageServices/>
+          },
+          {
+            path: "create-edit-service/:serviceId?",
+            element : <ServiceCreator/>
+          }
         ],
       },
       {

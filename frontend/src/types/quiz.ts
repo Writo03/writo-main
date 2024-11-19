@@ -12,3 +12,4 @@ export interface Quiz {
   duration: number;
   questions: Question[];
 }
+

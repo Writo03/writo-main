@@ -28,6 +28,7 @@ import { Loader2, Plus, Trash2 } from "lucide-react";
 import axiosInstance from "@/utils/axiosInstance";
 import { ErrorApiRes } from "@/types/all";
 import axios, { AxiosError } from "axios";
+import { formSchema } from "@/Schema/admin";
 
 
 const SUBJECTS = ["Physics", "Chemistry", "Biology", "Mathematics"] as const;
@@ -40,24 +41,7 @@ const SERVICES = [
 const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
 
 
-const questionSchema = z.object({
-  question: z.string().optional(),
-  image: z.string().optional(),
-  options: z.array(z.string()).length(4, "Exactly 4 options are required"),
-  correct: z.enum(["A", "B", "C", "D"], {
-    required_error: "Please select the correct answer",
-  }),
-});
 
-const formSchema = z.object({
-  name: z.string().min(3, "Quiz name must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  duration: z.number().min(5, "Duration must be at least 5 minutes"),
-  subjects: z.array(z.string()).min(1, "Select at least one subject"),
-  isSubjectTest: z.boolean(),
-  services: z.array(z.string()).min(1, "Select at least one service"),
-  questions: z.array(questionSchema).min(1, "Add at least one question"),
-});
 
 type FormData = z.infer<typeof formSchema>;
 

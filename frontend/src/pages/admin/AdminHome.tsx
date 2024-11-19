@@ -76,7 +76,7 @@ const AdminHome = () => {
               <h3 className="text-xl font-semibold text-card-foreground">Services</h3>
               <p className="text-sm text-muted-foreground mt-2">View active services</p>
             </div>
-            <Button variant="outline" className="w-full">View Services</Button>
+            <Button onClick={() => navigate("manage-services")} variant="outline" className="w-full">View Services</Button>
           </div>
         </Card>
 

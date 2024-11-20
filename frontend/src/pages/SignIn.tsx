@@ -8,7 +8,8 @@ import { useAppDispatch } from '@/redux/hooks';
 import { login } from '@/redux/auth';
 import Loading from '@/components/ui/Loading';
 import { useToast } from '@/components/hooks/use-toast';
-import { setSubscriptions } from '@/redux/service';
+import { setSubscriptions } from '@/redux/subscriptions';
+import { setServices } from '@/redux/services';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -68,9 +69,13 @@ const SignIn = () => {
           error: null,
         };
         dispatch(login(loginPayload));
-        const serviceresponse = await axiosInstance.get('/subscription/get-subscriptions')
+        const subscriptionresponse = await axiosInstance.get('/subscription/get-subscriptions')
+        if (subscriptionresponse.status === 200) {
+            dispatch(setSubscriptions(subscriptionresponse.data.data))
+        }
+        const serviceresponse = await axiosInstance.get('/service/get-services');
         if (serviceresponse.status === 200) {
-            dispatch(setSubscriptions(serviceresponse.data.data))
+          dispatch(setServices(serviceresponse.data.data))
         }
         navigate('/'); // Redirect on success
         setisloading(false)

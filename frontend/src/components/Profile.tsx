@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { motion } from "framer-motion";
-
 import { 
   User as UserIcon, 
   Edit3, 
@@ -62,6 +61,8 @@ const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+ 
 
   // Form Hook
   const form = useForm<z.infer<typeof profileSchema>>({
@@ -418,8 +419,8 @@ const Profile = () => {
             type="single" 
             collapsible 
             className="w-full"
-            // value={activeSection}
-            // onValueChange={setActiveSection}
+            value={activeSection}
+            onValueChange={setActiveSection}
           >
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

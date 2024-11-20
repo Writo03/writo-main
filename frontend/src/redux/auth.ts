@@ -52,10 +52,11 @@ const userReducer = createSlice({
       };
       state.error = null;
     },
+    
     updateuser(state, action: PayloadAction<{ user: updateUserState }>) {
       state.user = { ...action.payload.user };
     },
-    
+
     loginFailed(state, action: PayloadAction<string>) {
       state.error = action.payload;
       state.isAuthenticated = false;

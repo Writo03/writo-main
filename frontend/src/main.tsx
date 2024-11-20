@@ -30,6 +30,7 @@ import ContactUs from "@/components/Contact";
 import ManageServices from "./pages/admin/ManageServices";
 import ServiceCreator from "./pages/admin/ServiceCreator";
 import ManageMentors from "./pages/admin/ViewMentors";
+import ServiceTest from "./components/ServiceTest";
 
 const router = createBrowserRouter([
   {
@@ -83,17 +84,22 @@ const router = createBrowserRouter([
         element: <DoubtSessionPage />,
       },
       {
-        path: "test",
-        element: <TestSeries />,
+        path:"test",
+        element:<ServiceTest />,
+        children:[  {
+          path: "",
+          element: <TestSeries />,
+        },
+        {
+          path: "leaderboard/:quizId",
+          element: <Leaderboard />,
+        },
+        {
+          path: "quizresult/:quizId",
+          element: <QuizResultPage />,
+        },]
       },
-      {
-        path: "leaderboard/:quizId",
-        element: <Leaderboard />,
-      },
-      {
-        path: "quizresult/:quizId",
-        element: <QuizResultPage />,
-      },
+    
       {
         path: "admin",
         element: <CheckAdmin />,

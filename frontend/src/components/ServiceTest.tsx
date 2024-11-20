@@ -9,41 +9,55 @@ import { SubscriptionState } from '@/types/all';
 
 const ServiceTest = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [availableServices, setAvailableServices] = useState<string[]>([]);
   const dispatch = useAppDispatch();
   const services = useSelector((state: SubscriptionState) => state.subscriptions);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchSubscriptions = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axiosInstance.get('/subscription/get-subscriptions?type=active');
-        if (response.status === 200) {
-          dispatch(setSubscriptions(response.data.data));
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
+  // Fetch available services from the backend
+  const fetchServices = async () => {
+    try {
+      const response = await axiosInstance.get('/service/get-services');
+      if (response.status === 200) {
+        setAvailableServices(response.data.data.map((service: any) => service.name.toLowerCase()));
       }
-    };
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
 
-    fetchSubscriptions();
+  // Fetch user subscriptions
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await axiosInstance.get('/subscription/get-subscriptions?type=active');
+      if (response.status === 200) {
+        dispatch(setSubscriptions(response.data.data));
+      }
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      await Promise.all([fetchServices(), fetchSubscriptions()]);
+      setIsLoading(false);
+    };
+    fetchData();
   }, [dispatch]);
 
   useEffect(() => {
     if (!isLoading) {
-      // Check if any subscription has the name "Neet Test Series" or "JEE Test Series"
-      const hasTestService = services.subscriptions.some(
-        (subscription) =>
-          subscription.name.toLowerCase() === 'neet test series' ||
-          subscription.name.toLowerCase() === 'jee test series'
+      // Check if the user is subscribed to any service matching the list of available services
+      const hasMatchingService = services.subscriptions.some((subscription) =>
+        availableServices.includes(subscription.name.toLowerCase())
       );
-      if (!hasTestService) {
+      if (!hasMatchingService) {
         navigate('/');
       }
     }
-  }, [isLoading, services, navigate]);
+  }, [isLoading, services, availableServices, navigate]);
 
   if (isLoading) {
     return <Loading />;

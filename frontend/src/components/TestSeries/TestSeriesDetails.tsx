@@ -193,7 +193,7 @@ export default function TestSeriesDetails({
               </p>
               <div className="flex justify-center">
                 <Button
-                  size="lg"
+                  size="xl"
                   className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
                 >
                   Enroll Now
@@ -201,8 +201,8 @@ export default function TestSeriesDetails({
               </div>
             </div>
             <div className="mt-4 flex h-full flex-col items-center justify-center text-muted-foreground">
-              <h2>Exclusive Offer</h2>
-              <p className="w-1/2 text-center">
+              <h2 className="text-xl font-bold">Exclusive Offer</h2>
+              <p className="text-center">
                 Get access to Doubt sessions for all subjects and free Test
                 Series
               </p>

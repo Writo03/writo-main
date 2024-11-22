@@ -8,6 +8,7 @@ import serviceRouter from "./routes/service.routes.js"
 import subscriptionRouter from "./routes/subscription.routes.js"
 import quizRouter from "./routes/quiz.routes.js"
 import resultRouter from "./routes/result.routes.js"
+import contactRouter from "./routes/contact.routes.js"
 import {errorHandler} from "./middlewares/error.middleware.js"
 
 
@@ -35,6 +36,7 @@ app.use('/api/v1/service', serviceRouter)
 app.use("/api/v1/subscription", subscriptionRouter)
 app.use("/api/v1/quiz", quizRouter)
 app.use("/api/v1/result", resultRouter)
+app.use("/api/v1/contact", contactRouter)
 
 app.use(errorHandler)
 export {app}

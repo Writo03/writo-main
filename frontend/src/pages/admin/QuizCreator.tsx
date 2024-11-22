@@ -30,7 +30,6 @@ import { ErrorApiRes } from "@/types/all";
 import axios, { AxiosError } from "axios";
 import { formSchema } from "@/Schema/admin";
 
-
 const SUBJECTS = ["Physics", "Chemistry", "Biology", "Mathematics"] as const;
 
 const SERVICES = [
@@ -39,9 +38,6 @@ const SERVICES = [
 ] as const;
 
 const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
-
-
-
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -52,6 +48,7 @@ const QuizCreator = () => {
 
   const [loading, setLoading] = useState(false);
   const [initialData, setInitialData] = useState<FormData | null>(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -71,14 +68,13 @@ const QuizCreator = () => {
         },
       ],
     },
+    mode: "onChange",
   });
-
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "questions",
   });
-
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -106,21 +102,19 @@ const QuizCreator = () => {
     fetchQuiz();
   }, [quizId, form, toast]);
 
-
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
       let response;
       if (quizId) {
         response = await axiosInstance.patch(`/quiz/get-quiz/${quizId}`, data);
+        console.log(data);
       } else {
         response = await axiosInstance.post(`/quiz/create-quiz`, data);
       }
       toast({
         title: "Success",
-        description:
-          response.data.message ||
-          `Quiz ${quizId ? "updated" : "created"} successfully`,
+        description: response.data.message || `Quiz ${quizId ? "updated" : "created"} successfully`,
       });
       navigate("/admin/manage-quiz");
     } catch (error) {
@@ -316,20 +310,36 @@ const QuizCreator = () => {
 
             {/* Questions Section */}
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Questions</h2>
+              <div className="flex flex-col gap-3">
+                <h2 className="text-center text-xl font-semibold">Questions</h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  {fields.map((field, index) => (
+                    <Button
+                      key={field.id}
+                      type="button"
+                      variant={
+                        currentQuestionIndex === index ? "default" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setCurrentQuestionIndex(index)}
+                    >
+                      {index + 1}
+                    </Button>
+                  ))}
+                </div>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() =>
+                  onClick={() => {
                     append({
                       question: "",
                       image: "",
                       options: ["", "", "", ""],
                       correct: "A",
-                    })
-                  }
+                    });
+                    setCurrentQuestionIndex(fields.length);
+                  }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Question
@@ -337,17 +347,20 @@ const QuizCreator = () => {
               </div>
 
               {/* Dynamic Question Fields */}
-              {fields.map((field, index) => (
-                <Card key={field.id} className="p-4">
+              {fields.length > 0 && (
+                <Card className="p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-lg font-medium">
-                      Question {index + 1}
+                      Question {currentQuestionIndex + 1}
                     </h3>
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() => remove(index)}
+                      onClick={() => {
+                        remove(currentQuestionIndex)
+                        setCurrentQuestionIndex(currentQuestionIndex - 1)
+                      }}
                       className="text-destructive"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -357,8 +370,9 @@ const QuizCreator = () => {
                   <div className="grid gap-4">
                     {/* Question Text */}
                     <FormField
+                      key={`question-${currentQuestionIndex}`}
                       control={form.control}
-                      name={`questions.${index}.question`}
+                      name={`questions.${currentQuestionIndex}.question`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Question Text</FormLabel>
@@ -372,8 +386,9 @@ const QuizCreator = () => {
 
                     {/* Question Image URL */}
                     <FormField
+                    key={`image-${currentQuestionIndex}`}
                       control={form.control}
-                      name={`questions.${index}.image`}
+                      name={`questions.${currentQuestionIndex}.image`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Question Image</FormLabel>
@@ -414,10 +429,12 @@ const QuizCreator = () => {
                                       description:
                                         "Image uploaded successfully",
                                     });
-                                  } catch(error : any) {
+                                  } catch (error: any) {
                                     toast({
                                       title: "Error",
-                                      description: error.response.data.error.message || "Failed to upload image",
+                                      description:
+                                        error.response.data.error.message ||
+                                        "Failed to upload image",
                                       variant: "destructive",
                                     });
                                   } finally {
@@ -449,9 +466,9 @@ const QuizCreator = () => {
                     <div className="grid grid-cols-2 gap-4">
                       {[0, 1, 2, 3].map((optionIndex) => (
                         <FormField
-                          key={optionIndex}
+                          key={`option-${currentQuestionIndex}-${optionIndex}`}
                           control={form.control}
-                          name={`questions.${index}.options.${optionIndex}`}
+                          name={`questions.${currentQuestionIndex}.options.${optionIndex}`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>
@@ -469,8 +486,9 @@ const QuizCreator = () => {
 
                     {/* Correct Answer Selection */}
                     <FormField
+                    key={`correct-${currentQuestionIndex}`}
                       control={form.control}
-                      name={`questions.${index}.correct`}
+                      name={`questions.${currentQuestionIndex}.correct`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Correct Answer</FormLabel>
@@ -497,7 +515,7 @@ const QuizCreator = () => {
                     />
                   </div>
                 </Card>
-              ))}
+              )}
             </div>
 
             {/* Submit Button */}

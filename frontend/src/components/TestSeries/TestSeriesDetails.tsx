@@ -211,7 +211,7 @@ export default function TestSeriesDetails({
               </p>
               <Link to="/doubt-sessions" className="w-full">
                 <Button variant="ghost" className="w-full">
-                  Byu Now
+                  Buy Now
                 </Button>
               </Link>
             </div>

@@ -7,7 +7,7 @@ import { setSubscriptions } from '@/redux/subscriptions';
 import { useSelector } from 'react-redux';
 import { SubscriptionState } from '@/types/all';
 
-const ServiceTest = () => {
+const ServiceDoubt = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const subscriptions = useSelector((state: SubscriptionState) => state.subscriptions);
@@ -16,8 +16,8 @@ const ServiceTest = () => {
   const navigate = useNavigate();
 
   // available services
- //"673440f8f547c1a59e6d2a78" Neet
- //"673c0c5eeef250bcef428646" jee
+ //"" Doubt session
+
 
   // Fetch user subscriptions
   const fetchSubscriptions = async () => {
@@ -47,8 +47,8 @@ const ServiceTest = () => {
       // Check if the user is subscribed to specific services
       const hasMatchingService = subscriptions.subscriptions.some(
         (subscription) =>
-          subscription === "673c0c5eeef250bcef428646" ||
-          subscription === "673440f8f547c1a59e6d2a78"
+          subscription === "" 
+         
       );
       console.log(hasMatchingService)
       if (!hasMatchingService) {
@@ -64,4 +64,4 @@ const ServiceTest = () => {
   return <Outlet />;
 };
 
-export default ServiceTest;
+export default ServiceDoubt;

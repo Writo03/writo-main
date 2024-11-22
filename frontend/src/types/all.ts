@@ -5,13 +5,8 @@ export interface ErrorApiRes {
 
 
 export interface Subscription {
-    _id: string;
-    name: string;
-    description: string;
-    price: number;
-    discount: number;
-    startDate: string;
-    endDate: string;
+    id: string;
+   
   }
   
 export interface SubscriptionState {

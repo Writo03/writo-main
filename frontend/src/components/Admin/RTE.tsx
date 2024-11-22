@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "react-quill/dist/quill.snow.css";
+import "quill/dist/quill.snow.css";
 import Quill from "quill";
 import katex from "katex";
 import "katex/dist/katex.min.css";

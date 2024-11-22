@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,15 +16,13 @@ import {
 } from "@/components/ui/accordion";
 import {
   Clock,
-  Book,
   Globe,
   Target,
   CheckCircle,
   AlertCircle,
   CornerDownRight,
 } from "lucide-react";
-
-import { ExclusiveSection } from "@/components/ServiceShowPages/DoughtSession";
+import { Link } from "react-router-dom";
 
 interface Subject {
   name: string;
@@ -170,7 +167,7 @@ export default function TestSeriesDetails({
                     <ul>
                       {aboutProgram.list.map((litem, index) => (
                         <li key={index} className="flex items-start">
-                          <CornerDownRight className="mr-2 h-[5vw] w-[5vw] md:h-4 md:w-4 text-primary" />
+                          <CornerDownRight className="mr-2 h-[5vw] w-[5vw] text-primary md:h-4 md:w-4" />
                           <h3>{litem}</h3>
                         </li>
                       ))}
@@ -182,28 +179,41 @@ export default function TestSeriesDetails({
           </Card>
         </div>
 
-        <section className="mb-12">
-          <ExclusiveSection />
-        </section>
-
         <Card>
-          <CardHeader>
+          <CardHeader className="text-center">
             <CardTitle className="text-3xl">Ready to Excel?</CardTitle>
             <CardDescription>
               Join our program and take the first step towards your dream career
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-center text-4xl font-bold">
-              ₹{price.toLocaleString("en-IN")}
-            </p>
-            <div className="flex justify-center">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              >
-                Enroll Now
-              </Button>
+          <CardContent className="flex w-full flex-col items-center justify-around">
+            <div>
+              <p className="mb-4 text-center text-4xl font-bold">
+                ₹{price.toLocaleString("en-IN")}
+              </p>
+              <div className="flex justify-center">
+                <Button
+                  size="xl"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                >
+                  Enroll Now
+                </Button>
+              </div>
+            </div>
+            <div className="mt-4 flex h-full flex-col items-center justify-center text-muted-foreground">
+              <h2 className="text-xl font-bold">Exclusive Offer</h2>
+              <p className="text-center">
+                Get access to Doubt sessions for all subjects and free Test
+                Series
+              </p>
+              <p>
+                Only <span className="text-primary">₹999</span>
+              </p>
+              <Link to="/doubt-sessions" className="w-full">
+                <Button variant="ghost" className="w-full">
+                  Byu Now
+                </Button>
+              </Link>
             </div>
           </CardContent>
           <CardFooter className="justify-center">

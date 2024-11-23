@@ -31,6 +31,7 @@ import ManageServices from "./pages/admin/ManageServices";
 import ServiceCreator from "./pages/admin/ServiceCreator";
 import ManageMentors from "./pages/admin/ViewMentors";
 import ServiceTest from "./components/ServiceTest";
+import TestSeriesList from "@/components/TestSeries/SeriesList"
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
             path: "details/:jeeorneet",
             element: <Details />,
           },
+          {
+            path: "jee/all",
+            element: <TestSeriesList />,
+          }
         ],
       },
       {
@@ -87,7 +92,7 @@ const router = createBrowserRouter([
         path:"test",
         element:<ServiceTest />,
         children:[  {
-          path: "",
+          path: ":quizId",
           element: <TestSeries />,
         },
         {

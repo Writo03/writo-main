@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Link } from "react-router-dom";
 import {
   Phone,
   Mail,
@@ -24,16 +23,18 @@ import {
   Clock,
   Send,
   Facebook,
-  Twitter,
   Instagram,
   Linkedin,
+  Youtube,
 } from "lucide-react";
 
 export default function ContactUs() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted");
+    for(let i:any of e.target){
+      console.log(i.id) // all are working fine but subject we have to create a state
+    }
   };
 
   return (
@@ -47,7 +48,7 @@ export default function ContactUs() {
           </p>
         </section>
 
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <section>
             <Card>
               <CardHeader>
@@ -58,23 +59,32 @@ export default function ContactUs() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Phone className="text-purple-600" />
-                  <span>+91 1234567890</span>
+                  <Phone className="text-primary" />
+                  <span>+91 8059458609</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Mail className="text-purple-600" />
-                  <span>info@writo-education.com</span>
+                  <Mail className="text-primary" />
+                  <a href="mailto:support@writoeducation.com">
+                    support@writoeducation.com
+                  </a>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <MapPin className="mt-1 flex-shrink-0 text-purple-600" />
-                  <span>
-                    123 Education Street, Knowledge City, Learning State -
-                    100001, India
-                  </span>
+                  <MapPin className="mt-1 flex-shrink-0 text-primary" />
+                  <span>Rewa, India</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Clock className="text-purple-600" />
-                  <span>Monday - Saturday: 9:00 AM - 6:00 PM</span>
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-3">
+                    <Clock className="text-primary" />
+                    <span>Monday - Saturday: 9:00 AM - 7:00 PM</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Clock className="text-transparent" />
+                    <span>Saturday: 9.00 am to 06.00 pm</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Clock className="text-transparent" />
+                    <span>Sunday also available</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -86,34 +96,32 @@ export default function ContactUs() {
               </CardHeader>
               <CardContent>
                 <div className="flex space-x-4">
-                  <a
-                    href="#"
-                    className="text-gray-600 transition-colors hover:text-purple-600"
-                  >
-                    <Facebook size={24} />
-                    <span className="sr-only">Facebook</span>
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-600 transition-colors hover:text-purple-600"
-                  >
-                    <Twitter size={24} />
-                    <span className="sr-only">Twitter</span>
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-600 transition-colors hover:text-purple-600"
-                  >
-                    <Instagram size={24} />
-                    <span className="sr-only">Instagram</span>
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-600 transition-colors hover:text-purple-600"
-                  >
-                    <Linkedin size={24} />
-                    <span className="sr-only">LinkedIn</span>
-                  </a>
+                  {[
+                    {
+                      link: "https://www.linkedin.com/company/writo-learning-solutions/",
+                      icon: Linkedin,
+                    },
+                    {
+                      link: "https://youtube.com/@writoacademy?si=ySierizfl6kPGwGl",
+                      icon: Youtube,
+                    },
+                    {
+                      link: "https://www.instagram.com/writoeducation?igsh=dHI1N2Q1N3FhaXEz",
+                      icon: Instagram,
+                    },
+                    {
+                      link: "https://www.facebook.com/profile.php?id=61558449281363&mibextid=ZbWKwL",
+                      icon: Facebook,
+                    },
+                  ].map((item, idx) => (
+                    <a
+                      href={item.link}
+                      className="text-gray-600 transition-colors hover:text-primary/90"
+                      key={idx}
+                    >
+                      <item.icon size={24} />
+                    </a>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -211,7 +219,7 @@ export default function ContactUs() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-primary hover:bg-primary/90"
                   >
                     <Send className="mr-2 h-4 w-4" /> Send Message
                   </Button>
@@ -220,21 +228,6 @@ export default function ContactUs() {
             </Card>
           </section>
         </div>
-
-        <section className="mt-16">
-          <h2 className="mb-4 text-center text-2xl font-bold">Find Us</h2>
-          <div className="aspect-w-16 aspect-h-9">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5965634179067!2d77.64954031482158!3d12.934494090877536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1451d4a09b0f%3A0x3a4c2528f212f3d5!2sKoramangala%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1605942334134!5m2!1sen!2sin"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen={true}
-              loading="lazy"
-              title="Writo Education Location"
-            ></iframe>
-          </div>
-        </section>
       </main>
     </div>
   );

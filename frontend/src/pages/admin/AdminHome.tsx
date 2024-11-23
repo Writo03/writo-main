@@ -8,7 +8,7 @@ import {
   Shield,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import RichTextEditor from "@/components/Admin/RTE";
+
 
 const AdminHome = () => {
   const isAdmin = true; // Replace with actual admin check logic
@@ -161,7 +161,6 @@ const AdminHome = () => {
         )}
       </div>
 
-      <RichTextEditor/>
     </div>
   );
 };

@@ -27,19 +27,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import axiosInstance from "@/utils/axiosInstance";
 import { ErrorApiRes } from "@/types/all";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { formSchema } from "@/Schema/admin";
+import { serviceIds } from "@/utils/contants";
+
+import WrapperTextEditor from "@/components/Admin/WrapperTextEditor";
 
 const SUBJECTS = ["Physics", "Chemistry", "Biology", "Mathematics"] as const;
 
 const SERVICES = [
-  { label: "NEET", value: "673440f8f547c1a59e6d2a78" },
-  { label: "JEE", value: "jee" },
+  { label: "NEET", value: serviceIds.neet },
+  { label: "JEE", value: serviceIds.jee },
 ] as const;
+
 
 const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
 
-type FormData = z.infer<typeof formSchema>;
+export type FormData = z.infer<typeof formSchema>;
 
 const QuizCreator = () => {
   const { quizId } = useParams();
@@ -62,7 +66,6 @@ const QuizCreator = () => {
       questions: [
         {
           question: "",
-          image: "",
           options: ["", "", "", ""],
           correct: "A",
         },
@@ -108,13 +111,14 @@ const QuizCreator = () => {
       let response;
       if (quizId) {
         response = await axiosInstance.patch(`/quiz/get-quiz/${quizId}`, data);
-        console.log(data);
       } else {
         response = await axiosInstance.post(`/quiz/create-quiz`, data);
       }
       toast({
         title: "Success",
-        description: response.data.message || `Quiz ${quizId ? "updated" : "created"} successfully`,
+        description:
+          response.data.message ||
+          `Quiz ${quizId ? "updated" : "created"} successfully`,
       });
       navigate("/admin/manage-quiz");
     } catch (error) {
@@ -334,7 +338,6 @@ const QuizCreator = () => {
                   onClick={() => {
                     append({
                       question: "",
-                      image: "",
                       options: ["", "", "", ""],
                       correct: "A",
                     });
@@ -358,8 +361,8 @@ const QuizCreator = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        remove(currentQuestionIndex)
-                        setCurrentQuestionIndex(currentQuestionIndex - 1)
+                        remove(currentQuestionIndex);
+                        setCurrentQuestionIndex(currentQuestionIndex - 1);
                       }}
                       className="text-destructive"
                     >
@@ -373,92 +376,12 @@ const QuizCreator = () => {
                       key={`question-${currentQuestionIndex}`}
                       control={form.control}
                       name={`questions.${currentQuestionIndex}.question`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Question Text</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Question Image URL */}
-                    <FormField
-                    key={`image-${currentQuestionIndex}`}
-                      control={form.control}
-                      name={`questions.${currentQuestionIndex}.image`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Question Image</FormLabel>
-
-                          {/* Image URL Input */}
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="url"
-                              placeholder="Enter image URL or upload below"
-                            />
-                          </FormControl>
-
-                          {/* File Upload Option */}
-                          <div className="mt-2">
-                            <Input
-                              type="file"
-                              onChange={async (e) => {
-                                if (e.target.files?.[0]) {
-                                  setLoading(true);
-
-                                  try {
-                                    const formData = new FormData();
-                                    formData.append("file", e.target.files[0]);
-                                    formData.append(
-                                      "upload_preset",
-                                      "spx0jjqq",
-                                    );
-
-                                    const response = await axios.post(
-                                      `https://api.cloudinary.com/v1_1/dlsxjstxo/image/upload`,
-                                      formData,
-                                    );
-                                    field.onChange(response.data.secure_url);
-
-                                    toast({
-                                      title: "Success",
-                                      description:
-                                        "Image uploaded successfully",
-                                    });
-                                  } catch (error: any) {
-                                    toast({
-                                      title: "Error",
-                                      description:
-                                        error.response.data.error.message ||
-                                        "Failed to upload image",
-                                      variant: "destructive",
-                                    });
-                                  } finally {
-                                    setLoading(false);
-                                  }
-                                }
-                              }}
-                              className="cursor-pointer file:mr-4 file:cursor-pointer file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-medium hover:file:bg-secondary/80"
-                            />
-                          </div>
-
-                          {/* Preview Image if URL exists */}
-                          {field.value && (
-                            <div className="mt-2">
-                              <img
-                                src={field.value}
-                                alt="Question preview"
-                                className="h-auto max-w-[200px] rounded-md"
-                              />
-                            </div>
-                          )}
-
-                          <FormMessage />
-                        </FormItem>
+                      render={() => (
+                        <WrapperTextEditor
+                          name={`questions.${currentQuestionIndex}.question`}
+                          control={form.control}
+                          label="Question Text"
+                        />
                       )}
                     />
 
@@ -469,16 +392,12 @@ const QuizCreator = () => {
                           key={`option-${currentQuestionIndex}-${optionIndex}`}
                           control={form.control}
                           name={`questions.${currentQuestionIndex}.options.${optionIndex}`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Option {OPTION_LETTERS[optionIndex]}
-                              </FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
+                          render={() => (
+                            <WrapperTextEditor
+                              name={`questions.${currentQuestionIndex}.options.${optionIndex}`}
+                              control={form.control}
+                              label={`Option ${OPTION_LETTERS[optionIndex]}`}
+                            />
                           )}
                         />
                       ))}
@@ -486,7 +405,7 @@ const QuizCreator = () => {
 
                     {/* Correct Answer Selection */}
                     <FormField
-                    key={`correct-${currentQuestionIndex}`}
+                      key={`correct-${currentQuestionIndex}`}
                       control={form.control}
                       name={`questions.${currentQuestionIndex}.correct`}
                       render={({ field }) => (

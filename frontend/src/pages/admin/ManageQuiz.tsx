@@ -19,6 +19,7 @@ import { AxiosError } from 'axios';
 import { ErrorApiRes } from '@/types/all';
 import { useToast } from '@/components/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import { serviceIds } from '@/utils/contants';
 
 interface Question {
   question: string;
@@ -48,7 +49,7 @@ const ManageQuiz = () => {
   const [deleteQuizId, setDeleteQuizId] = useState<string | null>(null);
 
   const { toast } = useToast();
-  const serviceId = activeTab === "neet" ? "673440f8f547c1a59e6d2a78" : ""
+  const serviceId = activeTab === "neet" ? serviceIds.neet : serviceIds.jee
 
   useEffect(() => {
     const fetchQuizzes = async () => {

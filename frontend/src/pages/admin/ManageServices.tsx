@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, Edit2, Trash2, Loader2, AlertCircle } from "lucide-react";
+import {  Edit2, Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/hooks/use-toast";
 import axiosInstance from "@/utils/axiosInstance";
 import { AxiosError } from "axios";
@@ -106,7 +106,7 @@ const ManageServices = () => {
 
   return (
     <div className="container mx-auto p-6 pt-28">
-      <div className="mb-8 flex items-center justify-between">
+      {/* <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Services</h1>
         <Link to={"/admin/create-edit-service"}>
         <Button>
@@ -114,7 +114,7 @@ const ManageServices = () => {
           Add New Service
         </Button>
         </Link>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
@@ -132,13 +132,6 @@ const ManageServices = () => {
                   <Edit2 className="h-4 w-4" />
                 </Button>
                 </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setDeleteServiceId(service._id)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
               </div>
             </div>
 

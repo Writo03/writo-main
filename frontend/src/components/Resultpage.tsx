@@ -28,9 +28,12 @@ interface ExpandedState {
 }
 
 const QuizResultPage: React.FC = () => {
-  const { quizId } = useParams<{ quizId: string }>();
+  const { resultId } = useParams<{ resultId: string }>();
+  console.log(resultId)
+  
   const navigate = useNavigate();
   const [result, setResult] = useState<Result | null>(null);
+  const [quizId, setQuizId] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedQuestions, setExpandedQuestions] = useState<ExpandedState>({});
@@ -39,7 +42,9 @@ const QuizResultPage: React.FC = () => {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const response = await axiosInstance.get(`/result/get-result/${quizId}`);
+        const response = await axiosInstance.get(`/result/get-resultbyid/${resultId}`);
+        console.log(response.data.data[0].quiz)
+        setQuizId(response.data.data[0].quiz)
         setResult(response.data.data[0]);
         setLoading(false);
       } catch (err: any) {
@@ -48,7 +53,7 @@ const QuizResultPage: React.FC = () => {
       }
     };
     fetchResult();
-  }, [quizId]);
+  }, [resultId]);
 
   const toggleQuestion = (index: number) => {
     setExpandedQuestions(prev => ({
@@ -197,7 +202,7 @@ const QuizResultPage: React.FC = () => {
                 {showAnalysis ? 'Hide Analysis' : 'Show Analysis'}
               </Button>
               <Button
-                onClick={() => navigate(`/leaderboard/${quizId}`, { state: { scorePercentage } })}
+                onClick={() => navigate(`/test/leaderboard/${quizId}`, { state: { scorePercentage } })}
                 className="flex items-center gap-2"
               >
                 <Trophy className="w-4 h-4" />

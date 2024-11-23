@@ -97,8 +97,10 @@ export const TestSeries: React.FC = () => {
   
     try {
       const response = await axiosInstance.post('/result/submit-test', requestBody);
-      console.log(response.data.message);
-      navigate(`/quizresult/${quizId}`);
+      console.log(response.data);
+      const resultId=response.data.data._id
+      // console.log(resultId)
+      navigate(`quizresult/${resultId}`);
     } catch (error) {
       console.error('Error submitting test:', error.response?.data || error.message);
     }

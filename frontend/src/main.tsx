@@ -100,7 +100,7 @@ const router = createBrowserRouter([
           element: <Leaderboard />,
         },
         {
-          path: "quizresult/:quizId",
+          path: "quizresult/:resultId",
           element: <QuizResultPage />,
         },]
       },

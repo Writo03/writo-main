@@ -242,8 +242,8 @@ function Navbar() {
                           className="relative h-8 w-8 rounded-full"
                         >
                           <Avatar>
-                            <AvatarImage src="/profile.png" alt="@ks" />
-                            <AvatarFallback>KS</AvatarFallback>
+                          <AvatarImage src={user.profilePic} alt="@ks" />
+                          <AvatarFallback>KS</AvatarFallback>
                           </Avatar>
                         </Button>
                       </DropdownMenuTrigger>
@@ -415,7 +415,7 @@ function Sidebar({
                     className="relative h-8 w-8 rounded-full"
                   >
                     <Avatar>
-                      <AvatarImage src="/profile.png" alt="@ks" />
+                      <AvatarImage src={user.profilePic} alt="@ks" />
                       <AvatarFallback>KS</AvatarFallback>
                     </Avatar>
                   </Button>
@@ -426,12 +426,7 @@ function Sidebar({
                       {user.fullName}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link to="/settings" className="flex w-full items-center">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
+                 
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <LogOut className="mr-2 h-4 w-4" />

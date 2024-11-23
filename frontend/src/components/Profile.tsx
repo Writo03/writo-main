@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,7 +15,6 @@ import {
   Mail, 
   Phone, 
   Building2, 
-  Check 
 } from "lucide-react";
 import {
   Accordion,
@@ -43,6 +41,8 @@ import {
   DialogDescription, 
   DialogFooter 
 } from "@/components/ui/dialog";
+import TestList from "./Testlist";
+import { Card, CardContent } from "./ui/card";
 
 // Validation Schema
 const profileSchema = z.object({
@@ -56,7 +56,7 @@ const Profile = () => {
   const { toast } = useToast();
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -363,49 +363,52 @@ const Profile = () => {
         </div>
       </div>
       <div className="mx-auto max-w-3xl px-4 py-8">
-                  <div className="overflow-hidden rounded-lg bg-card shadow-lg">
-                    <div className="divide-y divide-border">
-                      {items.map((item) => (
-                        <div
-                          key={item.value}
-                          className="border-b border-border last:border-none"
-                          data-state={openItem === item.value ? "open" : "closed"}
-                        >
-                          <button
-                            className="group flex w-full items-center justify-between px-6 py-4 transition-all hover:bg-muted"
-                            onClick={() => toggleItem(item.value)}
-                          >
-                            <div className="flex items-center space-x-4">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-colors ">
-                                {item.icon}
-                              </div>
-                              <span className="text-lg font-medium text-foreground">
-                                {item.trigger}
-                              </span>
-                            </div>
-                            <motion.div
-                              animate={{ rotate: openItem === item.value ? 90 : 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="text-muted"
-                            >
-                              <ChevronDown className="h-5 w-5" />
-                            </motion.div>
-                          </button>
-                          <div
-                            className="overflow-hidden bg-muted transition-all"
-                            style={{
-                              height: openItem === item.value ? "auto" : 0,
-                              opacity: openItem === item.value ? 1 : 0,
-                            }}
-                          >
-                            <div className="p-6">{item.content}</div>
-                          </div>
-                        </div>
-                      ))}
+        <div className="overflow-hidden rounded-lg bg-card shadow-lg">
+          <div className="divide-y divide-border">
+            {items.map((item) => (
+              <div
+                key={item.value}
+                className="border-b border-border last:border-none"
+                data-state={openItem === item.value ? "open" : "closed"}
+              >
+                <button
+                  className="group flex w-full items-center justify-between px-6 py-4 transition-all hover:bg-muted"
+                  onClick={() => toggleItem(item.value)}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-colors ">
+                      {item.icon}
                     </div>
+                    <span className="text-lg font-medium text-foreground">
+                      {item.trigger}
+                    </span>
                   </div>
+                  <motion.div
+                    animate={{ rotate: openItem === item.value ? 90 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-muted"
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </motion.div>
+                </button>
+                <div
+                  className="overflow-hidden bg-muted transition-all"
+                  style={{
+                    height: openItem === item.value ? "auto" : 0,
+                    opacity: openItem === item.value ? 1 : 0,
+                  }}
+                >
+                  <div className="p-6">{item.content}</div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        </div>
+        <div className="mx-auto max-w-3xl  px-4 ">
 
+        <TestList />
+        </div>
       {/* Edit Profile Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-md">

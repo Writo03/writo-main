@@ -9,7 +9,6 @@ import { login } from '@/redux/auth';
 import Loading from '@/components/ui/Loading';
 import { useToast } from '@/components/hooks/use-toast';
 import { setSubscriptions } from '@/redux/subscriptions';
-import { setServices } from '@/redux/services';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -70,13 +69,14 @@ const SignIn = () => {
         };
         dispatch(login(loginPayload));
         const subscriptionresponse = await axiosInstance.get('/subscription/get-subscriptions')
+        console.log(subscriptionresponse)
         if (subscriptionresponse.status === 200) {
-            dispatch(setSubscriptions(subscriptionresponse.data.data))
+          const serviceIds = subscriptionresponse.data.data.map((subscription: { service: string }) => subscription.service);
+          dispatch(setSubscriptions(serviceIds)); // Store only the IDs
         }
         const serviceresponse = await axiosInstance.get('/service/get-services');
         if (serviceresponse.status === 200) {
-          dispatch(setServices(serviceresponse.data.data))
-        }
+        console.log(serviceresponse)        }
         navigate('/'); // Redirect on success
         setisloading(false)
       }

@@ -1,12 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from '../redux/auth'
 import subscriptionReducer from './subscriptions'
-import serviceReducer from './services'
 export const store = configureStore({
     reducer : {
         auth:userReducer,
         subscriptions: subscriptionReducer,
-        services:serviceReducer,
 
     },
 })

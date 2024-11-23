@@ -88,7 +88,6 @@ function Navbar() {
 
   const logoutHandler = async () => {
     try {
-      console.log("hi");
       setisloading(true);
       const response = await axiosInstance.get("/user/logout");
       if (response.status === 200) {

@@ -92,7 +92,7 @@ const router = createBrowserRouter([
         path:"test",
         element:<ServiceTest />,
         children:[  {
-          path: "",
+          path: ":quizId",
           element: <TestSeries />,
         },
         {

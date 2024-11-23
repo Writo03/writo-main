@@ -105,7 +105,7 @@ export default function TestStartPopup({
             Cancel
           </Button>
           <Button
-            onClick={onConfirm}
+            onClick={()=>{onConfirm(testDetails)}}
             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700"
           >
             <BarChart className="mr-2 h-4 w-4" />

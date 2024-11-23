@@ -23,7 +23,6 @@ const Leaderboard = () => {
       try {
         const response = await axiosInstance.get(`/result/get-leaderboard/${quizId}`);
         const data = response.data.data;
-        console.log(data)
 
         // Map leaderboard data to the required format
         const formattedLeaderboard = data.leaderboard.map((entry: any, index: number) => ({

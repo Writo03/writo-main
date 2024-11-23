@@ -29,7 +29,6 @@ interface ExpandedState {
 
 const QuizResultPage: React.FC = () => {
   const { resultId } = useParams<{ resultId: string }>();
-  console.log(resultId)
   
   const navigate = useNavigate();
   const [result, setResult] = useState<Result | null>(null);
@@ -43,7 +42,6 @@ const QuizResultPage: React.FC = () => {
     const fetchResult = async () => {
       try {
         const response = await axiosInstance.get(`/result/get-resultbyid/${resultId}`);
-        console.log(response.data.data[0].quiz)
         setQuizId(response.data.data[0].quiz)
         setResult(response.data.data[0]);
         setLoading(false);

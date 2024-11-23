@@ -39,10 +39,10 @@ const SignIn = () => {
       });
       if (response.status === 200) {
         const user= response.data?.data.user;
-        console.log(user)
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
-        console.log(user)
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
         await Promise.all([
           localStorage.setItem("accessToken", accessToken),
           localStorage.setItem("refreshToken", refreshToken),
@@ -74,9 +74,7 @@ const SignIn = () => {
           const serviceIds = subscriptionresponse.data.data.map((subscription: { service: string }) => subscription.service);
           dispatch(setSubscriptions(serviceIds)); // Store only the IDs
         }
-        const serviceresponse = await axiosInstance.get('/service/get-services');
-        if (serviceresponse.status === 200) {
-        console.log(serviceresponse)        }
+       
         navigate('/'); // Redirect on success
         setisloading(false)
       }

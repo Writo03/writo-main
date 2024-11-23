@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuizTimer from '../components/quiz/QuizTimer';
 import SubmitModal from '../components/quiz/SubmitModal';
 import axiosInstance from '@/utils/axiosInstance';
@@ -30,7 +30,8 @@ interface ApiResponse {
 
 export const TestSeries: React.FC = () => {
   const navigate = useNavigate();
-  const quizId: string = "673ab5547c4ca0f4f7623868";
+  const { quizId } = useParams<{ quizId: string }>();
+
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -44,7 +45,6 @@ export const TestSeries: React.FC = () => {
       try {
         const response = await axiosInstance.get<ApiResponse>(`/quiz/get-quiz/${quizId}`);
         const fetchedQuiz = response.data.data;
-        // console.log(fetchedQuiz)
         setQuiz(fetchedQuiz);
         setAnswers(new Array(fetchedQuiz.questions.length).fill(-1));
       } catch (error) {
@@ -97,9 +97,7 @@ export const TestSeries: React.FC = () => {
   
     try {
       const response = await axiosInstance.post('/result/submit-test', requestBody);
-      console.log(response.data);
       const resultId=response.data.data._id
-      // console.log(resultId)
       navigate(`quizresult/${resultId}`);
     } catch (error) {
       console.error('Error submitting test:', error.response?.data || error.message);

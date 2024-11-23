@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Clock, Book, AlertCircle } from "lucide-react";
-import { Link } from "react-router-dom";
 import TestStartPopup from "./PopUp";
 import axiosInstance from "@/utils/axiosInstance";
 
@@ -52,9 +51,10 @@ export default function TestSeriesList({
   const [isOpen, setIsOpen] = useState(false);
   const [testDetails, setTestDetails] = useState<TestSeries>();
   const onClose = () => setIsOpen(false);
-  const onConfirm = () => {
+
+  const onConfirm = (test: TestSeries) => {
     setIsOpen(false);
-    window.location.href = `/test`;
+    window.location.href = `/test/${test._id}`;
   };
 
   const handdleStartTest = (test: TestSeries) => {

@@ -11,7 +11,6 @@ const ServiceDoubt = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const subscriptions = useSelector((state: SubscriptionState) => state.subscriptions);
-  console.log(subscriptions)
 
   const navigate = useNavigate();
 

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Clock, Book, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import TestStartPopup from "./PopUp";
 import axiosInstance from "@/utils/axiosInstance";
 
 interface TestSeries {
@@ -47,6 +48,19 @@ export default function TestSeriesList({
   const [subjectFilter, setSubjectFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [testDetails, setTestDetails] = useState<TestSeries>();
+  const onClose = () => setIsOpen(false);
+  const onConfirm = () => {
+    setIsOpen(false);
+    window.location.href = `/test`;
+  };
+
+  const handdleStartTest = (test: TestSeries) => {
+    setIsOpen(true);
+    setTestDetails(test);
+  }
 
   useEffect(() => {
     const fetchTestSeries = async () => {
@@ -199,7 +213,11 @@ export default function TestSeriesList({
                   </div>
                 </CardContent>
                 <CardFooter className="flex items-center justify-between">
+                  <Button asChild onClick={()=>handdleStartTest(series)}>
+                    {/* <Link to={`/test-series/${series.id}`}>Start Test</Link> */}
                     {/* <Link to="/test">Start Test</Link> */}
+                    <span>Start Test</span>
+                  </Button>
                 </CardFooter>
               </Card>
             ))}

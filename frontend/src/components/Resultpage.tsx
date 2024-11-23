@@ -254,7 +254,8 @@ const QuizResultPage: React.FC = () => {
                         className="flex items-start justify-between cursor-pointer"
                         onClick={() => toggleQuestion(index)}
                       >
-                        <p className="text-lg font-medium mb-4">{question.question}</p>
+                        <div dangerouslySetInnerHTML={{ __html: question.question }} className="mb-4" />
+
                         {expandedQuestions[index] ? (
                           <ChevronUp className="w-5 h-5 text-gray-500" />
                         ) : (
@@ -295,7 +296,7 @@ const QuizResultPage: React.FC = () => {
                                     }`}
                                   >
                                     <span className="font-semibold">{optionLabel}:</span>
-                                    <p className="flex-1">{option}</p>
+                                    <span dangerouslySetInnerHTML={{ __html: option }} />
                                     {isCorrect && (
                                       <Check className="w-5 h-5 text-green-500" title="Correct Answer" />
                                     )}

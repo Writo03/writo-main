@@ -31,7 +31,7 @@ interface ApiResponse {
 export const TestSeries: React.FC = () => {
   const navigate = useNavigate();
   const { quizId } = useParams<{ quizId: string }>();
-
+  // const quizId ="6741926ab084cc5b2e6d10f6"
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -45,6 +45,7 @@ export const TestSeries: React.FC = () => {
       try {
         const response = await axiosInstance.get<ApiResponse>(`/quiz/get-quiz/${quizId}`);
         const fetchedQuiz = response.data.data;
+        console.log(fetchedQuiz)
         setQuiz(fetchedQuiz);
         setAnswers(new Array(fetchedQuiz.questions.length).fill(-1));
       } catch (error) {
@@ -98,7 +99,7 @@ export const TestSeries: React.FC = () => {
     try {
       const response = await axiosInstance.post('/result/submit-test', requestBody);
       const resultId=response.data.data._id
-      navigate(`quizresult/${resultId}`);
+      navigate(`/test/quizresult/${resultId}`);
     } catch (error) {
       console.error('Error submitting test:', error.response?.data || error.message);
     }
@@ -234,10 +235,8 @@ export const TestSeries: React.FC = () => {
                       {getAnswerStatus(currentQuestion) === 'answered' ? 'Answered' : 'Not answered'}
                     </span>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-6">
-                    {currentQuestionData.question}
-                  </h3>
-                      {/* Image Rendering */}
+                  <div dangerouslySetInnerHTML={{ __html: currentQuestionData.question }} className="mb-4" />
+                    {/* Image Rendering */}
                     {currentQuestionData.image && (
                       <img
                         src={currentQuestionData.image}
@@ -250,7 +249,7 @@ export const TestSeries: React.FC = () => {
                       <label
                         key={index}
                         className={`
-                          flex items-center space-x-3 p-3 rounded-lg cursor-pointer
+                          flex items-baseline space-x-3 p-3 rounded-lg cursor-pointer
                           hover:bg-gray-50 transition-colors
                           ${answers[currentQuestion] === index ? 'bg-indigo-50 border border-indigo-200' : ''}
                         `}
@@ -265,9 +264,8 @@ export const TestSeries: React.FC = () => {
                             className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
                           />
                         </div>
-                        <span className="flex-1 text-sm font-medium text-gray-700">
-                          {option}
-                        </span>
+                        <span dangerouslySetInnerHTML={{ __html: option }} />
+
                       </label>
                     ))}
                   </div>

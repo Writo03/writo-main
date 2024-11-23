@@ -22,7 +22,7 @@ const submitTest = asyncHandler(async (req, res) => {
       }
     }
 
-    await Result.create({
+   const result= await Result.create({
       student: req.user._id,
       quiz: quizId,
       questions,
@@ -30,7 +30,7 @@ const submitTest = asyncHandler(async (req, res) => {
       timeTaken,
     })
 
-    res.status(201).json(new ApiResponse(201, "Test submitted successfully"))
+    res.status(201).json(new ApiResponse(201, "Test submitted successfully",result))
   } catch (error) {
     throw new ApiError(
       500,
@@ -39,6 +39,45 @@ const submitTest = asyncHandler(async (req, res) => {
   }
 })
 
+
+const getResultByid = asyncHandler(async (req, res) => {
+  try {
+    const {resultId } = req.params
+
+    // depends on the way you handle multiple submissions of a single test
+    const result = await Result.find({_id:resultId})     
+    if (!result.length) {
+      throw new ApiError(404, "You have not taken this test yet")
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, "Result fetched successfully", result))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching result"
+    )
+  }
+})
+
+const getAllTestsResult = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user._id; // Assumes user is authenticated, and ID is available in req.user
+    const results = await Result.find({ student: userId }).sort({ createdAt: -1 });
+
+    if (!results.length) {
+      throw new ApiError(404, "No tests found for this user");
+    }
+
+    res.status(200).json(new ApiResponse(200, "Tests fetched successfully", results));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching tests"
+    );
+  }
+});
 const getResult = asyncHandler(async (req, res) => {
   try {
     const { quizId } = req.params
@@ -61,7 +100,7 @@ const getResult = asyncHandler(async (req, res) => {
       error?.message || "Something went wrong while fetching result"
     )
   }
-})
+}) 
 
 const getLeaderboard = asyncHandler(async (req, res) => {
   try {
@@ -127,4 +166,5 @@ const getLeaderboard = asyncHandler(async (req, res) => {
   }
 })
 
-export { submitTest, getResult, getLeaderboard }
+export { submitTest, getResult, getLeaderboard,getResultByid,getAllTestsResult }
+ 

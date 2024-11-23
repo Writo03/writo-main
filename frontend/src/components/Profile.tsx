@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,7 +15,6 @@ import {
   Mail, 
   Phone, 
   Building2, 
-  Check 
 } from "lucide-react";
 import {
   Accordion,
@@ -44,6 +42,7 @@ import {
   DialogFooter 
 } from "@/components/ui/dialog";
 import TestList from "./Testlist";
+import { Card, CardContent } from "./ui/card";
 
 // Validation Schema
 const profileSchema = z.object({
@@ -57,7 +56,7 @@ const Profile = () => {
   const { toast } = useToast();
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);

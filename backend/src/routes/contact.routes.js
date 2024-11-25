@@ -15,10 +15,10 @@ router.route("/message").post(createMeggage);
 
 router.use(verifyJWT);
 
-router.route("/message/:email").get(getMessageByEmail);
-router.route("/message/:subject").get(getMessageBySubject);
-router.route("/message/:id").get(getMessageById);
 router.route("/message/all").get(getAllMessages);
-router.route("/message/:id").delete(deleteMessage);
+// router.route("/message/:email").get(getMessageByEmail);
+// router.route("/message/:subject").get(getMessageBySubject);
+// router.route("/message/:id").get(getMessageById);
+// router.route("/message/:id").delete(deleteMessage);
 
 export default router;

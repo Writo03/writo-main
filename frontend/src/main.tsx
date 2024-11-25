@@ -32,6 +32,8 @@ import ServiceCreator from "./pages/admin/ServiceCreator";
 import ManageMentors from "./pages/admin/ViewMentors";
 import ServiceTest from "./components/ServiceTest";
 import TestSeriesList from "@/components/TestSeries/SeriesList"
+import ContactMessages from "./pages/admin/ContactMessage";
+import AddAdminUser from "./pages/admin/Adduser";
 
 const router = createBrowserRouter([
   {
@@ -136,7 +138,15 @@ const router = createBrowserRouter([
           {
             path : "manage-mentors",
             element : <ManageMentors/>
-          }
+          },
+          {
+            path : "adduser",
+            element : <AddAdminUser/>
+          },
+          {
+            path: "contact",
+            element: <ContactMessages />,
+          },
         ],
       },
       {

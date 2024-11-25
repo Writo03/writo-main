@@ -1,3 +1,4 @@
+import Subscription from "../models/subscription.model.js"
 import User from "../models/user.model.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
@@ -345,8 +346,62 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+const userRegisterByAdmin = asyncHandler(async (req, res, next) => {
+  const { email, password, fullName, phone, target, services } = req.body;
+  // console.log(req.body)
 
-export { userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor,refreshAccessToken,userSelf,userLogout,updateUser,updateUserProfile}
+  if (!email || !password || !fullName || !phone || !target || !services || !Array.isArray(services)) {
+    throw new ApiError(400, "All fields are required, and services must be an array");
+  }
+
+  const existingUser = await User.findOne({ email: email });
+
+  if (existingUser) {
+    throw new ApiError(400, "User already exists");
+  }
+
+  const user = await User.create({
+    email,
+    password,
+    fullName,
+    phone,
+    target,
+  });
+
+  const subscriptionPromises = services.map((service) => {
+    const { name, id } = service;
+    console.log(service)
+    if (!name || !id) {
+      throw new ApiError(400, "Each service must have a name and serviceId");
+    }
+
+    const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+    return Subscription.create({
+      name,
+      service: id,
+      startDate: Date.now(),
+      endDate: expiryDate,
+      student: user._id,
+      isExpired: false,
+    });
+  });
+
+  await Promise.all(subscriptionPromises);
+
+  const createdUser = await User.findById(user._id).select("-password");
+  if (!createdUser) {
+    throw new ApiError(500, "Something went wrong while registering the user");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, "User registered successfully", {
+      user: createdUser,
+    })
+  );
+});
+
+
+export { userRegisterByAdmin,userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor,refreshAccessToken,userSelf,userLogout,updateUser,updateUserProfile}
    
  
 

@@ -1,13 +1,14 @@
 import Router from "express";
-import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf, updateUser, updateUserProfile } from "../controllers/user.controller.js";
+import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf, updateUser, updateUserProfile, userRegisterByAdmin } from "../controllers/user.controller.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
 
 
 const router = Router()
 
-
 router.route('/register').post(userRegister)
+router.route('/registerbyadmin').post(userRegisterByAdmin)
+
 router.route('/login').post(userLogin)
 router.route('/refresh-token').post(refreshAccessToken)
 router.route('/logout').get(verifyJWT,userLogout)

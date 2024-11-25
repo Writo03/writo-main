@@ -94,7 +94,6 @@ const getMessageById = asyncHandler(async (req, res) => {
 const getAllMessages = asyncHandler(async (req, res) => {
   try {
     const messages = await Contact.find();
-
     if (!messages.length) {
       throw new ApiError(404, "No messages found");
     }

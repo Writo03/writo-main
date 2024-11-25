@@ -13,7 +13,7 @@ const MemoizedFooter = React.memo(Footer);
 
 export const App = () => {
   return (
-    // <ReactLenis root options={{ autoRaf: true, smoothWheel: true }}>
+    <ReactLenis root options={{ autoRaf: true, smoothWheel: true }}>
       <div className="bg-gradient-to-b from-indigo-50 to-white">
         <MemoizedNavbar />
         {/* <Navbar /> */}
@@ -21,7 +21,7 @@ export const App = () => {
         {/* <Footer /> */}
         <MemoizedFooter />
       </div>
-    // </ReactLenis>
+    </ReactLenis>
   );
 };
 

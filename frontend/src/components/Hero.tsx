@@ -9,6 +9,7 @@ import sliderimg4 from "@/assets/slider!img/4.png";
 import sliderimg5 from "@/assets/slider!img/5.png";
 
 import { Suspense, memo, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Fallback() {
   return (
@@ -24,6 +25,7 @@ const Hero = () => {
     () => [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
     [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
   );
+  const navigate = useNavigate();
 
   return (
     <div className="pt-4 md:pt-10">
@@ -62,7 +64,10 @@ const Hero = () => {
               Practice with our expertly crafted tests, get instant feedback,
               and track your progress on the leaderboard.
             </p>
-            <button className="inline-flex items-center font-semibold text-primary">
+            <button
+              className="inline-flex items-center font-semibold text-primary"
+              onClick={() => navigate("/test-series")}
+            >
               Explore Tests <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>
@@ -74,7 +79,10 @@ const Hero = () => {
               Connect with expert mentors through chat or video calls for
               real-time Doubt resolution and screen sharing.
             </p>
-            <button className="inline-flex items-center font-semibold text-primary">
+            <button
+              className="inline-flex items-center font-semibold text-primary"
+              onClick={() => navigate("/doubt-sessions")}
+            >
               Join Sessions <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>

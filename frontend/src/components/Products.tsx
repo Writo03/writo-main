@@ -9,8 +9,10 @@ import {
   Share2,
   Crown,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -42,7 +44,10 @@ const Products = () => {
               <Feature icon={Users} text="Compare with peers on leaderboard" />
               <Feature icon={Clock} text="Timed tests with instant results" />
             </div>
-            <button className="w-full rounded-lg bg-primary py-3 text-white hover:bg-primary/90">
+            <button
+              className="w-full rounded-lg bg-primary py-3 text-white hover:bg-primary/90"
+              onClick={() => navigate("/test-series")}
+            >
               Start Practicing
             </button>
           </div>
@@ -58,11 +63,17 @@ const Products = () => {
               video calls.
             </p>
             <div className="mb-8 space-y-4">
-              <Feature icon={MessageSquare} text="Daily 14-hours chat support" />
+              <Feature
+                icon={MessageSquare}
+                text="Daily 14-hours chat support"
+              />
               <Feature icon={Share2} text="Screen sharing capability" />
               <Feature icon={Crown} text="Premium mentor access" />
             </div>
-            <button className="w-full rounded-lg bg-primary py-3 text-white hover:bg-primary/90">
+            <button
+              className="w-full rounded-lg bg-primary py-3 text-white hover:bg-primary/90"
+              onClick={() => navigate("/doubt-sessions")}
+            >
               Subscribe Now
             </button>
           </div>

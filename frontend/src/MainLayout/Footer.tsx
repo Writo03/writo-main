@@ -68,19 +68,26 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="mailto:support@writoeducation.com"
+                  href="mailto:support@writo.tech"
                   className="duration-400 group inline-block transform text-gray-400 transition hover:-translate-y-1"
                 >
                   <span className="group-hover:text-primary">
-                    support@writoeducation.com
+                    support@writo.tech
                   </span>
                 </a>
               </li>
-              <li className="text-gray-400">+91 123 456 7890</li>
               <li className="text-gray-400">
-                123 Education Street,
-                <br />
-                Learning Hub, 400001
+                <a
+                  href="tel:+918059458609"
+                  className="duration-400 group inline-block transform text-gray-400 transition hover:-translate-y-1"
+                >
+                  <span className="group-hover:text-primary">
+                    +91 8059458609
+                  </span>
+                </a>
+              </li>
+              <li className="text-gray-400">
+                <span>Rewa, India</span>
               </li>
             </ul>
           </div>

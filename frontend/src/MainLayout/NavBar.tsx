@@ -167,14 +167,14 @@ function Navbar() {
                           </NavigationMenuLink>
                         </li>
                         <ListItem
-                          href="/test-series/details/neet"
+                          href="/test-series/neet/all"
                           title="NEET Exam"
                         >
                           Re-usable components built using Radix UI and Tailwind
                           CSS.
                         </ListItem>
                         <ListItem
-                          href="/test-series/details/jee"
+                          href="/test-series/jee/all"
                           title="JEE(Main + Adv)"
                         >
                           How to install dependencies and structure your app.

@@ -46,8 +46,8 @@ export default function ContactUs() {
     // watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = async (data) =>
-    await axios.post(
+  const onSubmit: SubmitHandler<Inputs> = async (data) =>{
+    const res = await axios.post(
       "http://localhost:8080/api/v1/contact/message",
       {
         fullName: (data.firstName + " " + data.lastName).trim(),
@@ -60,6 +60,9 @@ export default function ContactUs() {
         },
       },
     );
+
+    console.log(res);
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white pt-20">
@@ -88,8 +91,8 @@ export default function ContactUs() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="text-primary" />
-                  <a href="mailto:support@writoeducation.com">
-                    support@writoeducation.com
+                  <a href="mailto:support@writo.tech">
+                    support@writo.tech
                   </a>
                 </div>
                 <div className="flex items-start space-x-3">

@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,15 +26,40 @@ import {
   Linkedin,
   Youtube,
 } from "lucide-react";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import axios from "axios";
+
+type Inputs = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+};
 
 export default function ContactUs() {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    for(let i:any of e.target){
-      console.log(i.id) // all are working fine but subject we have to create a state
-    }
-  };
+  const {
+    register,
+    handleSubmit,
+    control,
+    // watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = async (data) =>
+    await axios.post(
+      "http://localhost:8080/api/v1/contact/message",
+      {
+        fullName: (data.firstName + " " + data.lastName).trim(),
+        ...data,
+      },
+      {
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white pt-20">
@@ -136,7 +160,7 @@ export default function ContactUs() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <label
@@ -145,7 +169,12 @@ export default function ContactUs() {
                       >
                         First Name
                       </label>
-                      <Input id="firstName" placeholder="John" required />
+                      <Input
+                        {...register("firstName", { required: true })}
+                        id="firstName"
+                        placeholder="John"
+                        required
+                      />
                     </div>
                     <div>
                       <label
@@ -154,7 +183,11 @@ export default function ContactUs() {
                       >
                         Last Name
                       </label>
-                      <Input id="lastName" placeholder="Doe" required />
+                      <Input
+                        {...register("lastName")}
+                        id="lastName"
+                        placeholder="Doe"
+                      />
                     </div>
                   </div>
                   <div>
@@ -165,6 +198,7 @@ export default function ContactUs() {
                       Email
                     </label>
                     <Input
+                      {...register("email", { required: true })}
                       id="email"
                       type="email"
                       placeholder="john@example.com"
@@ -178,31 +212,52 @@ export default function ContactUs() {
                     >
                       Phone (optional)
                     </label>
-                    <Input id="phone" type="tel" placeholder="+91 1234567890" />
+                    <Input
+                      {...register("phone", { pattern: /^[0-9]{10}$/ })}
+                      id="phone"
+                      type="tel"
+                      placeholder="+91 1234567890"
+                      aria-invalid={errors.phone ? "true" : "false"}
+                    />
+                    {errors.phone?.type === "pattern" && (
+                      <p role="alert" className="text-red-500">
+                        Please enter a valid phone number
+                      </p>
+                    )}
                   </div>
-                  <div>
-                    <label
-                      htmlFor="subject"
-                      className="mb-1 block text-sm font-medium text-gray-700"
-                    >
-                      Subject
-                    </label>
-                    <Select>
-                      <SelectTrigger id="subject">
-                        <SelectValue placeholder="Select a subject" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="general">General Inquiry</SelectItem>
-                        <SelectItem value="courses">
-                          Course Information
-                        </SelectItem>
-                        <SelectItem value="support">
-                          Technical Support
-                        </SelectItem>
-                        <SelectItem value="feedback">Feedback</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <label
+                    htmlFor="subject"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    Subject
+                  </label>
+                  <Controller
+                    name="subject"
+                    control={control}
+                    defaultValue="general"
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger id="subject">
+                          <SelectValue placeholder="Select a subject" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general">
+                            General Inquiry
+                          </SelectItem>
+                          <SelectItem value="courses">
+                            Course Information
+                          </SelectItem>
+                          <SelectItem value="support">
+                            Technical Support
+                          </SelectItem>
+                          <SelectItem value="feedback">Feedback</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                   <div>
                     <label
                       htmlFor="message"
@@ -211,6 +266,10 @@ export default function ContactUs() {
                       Message
                     </label>
                     <Textarea
+                      {...register("message", {
+                        required: true,
+                        maxLength: 200,
+                      })}
                       id="message"
                       placeholder="Your message here..."
                       className="h-32"

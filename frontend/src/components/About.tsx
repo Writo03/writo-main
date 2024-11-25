@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -67,7 +67,7 @@ const milestones = [
   },
 ];
 
-export default function AboutUs() {
+function AboutUs() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white pt-20">
       <main className="container mx-auto px-4 py-12">
@@ -92,12 +92,12 @@ export default function AboutUs() {
                 the tools, resources, and support needed to unlock that
                 potential.
               </p>
-              <Button className="bg-purple-600 hover:bg-purple-700">
+              <Button className="bg-primary hover:bg-primary/90">
                 Learn More About Our Approach
               </Button>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <Card className="bg-gradient-to-br from-purple-400 to-indigo-500 text-white">
+              <Card className="bg-gradient-to-br from-primary/50 to-indigo-500 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Users className="mr-2" /> 100,000+
@@ -227,11 +227,16 @@ export default function AboutUs() {
             Join thousands of successful students who have achieved their dreams
             with Writo Education.
           </p>
-          <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
-            Explore Our Courses <ArrowRight className="ml-2" />
-          </Button>
+          <a href="/test-series">
+            <Button size="lg" className="bg-primary hover:bg-primary/90">
+              Explore Our Courses <ArrowRight className="ml-2" />
+            </Button>
+          </a>
         </section>
       </main>
     </div>
   );
 }
+
+const AboutPage = memo(AboutUs);
+export default AboutPage;

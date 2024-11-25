@@ -370,7 +370,7 @@ const QuizCreator = () => {
                     </Button>
                   </div>
 
-                  <div className="grid gap-4">
+                  <div className="grid gap-52">
                     {/* Question Text */}
                     <FormField
                       key={`question-${currentQuestionIndex}`}
@@ -386,7 +386,7 @@ const QuizCreator = () => {
                     />
 
                     {/* Options */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-52">
                       {[0, 1, 2, 3].map((optionIndex) => (
                         <FormField
                           key={`option-${currentQuestionIndex}-${optionIndex}`}

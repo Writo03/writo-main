@@ -139,7 +139,7 @@ const RichTextEditor = ({initialValue = "", onChange} : {
   return (
     <>
       {loading && <p className="text-center">Uploading Image...</p>}
-      <div ref={editor} className="h-56"></div>
+      <div ref={editor} className="h-28"></div>
     </>
   );
 };

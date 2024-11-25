@@ -6,6 +6,8 @@ import {
   BrainCircuit,
   Presentation,
   Shield,
+  MessageSquare, 
+  User
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -154,6 +156,48 @@ const AdminHome = () => {
                 </div>
                 <Button variant="outline" className="w-full">
                   View Admins
+                </Button>
+              </div>
+            </Card>
+            <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <div className="rounded-full  p-4">
+                  <MessageSquare className="h-8 w-8 " />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-card-foreground">
+                    Contact Messages
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    View all Contact Messages
+                  </p>
+                </div>
+                <Button variant="outline" className="w-full"
+                  onClick={() => navigate("contact")}
+                  variant="outline"
+                  className="w-full">
+                  View Messages
+                </Button>
+              </div>
+            </Card>
+            <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <div className="rounded-full  p-4">
+                  <User className="h-8 w-8 " />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-card-foreground">
+                   Add User
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Add user with Services
+                  </p>
+                </div>
+                <Button variant="outline" className="w-full"
+                  onClick={() => navigate("adduser")}
+                  variant="outline"
+                  className="w-full">
+                  View Messages
                 </Button>
               </div>
             </Card>

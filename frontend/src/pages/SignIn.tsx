@@ -30,6 +30,8 @@ const SignIn = () => {
       setError('All fields are required');
       return;
     }
+    localStorage.removeItem("accessToken")
+    localStorage.removeItem("refreshToken")
 
     try {
       setisloading(true)
@@ -41,8 +43,7 @@ const SignIn = () => {
         const user= response.data?.data.user;
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
-        localStorage.removeItem("accessToken")
-        localStorage.removeItem("refreshToken")
+       
         await Promise.all([
           localStorage.setItem("accessToken", accessToken),
           localStorage.setItem("refreshToken", refreshToken),

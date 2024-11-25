@@ -64,13 +64,13 @@ const getResultByid = asyncHandler(async (req, res) => {
 const getAllTestsResult = asyncHandler(async (req, res) => {
   try {
     const userId = req.user._id; // Assumes user is authenticated, and ID is available in req.user
-    const results = await Result.find({ student: userId }).sort({ createdAt: -1 });
+    const allresults = await Result.find({ student: userId }).sort({ createdAt: -1 });
 
-    if (!results.length) {
+    if (!allresults.length) {
       throw new ApiError(404, "No tests found for this user");
     }
 
-    res.status(200).json(new ApiResponse(200, "Tests fetched successfully", results));
+    res.status(200).json(new ApiResponse(200, "Tests fetched successfully", allresults));
   } catch (error) {
     throw new ApiError(
       500,

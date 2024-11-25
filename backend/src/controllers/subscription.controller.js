@@ -100,9 +100,9 @@ const getUserServices = asyncHandler(async(req, res) => {
       subscriptions = await Subscription.find({student : req.user._id})
     }
 
-    if(!subscriptions.length){
-      throw new ApiError(404, "No subscriptions found")
-    }
+    // if(!subscriptions.length){
+    //   throw new ApiError(404, "No subscriptions found")
+    // }
 
     return res.status(200).json(new ApiResponse(200, "subscriptions fetched successfully", subscriptions))
 

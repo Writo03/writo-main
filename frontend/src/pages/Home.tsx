@@ -7,6 +7,7 @@ import Testimonials from '@/components/Testimonials';
 
 const Home = () => {
   const user= useSelector((state : RootState)=> state.auth)
+  console.log(user)
 
   return (
     <>

@@ -81,8 +81,12 @@ const router = createBrowserRouter([
             element: <Details />,
           },
           {
+            path: "neet/all",
+            element: <TestSeriesList pageTitle="Neet" pageDescription="Neet" serviceId="673440f8f547c1a59e6d2a78"/>,
+          },
+          {
             path: "jee/all",
-            element: <TestSeriesList />,
+            element: <TestSeriesList pageTitle="Jee" pageDescription="Jee" serviceId="673440f8f547c1a59e6d2a78"/>,
           }
         ],
       },

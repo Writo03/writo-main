@@ -13,9 +13,9 @@ import { Badge } from "@/components/ui/badge";
 interface TestStartPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (test:any) => void;
   testDetails?: {
-    id: string;
+    _id: string;
     name: string;
     description: string;
     subjects: string;

@@ -65,7 +65,7 @@ export default function TestSeriesPage() {
                   <Button
                     size="lg"
                     className="w-full"
-                    onClick={() => navigate("/test-series/details/neet")}
+                    onClick={() => navigate("/test-series/neet/all")}
                   >
                     Start NEET Preparation
                   </Button>
@@ -102,7 +102,7 @@ export default function TestSeriesPage() {
                   <Button
                     size="lg"
                     className="w-full"
-                    onClick={() => navigate("/test-series/details/jee")}
+                    onClick={() => navigate("/test-series/jee/all")}
                   >
                     Start JEE Preparation
                   </Button>

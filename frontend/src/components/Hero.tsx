@@ -8,7 +8,7 @@ import sliderimg3 from "@/assets/slider!img/3.png";
 import sliderimg4 from "@/assets/slider!img/4.png";
 import sliderimg5 from "@/assets/slider!img/5.png";
 
-import { Suspense, memo } from "react";
+import { Suspense, memo, useMemo } from "react";
 
 export function Fallback() {
   return (
@@ -20,19 +20,22 @@ export function Fallback() {
 const MemoizedFallback = memo(Fallback);
 
 const Hero = () => {
+  const images = useMemo(
+    () => [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
+    [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
+  );
+
   return (
     <div className="pt-4 md:pt-10">
       <div className="mt-[5vh] h-[12vh] w-full md:h-[20vh] lg:h-[35vh]">
         <Suspense fallback={<MemoizedFallback />}>
-          <HeroSlider
-            items={[sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5]}
-          />
+          <HeroSlider items={images} />
         </Suspense>
       </div>
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8 lg:py-20">
         <div className="text-center">
           <h1 className="mb-6 text-5xl font-bold text-gray-900">
-            Master Your Studies with
+            Make Yourself Future Fit
             <span className="text-primary"> Writo Education</span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">

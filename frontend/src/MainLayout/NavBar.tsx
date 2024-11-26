@@ -224,6 +224,21 @@ function Navbar() {
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
+                  {/* Admin Panel */}
+                  {user.isAdmin && (
+                    <NavigationMenuItem>
+                      <Link to="/admin">
+                        <NavigationMenuLink
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "bg-transparent",
+                          )}
+                        >
+                          Admin Panel
+                        </NavigationMenuLink>
+                      </Link>
+                    </NavigationMenuItem>
+                  )}
                 </div>
                 {/* Login/Signin */}
                 {!isAuthenticated ? (
@@ -241,8 +256,8 @@ function Navbar() {
                           className="relative h-8 w-8 rounded-full"
                         >
                           <Avatar>
-                          <AvatarImage src={user.profilePic} alt="@ks" />
-                          <AvatarFallback>KS</AvatarFallback>
+                            <AvatarImage src={user.profilePic} alt="@ks" />
+                            <AvatarFallback>KS</AvatarFallback>
                           </Avatar>
                         </Button>
                       </DropdownMenuTrigger>
@@ -425,7 +440,7 @@ function Sidebar({
                       {user.fullName}
                     </Link>
                   </DropdownMenuItem>
-                 
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <LogOut className="mr-2 h-4 w-4" />

@@ -272,7 +272,7 @@ function Navbar() {
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Link
-                            to="/settings"
+                            to="/profile"
                             className="flex w-full items-center"
                           >
                             <Settings className="mr-2 h-4 w-4" />
@@ -300,6 +300,7 @@ function Navbar() {
                     open={isSidbarOpen}
                     setOpen={setIsSidbarOpen}
                     auth={isAuthenticated}
+                    logoutHandler={logoutHandler}
                   />
                 </NavigationMenuItem>
               </>
@@ -316,11 +317,13 @@ function Sidebar({
   open,
   setOpen,
   auth,
+  logoutHandler,
 }: {
   className?: string;
   open: boolean;
   setOpen: any;
   auth: boolean;
+  logoutHandler: any;
 }) {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
@@ -442,7 +445,7 @@ function Sidebar({
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={logoutHandler}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
@@ -467,10 +470,13 @@ function Sidebar({
                 </Button>
               </Link>
               <span className="flex space-x-4">
-                <Link to="/settings" onClick={() => setOpen(false)}>
-                  <LogOut className="h-6 w-6" />
-                </Link>
-                <Link to="/settings" onClick={() => setOpen(false)}>
+                <LogOut
+                  className="h-6 w-6"
+                  onClick={() => {
+                    setOpen(false), logoutHandler();
+                  }}
+                />
+                <Link to="/profile" onClick={() => setOpen(false)}>
                   <Settings className="h-6 w-6" />
                 </Link>
               </span>

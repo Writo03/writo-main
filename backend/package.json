@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "start" : "node src/index.js",
-    "dev": "nodemon --env-file .env src/index.js",
-    "dev-kaushik": "bun src/index.js"
+    "dev": "bun src/index.js",
+    "dev-kaushik": "nodemon --env-file .env src/index.js"
   },
   "author": "",
   "license": "ISC",

@@ -17,7 +17,7 @@ const CheckAdmin = () => {
       // navigate("/login");
     }
 
-    if (!user.isAdmin || !user.isMentor) {
+    if (!user.isAdmin && !user.isMentor) {
       // navigate("/");
     }
     setLoading(false)

@@ -13,7 +13,7 @@ import {errorHandler} from "./middlewares/error.middleware.js"
 
 
 const app = express()
-const allowedOrigins = ["http://localhost:3001"]
+const allowedOrigins = ["http://localhost:3001", "https://writo-main-bi36.vercel.app"]
 app.use(cors({
     origin : allowedOrigins,
     credentials : true

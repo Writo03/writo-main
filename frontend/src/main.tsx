@@ -47,7 +47,7 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: (
-          <Protected authentication={false}>
+          <Protected authentication={true}>
             <Profile />
           </Protected>
         ),

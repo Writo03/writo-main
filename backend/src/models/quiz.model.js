@@ -1,67 +1,75 @@
-import mongoose, {Schema} from "mongoose"
+import mongoose, { Schema } from "mongoose";
 
 export const questionSchema = new Schema({
-    question : {
-        type : String
+  question: {
+    type: String,
+  },
+  image: {
+    type: String,
+  },
+  options: [
+    {
+      type: String,
     },
-    image : {
-        type : String
-    },
-    options : [{
-        type : String
-    }],
-    correct : {
-        type : String,
-        required : true
-    },
-    chosen : {
-        type : String,
-        default : ""
-    }
-})
+  ],
+  correct: {
+    type: String,
+    required: true,
+  },
+  chosen: {
+    type: String,
+    default: "",
+  },
+});
 
-const quizSchema = new Schema({
-    name : {
-        type : String,
-        required : true
+const quizSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    description : {
-        type : String,
-        required : true
+    description: {
+      type: String,
+      required: true,
     },
-    duration : {
-        type : Number,
-        required : true
+    duration: {
+      type: Number,
+      required: true,
     },
-    questionNumber : {
-        type : Number,
-        required : true
+    questionNumber: {
+      type: Number,
+      required: true,
     },
-    subjects : [{
-        type : String
-    }],
-    isSubjectTest : {
-        type : Boolean,
-        default : false
+    subjects: [
+      {
+        type: String,
+      },
+    ],
+    isSubjectTest: {
+      type: Boolean,
+      default: false,
     },
-    isForFree : {
-        type : Boolean,
-        default : false
+    isFree: {
+      type: Boolean,
+      default: false,
     },
-    isForMentors : {
-        type : Boolean,
-        default : false
+    isForMentors: {
+      type: Boolean,
+      default: false,
     },
-    services : [{
-        type : Schema.Types.ObjectId,
-        ref : "Service"
-    }],
-    questions : [questionSchema]
+    services: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Service",
+      },
+    ],
+    questions: [questionSchema],
+  },
+  {
+    timestamps: true,
+  },
+);
 
-}, {
-    timestamps : true
-})
+const Quiz = mongoose.model("Quiz", quizSchema);
 
-const Quiz = mongoose.model("Quiz", quizSchema)
-
-export default Quiz
+export default Quiz;

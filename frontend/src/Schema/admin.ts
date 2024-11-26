@@ -53,6 +53,8 @@ export const serviceSchema = z.object({
     duration: z.number().min(5, "Duration must be at least 5 minutes"),
     subjects: z.array(z.string()).min(1, "Select at least one subject"),
     isSubjectTest: z.boolean(),
+    isForMentors : z.boolean(),
+    isForFree : z.boolean(),
     services: z.array(z.string()).min(1, "Select at least one service"),
     questions: z.array(questionSchema).min(1, "Add at least one question"),
   });

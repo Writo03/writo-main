@@ -44,6 +44,14 @@ const quizSchema = new Schema({
         type : Boolean,
         default : false
     },
+    isForFree : {
+        type : Boolean,
+        default : false
+    },
+    isForMentors : {
+        type : Boolean,
+        default : false
+    },
     services : [{
         type : Schema.Types.ObjectId,
         ref : "Service"

@@ -40,7 +40,6 @@ const SERVICES = [
   { label: "JEE", value: serviceIds.jee },
 ] as const;
 
-
 const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
 
 export type FormData = z.infer<typeof formSchema>;
@@ -49,6 +48,8 @@ const QuizCreator = () => {
   const { quizId } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const isAdmin = true;
 
   const [loading, setLoading] = useState(false);
   const [initialData, setInitialData] = useState<FormData | null>(null);
@@ -62,6 +63,8 @@ const QuizCreator = () => {
       duration: 30,
       subjects: [],
       isSubjectTest: false,
+      isForMentors: false,
+      isForFree: false,
       services: [],
       questions: [
         {
@@ -265,6 +268,46 @@ const QuizCreator = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="isForFree"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      This is a free test
+                    </FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {isAdmin && (
+                <FormField
+                  control={form.control}
+                  name="isForMentors"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center space-x-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        This test is for mentors only
+                      </FormLabel>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {/* Services Selection */}
               <FormField

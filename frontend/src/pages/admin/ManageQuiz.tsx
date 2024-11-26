@@ -14,12 +14,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import axiosInstance from '@/utils/axiosInstance';
 import { AxiosError } from 'axios';
 import { ErrorApiRes } from '@/types/all';
 import { useToast } from '@/components/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { serviceIds } from '@/utils/contants';
+import { Label } from '@/components/ui/label';
 
 interface Question {
   question: string;
@@ -47,6 +49,10 @@ const ManageQuiz = () => {
   const [error, setError] = useState<string | null>(null);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [deleteQuizId, setDeleteQuizId] = useState<string | null>(null);
+  const [isForMentors, setIsForMentors] = useState(false);
+
+
+  const isAdmin = true
 
   const { toast } = useToast();
   const serviceId = activeTab === "neet" ? serviceIds.neet : serviceIds.jee
@@ -56,7 +62,7 @@ const ManageQuiz = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axiosInstance.get(`quiz/get-quizes-all?serviceId=${serviceId}`);
+        const response = await axiosInstance.get(`quiz/get-quizes-all?serviceId=${serviceId}&isForMentors=${isForMentors}`);
         setQuizzes(response.data.data);
       } catch (err) {
         const axiosError = err as AxiosError<ErrorApiRes>
@@ -67,7 +73,7 @@ const ManageQuiz = () => {
     };
 
     fetchQuizzes();
-  }, [activeTab, serviceId]);
+  }, [activeTab, serviceId, isForMentors]);
 
   const handleDeleteQuiz = async () => {
     if (!deleteQuizId) return;
@@ -142,6 +148,14 @@ const ManageQuiz = () => {
         </Button>
         </Link>
       </div>
+
+      {isAdmin &&<div className='flex items-center gap-1 pb-3'>
+        <Checkbox 
+        checked={isForMentors}
+        onCheckedChange={(checked) => setIsForMentors(checked === true)}
+        />
+        <Label>For Mentors</Label>
+      </div>}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full max-w-[400px] grid-cols-2 mb-8">

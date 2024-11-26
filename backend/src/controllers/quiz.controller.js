@@ -6,7 +6,11 @@ import ApiResponse from "../utils/ApiResponse.js"
 
 const createQuiz = asyncHandler(async (req, res) => {
     try {
-        const {name, description, duration, questions, subjects, isSubjectTest, services} = req.body
+        const {name, description, duration, questions, subjects, isSubjectTest, isForFree, isForMentors, services} = req.body
+
+        if(isForMentors && !req.user.isAdmin){
+            throw new ApiError(400, "Only admins can create quiz for mentors")
+        }
 
         if(!req.user.isAdmin && !req.user.isMentor){
             throw new ApiError(400, "Only admins and mentors can create quiz")
@@ -23,6 +27,7 @@ const createQuiz = asyncHandler(async (req, res) => {
             subjects,
             isSubjectTest,
             services,
+            isForFree,
             questionNumber : questions.length,
             questions
         })
@@ -36,9 +41,13 @@ const createQuiz = asyncHandler(async (req, res) => {
 
 const getQuizes = asyncHandler(async (req, res) => {
     try {
-        const {isSubjectTest, serviceId} = req.query
+        const {isSubjectTest, isForFree=false, isForMentors=false, serviceId} = req.query
 
-        const quizes = await Quiz.find({isSubjectTest, services : {$in : [serviceId]}})
+        if(isForMentors && !req.user.isAdmin && !req.user.isMentor){
+            throw new ApiError(400, "Only admins and mentors can get mentor quizes")
+        }
+
+        const quizes = await Quiz.find({isSubjectTest, isForFree, isForMentors, services : {$in : [serviceId]}})
 
         if(!quizes.length){
             throw new ApiError(404, "No quizes found")
@@ -53,9 +62,13 @@ const getQuizes = asyncHandler(async (req, res) => {
 
 const getQuizesAll = asyncHandler(async (req, res) => {
     try {
-        const {serviceId} = req.query
+        const {serviceId, isForMentors} = req.query
 
-        const quizes = await Quiz.find({services : {$in : [serviceId]}})
+        if(!req.user.isAdmin && !req.user.isMentor){
+            throw new ApiError(400, "Only admins and mentors can get all quizes")
+        }
+
+        const quizes = await Quiz.find({isForMentors, services : {$in : [serviceId]}})
 
         if(!quizes.length){
             throw new ApiError(404, "No quizes found")
@@ -71,7 +84,16 @@ const getQuizesAll = asyncHandler(async (req, res) => {
 const getQuizById = asyncHandler(async (req, res) => {
     try {
         const {quizId} = req.params
+        const {isUpdating=false} = req.query
         const quiz = await Quiz.findById(quizId)
+
+        if(quiz.isForMentors && !req.user.isAdmin && !req.user.isMentor){
+            throw new ApiError(400, "Only admins and mentors can get mentor quizes")
+        }
+
+        if(isUpdating && !req.user.isAdmin){
+            throw new ApiError(400, "Only admins can update quiz for mentors")
+        }
 
         if(!quiz){
             throw new ApiError(404, "Quiz not found")
@@ -89,8 +111,12 @@ const updateQuiz = asyncHandler(async (req, res) => {
         if(!req.user.isAdmin && !req.user.isMentor){
             throw new ApiError(400, "Only admins and mentors can update quiz")
         }
-        const {name, description, duration, questions, subjects, isSubjectTest, services} = req.body
+        const {name, description, duration, questions, subjects, isForFree, isForMentors, isSubjectTest, services} = req.body
         const {quizId} = req.params
+
+        if(isForMentors && !req.user.isAdmin){
+            throw new ApiError(400, "Only admins can update quiz for mentors")
+        }
 
         if(!name || !description || !duration || !questions.length || !subjects.length || !services.length){
             throw new ApiError(400, "All fields are required")
@@ -103,6 +129,8 @@ const updateQuiz = asyncHandler(async (req, res) => {
                 duration,
                 subjects,
                 isSubjectTest,
+                isForFree,
+                isForMentors,
                 services,
                 questionNumber : questions.length,
                 questions

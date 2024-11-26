@@ -10,11 +10,13 @@ import {
   User
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/redux/hooks";
 
 
 const AdminHome = () => {
-  const isAdmin = true; // Replace with actual admin check logic
+  const isAdmin = useAppSelector(state => state.auth.user.isAdmin)
   const navigate = useNavigate();
+  // const sub = useAppSelector(state => state.subscriptions.subscriptions)
 
   return (
     <div className="container mx-auto space-y-8 p-6 pt-32">
@@ -173,9 +175,7 @@ const AdminHome = () => {
                   </p>
                 </div>
                 <Button variant="outline" className="w-full"
-                  onClick={() => navigate("contact")}
-                  variant="outline"
-                  className="w-full">
+                  onClick={() => navigate("contact")}>
                   View Messages
                 </Button>
               </div>
@@ -194,9 +194,7 @@ const AdminHome = () => {
                   </p>
                 </div>
                 <Button variant="outline" className="w-full"
-                  onClick={() => navigate("adduser")}
-                  variant="outline"
-                  className="w-full">
+                  onClick={() => navigate("adduser")}>
                   View Messages
                 </Button>
               </div>

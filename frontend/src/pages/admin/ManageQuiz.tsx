@@ -22,6 +22,7 @@ import { useToast } from '@/components/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { serviceIds } from '@/utils/contants';
 import { Label } from '@/components/ui/label';
+import { useAppSelector } from '@/redux/hooks';
 
 interface Question {
   question: string;
@@ -52,7 +53,7 @@ const ManageQuiz = () => {
   const [isForMentors, setIsForMentors] = useState(false);
 
 
-  const isAdmin = true
+  const isAdmin = useAppSelector(state => state.auth.user.isAdmin)
 
   const { toast } = useToast();
   const serviceId = activeTab === "neet" ? serviceIds.neet : serviceIds.jee

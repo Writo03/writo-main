@@ -32,6 +32,7 @@ import { formSchema } from "@/Schema/admin";
 import { serviceIds } from "@/utils/contants";
 
 import WrapperTextEditor from "@/components/Admin/WrapperTextEditor";
+import { useAppSelector } from "@/redux/hooks";
 
 const SUBJECTS = ["Physics", "Chemistry", "Biology", "Mathematics"] as const;
 
@@ -49,7 +50,7 @@ const QuizCreator = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const isAdmin = true;
+  const isAdmin = useAppSelector(state => state.auth.user.isAdmin);
 
   const [loading, setLoading] = useState(false);
   const [initialData, setInitialData] = useState<FormData | null>(null);

@@ -22,7 +22,7 @@ const MamoHome = memo(HomeUi);
 
 const Home = () => {
   const user = useSelector((state: RootState) => state.auth);
-  console.log(user);
+  // console.log(user);
 
   return <MamoHome />;
 };

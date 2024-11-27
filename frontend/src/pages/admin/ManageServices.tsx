@@ -16,7 +16,8 @@ import { useToast } from "@/components/hooks/use-toast";
 import axiosInstance from "@/utils/axiosInstance";
 import { AxiosError } from "axios";
 import { ErrorApiRes } from "@/types/all";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/redux/hooks";
 
 interface Service {
   _id: string;
@@ -33,6 +34,8 @@ const ManageServices = () => {
   const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
 
   const { toast } = useToast();
+  const isAdmin = useAppSelector((state) => state.auth.user.isAdmin);
+  const navigate = useNavigate()
 
   // Fetch services
   useEffect(() => {
@@ -50,8 +53,12 @@ const ManageServices = () => {
       }
     };
 
+    if(!isAdmin){
+      navigate("/admin")
+    }
+
     fetchServices();
-  }, []);
+  }, [isAdmin, navigate]);
 
   const handleDelete = async () => {
     if (!deleteServiceId) return;

@@ -4,8 +4,9 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon --env-file .env src/index.js",
-    "dev": "bun src/index.js"
+    "start": "node src/index.js",
+    "dev": "bun src/index.js",
+    "devn": "nodemon --env-file .env src/index.js"
   },
   "author": "",
   "license": "ISC",

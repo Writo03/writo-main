@@ -30,10 +30,12 @@ import ManageServices from "./pages/admin/ManageServices";
 import ServiceCreator from "./pages/admin/ServiceCreator";
 import ManageMentors from "./pages/admin/ViewMentors";
 import ServiceTest from "./components/ServiceTest";
-import TestSeriesList from "@/components/TestSeries/SeriesList"
+import TestSeriesList from "@/components/TestSeries/SeriesList";
 import ContactMessages from "./pages/admin/ContactMessage";
 import AddAdminUser from "./pages/admin/Adduser";
 import App from "./App";
+import { serviceIds } from "@/utils/contants";
+// import Layout from "./pages/admin/Layout";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +49,7 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: (
-          <Protected authentication={false}>
+          <Protected authentication={true}>
             <Profile />
           </Protected>
         ),
@@ -70,7 +72,11 @@ const router = createBrowserRouter([
       },
       {
         path: "test-series",
-        element: <><Outlet /></>,
+        element: (
+          <>
+            <Outlet />
+          </>
+        ),
         children: [
           { 
             path: "",
@@ -82,12 +88,24 @@ const router = createBrowserRouter([
           },
           {
             path: "neet/all",
-            element: <TestSeriesList pageTitle="Neet" pageDescription="Neet" serviceId="673440f8f547c1a59e6d2a78"/>,
+            element: (
+              <TestSeriesList
+                pageTitle="Neet"
+                pageDescription="Neet"
+                serviceId={serviceIds.neet}
+              />
+            ),
           },
           {
             path: "jee/all",
-            element: <TestSeriesList pageTitle="Jee" pageDescription="Jee" serviceId="673440f8f547c1a59e6d2a78"/>,
-          }
+            element: (
+              <TestSeriesList
+                pageTitle="Jee"
+                pageDescription="Jee"
+                serviceId={serviceIds.jee}
+              />
+            ),
+          },
         ],
       },
       {
@@ -95,22 +113,24 @@ const router = createBrowserRouter([
         element: <DoubtSessionPage />,
       },
       {
-        path:"test",
-        element:<ServiceTest />,
-        children:[  {
-          path: ":quizId",
-          element: <TestSeries />,
-        },
-        {
-          path: "leaderboard/:quizId",
-          element: <Leaderboard />,
-        },
-        {
-          path: "quizresult/:resultId",
-          element: <QuizResultPage />,
-        },]
+        path: "test",
+        element: <ServiceTest />,
+        children: [
+          {
+            path: ":quizId",
+            element: <TestSeries />,
+          },
+          {
+            path: "leaderboard/:quizId",
+            element: <Leaderboard />,
+          },
+          {
+            path: "quizresult/:resultId",
+            element: <QuizResultPage />,
+          },
+        ],
       },
-    
+
       {
         path: "admin",
         element: <CheckAdmin />,
@@ -132,20 +152,20 @@ const router = createBrowserRouter([
             element: <QuizCreator />,
           },
           {
-            path : "manage-services",
-            element : <ManageServices/>
+            path: "manage-services",
+            element: <ManageServices />,
           },
           {
             path: "create-edit-service/:serviceId?",
-            element : <ServiceCreator/>
+            element: <ServiceCreator />,
           },
           {
-            path : "manage-mentors",
-            element : <ManageMentors/>
+            path: "manage-mentors",
+            element: <ManageMentors />,
           },
           {
-            path : "adduser",
-            element : <AddAdminUser/>
+            path: "adduser",
+            element: <AddAdminUser />,
           },
           {
             path: "contact",

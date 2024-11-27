@@ -6,15 +6,16 @@ import {
   BrainCircuit,
   Presentation,
   Shield,
-  MessageSquare, 
-  User
+  MessageSquare,
+  User,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useAppSelector } from "@/redux/hooks";
 
 const AdminHome = () => {
-  const isAdmin = true; // Replace with actual admin check logic
+  const isAdmin = useAppSelector((state) => state.auth.user.isAdmin);
   const navigate = useNavigate();
+  // const sub = useAppSelector(state => state.subscriptions.subscriptions)
 
   return (
     <div className="container mx-auto space-y-8 p-6 pt-32">
@@ -121,7 +122,7 @@ const AdminHome = () => {
             </Card>
 
             <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
-              <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex w-full flex-col items-center space-y-4 text-center">
                 <div className="rounded-full bg-accent/10 p-4">
                   <Presentation className="h-8 w-8 text-accent-foreground" />
                 </div>
@@ -133,7 +134,7 @@ const AdminHome = () => {
                     View all mentors
                   </p>
                 </div>
-                <Link to={"manage-mentors"}>
+                <Link to={"manage-mentors"} className="w-full">
                   <Button variant="outline" className="w-full">
                     View Mentors
                   </Button>
@@ -161,8 +162,8 @@ const AdminHome = () => {
             </Card>
             <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
               <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="rounded-full  p-4">
-                  <MessageSquare className="h-8 w-8 " />
+                <div className="rounded-full p-4">
+                  <MessageSquare className="h-8 w-8" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-card-foreground">
@@ -172,31 +173,33 @@ const AdminHome = () => {
                     View all Contact Messages
                   </p>
                 </div>
-                <Button variant="outline" className="w-full"
-                  onClick={() => navigate("contact")}
+                <Button
                   variant="outline"
-                  className="w-full">
+                  className="w-full"
+                  onClick={() => navigate("contact")}
+                >
                   View Messages
                 </Button>
               </div>
             </Card>
             <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
               <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="rounded-full  p-4">
-                  <User className="h-8 w-8 " />
+                <div className="rounded-full p-4">
+                  <User className="h-8 w-8" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-card-foreground">
-                   Add User
+                    Add User
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground">
                     Add user with Services
                   </p>
                 </div>
                 <Button variant="outline" 
-                  onClick={() => navigate("adduser")}
                   variant="outline"
-                  className="w-full">
+                  className="w-full"
+                  onClick={() => navigate("adduser")}
+                >
                   View Messages
                 </Button>
               </div>
@@ -204,7 +207,6 @@ const AdminHome = () => {
           </div>
         )}
       </div>
-
     </div>
   );
 };

@@ -99,7 +99,6 @@ const SignIn = () => {
     }
     try {
       const subscriptionresponse = await axiosInstance.get('/subscription/get-subscriptions?type=active');
-      console.log(subscriptionresponse)
       if (subscriptionresponse.status === 200) {
         const serviceIds = subscriptionresponse.data.data.map((subscription: { service: string }) => subscription.service);
         dispatch(setSubscriptions(serviceIds)); // Store only the IDs

@@ -23,6 +23,8 @@ import {
   CornerDownRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import PaymentButton from "../ui/PaymentButton";
+import { toast } from "../hooks/use-toast";
 
 interface Subject {
   name: string;
@@ -38,11 +40,21 @@ interface AboutProgram {
   list: string[];
 }
 
+interface PaymentSuccessDetails {
+  paymentId: string;
+  orderId: string;
+  signature: string;
+  serviceName: string;
+  serviceId: string;
+}
+
 export interface ExamDetailsProps {
   examName: string;
   description: string;
   subjects: Subject[];
   languages: string[];
+  serviceName: string;
+  serviceId: string;
   duration: string;
   price: number;
   benefits: string[];
@@ -53,12 +65,29 @@ export default function TestSeriesDetails({
   examName,
   description,
   subjects,
+  serviceName,
+  serviceId,
   languages,
   duration,
   price,
   benefits,
   aboutPrograms,
 }: ExamDetailsProps) {
+
+  const handlePaymentSuccess = (details: PaymentSuccessDetails) => {
+    toast({
+      title: "Payment Sucessful!!",
+      description: details.serviceName,
+    });
+  };
+
+  const handlePaymentError = (error: Error) => {
+    console.error('Payment failed:', error);
+    toast({
+      title: "Payment failed!!",
+      description:error.message,
+    });
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white pt-20">
       <div className="container mx-auto px-4 py-8 md:py-16">
@@ -192,12 +221,20 @@ export default function TestSeriesDetails({
                 ₹{price.toLocaleString("en-IN")}
               </p>
               <div className="flex justify-center">
-                <Button
-                  size="xl"
+              <PaymentButton
+                price={price}
+                serviceName={serviceName}
+                serviceId={serviceId}
+                onSuccess={handlePaymentSuccess}
+                onError={handlePaymentError}
+                currencySymbol="Rs"
                   className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              />
+                {/* <Button
+                  size="xl"
                 >
                   Enroll Now
-                </Button>
+                </Button> */}
               </div>
             </div>
             <div className="mt-4 flex h-full flex-col items-center justify-center text-muted-foreground">

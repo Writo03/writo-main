@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, Navigate } from "react-router-dom";
 import TestSeriesDetails, { ExamDetailsProps } from "./TestSeriesDetails";
-
+import {serviceIds,serviceNames} from '../../utils/contants'
 interface Data {
   jee: ExamDetailsProps;
   neet: ExamDetailsProps;
@@ -10,6 +10,8 @@ interface Data {
 const data: Data = {
   jee: {
     examName: "JEE Online Test Series(Mains +Advance)",
+    serviceName:serviceNames.jee,
+    serviceId:serviceIds.jee,
     description:
       "This is a test series for the students who want to get a good score in JEE Mains and Advance. The test series is conducted by the JEE Council and is open to all the candidates who are eligible for JEE Mains and Advance.",
     subjects: [
@@ -61,6 +63,8 @@ const data: Data = {
   },
   neet: {
     examName: "NEET Test Series",
+    serviceName:serviceNames.neet,
+    serviceId:serviceIds.neet,
     description:
       "This is a test series for the students who want to get a good score in NEET. The test series is conducted by the JEE Council and is open to all the candidates who are eligible for NEET.",
     subjects: [

@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Protected from "./components/Protected";
-import State from "./components/State";
 import Profile from "./components/Profile";
 import TestSeriesPage from "@/components/ServiceShowPages/TestSeries";
 import DoubtSessionPage from "@/components/ServiceShowPages/DoughtSession";
@@ -34,11 +33,12 @@ import ServiceTest from "./components/ServiceTest";
 import TestSeriesList from "@/components/TestSeries/SeriesList"
 import ContactMessages from "./pages/admin/ContactMessage";
 import AddAdminUser from "./pages/admin/Adduser";
+import App from "./App";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <State />,
+    element: <App />,
     children: [
       {
         path: "",
@@ -72,7 +72,7 @@ const router = createBrowserRouter([
         path: "test-series",
         element: <><Outlet /></>,
         children: [
-          {
+          { 
             path: "",
             element: <TestSeriesPage />,
           },

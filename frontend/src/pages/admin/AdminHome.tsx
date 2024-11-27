@@ -193,7 +193,7 @@ const AdminHome = () => {
                     Add user with Services
                   </p>
                 </div>
-                <Button variant="outline" className="w-full"
+                <Button variant="outline" 
                   onClick={() => navigate("adduser")}
                   variant="outline"
                   className="w-full">

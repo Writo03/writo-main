@@ -69,19 +69,11 @@ const SignIn = () => {
           error: null,
         };
         dispatch(login(loginPayload));
-        const subscriptionresponse = await axiosInstance.get('/subscription/get-subscriptions')
-        console.log(subscriptionresponse)
-        if (subscriptionresponse.status === 200) {
-          const serviceIds = subscriptionresponse.data.data.map((subscription: { service: string }) => subscription.service);
-          dispatch(setSubscriptions(serviceIds)); // Store only the IDs
-        }
-       
         navigate('/'); // Redirect on success
         setisloading(false)
       }
     } catch (err: unknown) {
       setisloading(false)
-
       if (axios.isAxiosError(err)) {
         console.log(err.response)
         setError(err.response?.data?.message || 'Login failed');
@@ -104,6 +96,24 @@ const SignIn = () => {
         description: error,
         variant: 'destructive',
       });
+    }
+    try {
+      const subscriptionresponse = await axiosInstance.get('/subscription/get-subscriptions?type=active');
+      console.log(subscriptionresponse)
+      if (subscriptionresponse.status === 200) {
+        const serviceIds = subscriptionresponse.data.data.map((subscription: { service: string }) => subscription.service);
+        dispatch(setSubscriptions(serviceIds)); // Store only the IDs
+      }
+    } catch (err:unknown) {
+      if (axios.isAxiosError(err)) {
+        console.log(err.response)
+        setError(err.response?.data?.message || '');
+        toast({
+          title: 'No subsciptions',
+          description: error,
+          variant: 'destructive',
+        });
+      }
     }
   };
   if(isloading){

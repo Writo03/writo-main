@@ -7,28 +7,44 @@ interface QuizTimerProps {
   onTimeUpdate?: (timeLeft: number) => void; // Optional callback for time updates
 }
 
-export const QuizTimer = ({ duration, onTimeUp, onTimeUpdate }: QuizTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(duration * 60); // Convert to seconds
+const QuizTimer = ({ duration, onTimeUp, onTimeUpdate }: QuizTimerProps) => {
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    if (timeLeft <= 0) {
-      onTimeUp();
-      return;
+    const endTimeKey = 'quizEndTime';
+
+    // Calculate end time
+    const endTime = localStorage.getItem(endTimeKey)
+      ? parseInt(localStorage.getItem(endTimeKey)!, 10)
+      : Date.now() + duration * 60 * 1000;
+
+    // Save end time in localStorage if it's not already set
+    if (!localStorage.getItem(endTimeKey)) {
+      localStorage.setItem(endTimeKey, endTime.toString());
     }
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const updatedTime = prev - 1;
-        if (onTimeUpdate) {
-          onTimeUpdate(updatedTime); // Call the update function
-        }
-        return updatedTime;
-      });
-    }, 1000);
+    // Update timeLeft on component mount
+    const updateTimer = () => {
+      const currentTime = Date.now();
+      const timeRemaining = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+      setTimeLeft(timeRemaining);
+      if (timeRemaining === 0) {
+        onTimeUp();
+        localStorage.removeItem(endTimeKey); // Clear end time when time is up
+      }
+      if (onTimeUpdate) {
+        onTimeUpdate(timeRemaining);
+      }
+    };
 
+    // Start interval for countdown
+    const timer = setInterval(updateTimer, 1000);
+
+    // Cleanup
     return () => clearInterval(timer);
-  }, [timeLeft, onTimeUp, onTimeUpdate]);
+  }, [duration, onTimeUp, onTimeUpdate]);
 
+  // Display formatted time
   return (
     <div className="flex items-center space-x-2 text-white">
       <Clock className="h-5 w-5" />

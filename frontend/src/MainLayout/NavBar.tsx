@@ -473,7 +473,8 @@ function Sidebar({
                 <LogOut
                   className="h-6 w-6"
                   onClick={() => {
-                    setOpen(false), logoutHandler();
+                    setOpen(false)
+                    logoutHandler();
                   }}
                 />
                 <Link to="/profile" onClick={() => setOpen(false)}>

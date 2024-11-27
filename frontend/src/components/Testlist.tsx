@@ -88,7 +88,7 @@ const TestList: React.FC = () => {
             <p className="text-lg text-muted-foreground">
               No tests taken yet. Start your learning journey!
             </p>
-            <Button onClick={() => navigate('/tests')}>
+            <Button onClick={() => navigate('/test-series')}>
               Take a Test
             </Button>
           </div>

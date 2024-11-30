@@ -97,7 +97,7 @@ const RichTextEditor = ({initialValue = "", onChange} : {
       );
 
       const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/dlsxjstxo/image/upload`,
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
         formData,
       );
 

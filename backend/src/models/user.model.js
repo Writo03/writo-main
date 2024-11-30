@@ -49,6 +49,10 @@ const UserSchema = new mongoose.Schema(
     },
     onLeave : {
       type : String
+    },
+    studentCount : {
+      type : Number,
+      default : 0
     }
   },
   { timestamps: true }

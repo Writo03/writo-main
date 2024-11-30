@@ -35,6 +35,7 @@ import ContactMessages from "./pages/admin/ContactMessage";
 import AddAdminUser from "./pages/admin/Adduser";
 import App from "./App";
 import { serviceIds } from "@/utils/contants";
+import Chat from "./pages/Chat/Chat";
 // import Layout from "./pages/admin/Layout";
 
 const router = createBrowserRouter([
@@ -172,6 +173,10 @@ const router = createBrowserRouter([
             element: <ContactMessages />,
           },
         ],
+      },
+      {
+        path:"chat",
+        element:<Chat />
       },
       {
         path: "about",

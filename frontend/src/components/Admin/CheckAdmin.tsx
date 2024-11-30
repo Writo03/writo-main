@@ -19,9 +19,9 @@ const CheckAdmin = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      // navigate("/login"); // Redirect unauthenticated users to login
+      navigate("/signin"); // Redirect unauthenticated users to login
     } else if (!user?.isAdmin && !user?.isMentor) {
-      // navigate("/"); // Redirect unauthorized users to the home page
+      navigate("/"); // Redirect unauthorized users to the home page
     }
   }, [isAuthenticated, user, navigate]);
 

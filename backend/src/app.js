@@ -46,8 +46,10 @@ import subscriptionRouter from "./routes/subscription.routes.js"
 import quizRouter from "./routes/quiz.routes.js"
 import resultRouter from "./routes/result.routes.js"
 import contactRouter from "./routes/contact.routes.js"
-import {errorHandler} from "./middlewares/error.middleware.js"
 import chatRouter from "./routes/chat.routes.js"
+import messageRouter from "./routes/message.routes.js"
+
+import {errorHandler} from "./middlewares/error.middleware.js"
 
 app.use('/api/v1/user',userRouter)
 app.use('/api/v1/service', serviceRouter)
@@ -56,6 +58,7 @@ app.use("/api/v1/quiz", quizRouter)
 app.use("/api/v1/result", resultRouter)
 app.use("/api/v1/contact", contactRouter)
 app.use("/api/v1/chat", chatRouter)
+app.use("/api/v1/message", messageRouter)
 
 InitializeSocketIO(io)
 

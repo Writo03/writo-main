@@ -1,5 +1,4 @@
 import Chat from "../models/chat.model.js"
-import User from "../models/user.model.js"
 import ChatMessage from "../models/message.model.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import ApiResponse from "../utils/ApiResponse.js"
@@ -99,7 +98,7 @@ const sendMessage = asyncHandler(async (req, res) => {
       sender: req.user._id,
       content,
       attachments,
-      chatId,
+      chat: chat._id,
     })
 
     chat.lastMessage = message._id
@@ -142,4 +141,70 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
 })
 
-export {getAllMessages, sendMessage}
+const deleteMessage = asyncHandler(async (req, res) => {
+  try {
+    const { chatId, messageId } = req.params
+    const chat = await Chat.findOne({
+      _id: chatId,
+      participants: req.user._id,
+    })
+
+    if (!chat) {
+      throw new ApiError(404, "Chat not found")
+    }
+
+    const message = await ChatMessage.findById(messageId)
+
+    if (!message) {
+      throw new ApiError(404, "Message not found")
+    }
+
+    if (message.sender.toString() !== req.user._id.toString()) {
+      throw new ApiError(
+        400,
+        "You are not allowed to delete this message. You are not sender."
+      )
+    }
+
+    await ChatMessage.findByIdAndDelete(messageId)
+
+    //update the last message of the chat
+    if (chat.lastMessage.toString() === message._id.toString()) {
+      const lastMessage = await ChatMessage.findOne(
+        {
+          chat: chatId,
+        },
+        {},
+        {
+          sort: {
+            createdAt: -1,
+          },
+        }
+      )
+
+      chat.lastMessage = lastMessage ? lastMessage._id : null
+      chat.save({ validateBeforeSave: false })
+    }
+
+    chat.participants.forEach((parId) => {
+      if (parId.toString() === req.user._id.toString()) return
+      emitSocketEvent(
+        req,
+        parId.toString(),
+        ChatEventEnum.MESSAGE_DELETE_EVENT,
+        message
+      )
+    })
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Message deleted successfully"))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while deleting message"
+    )
+  }
+})
+
+export { getAllMessages, sendMessage, deleteMessage }

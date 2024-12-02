@@ -87,6 +87,7 @@ export const ChatInterface: React.FC = () => {
   const removeAttachment = (index: number) => {
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
+  console.log(messages)
 
   const sendChatMessage = async () => {
     console.log(currentChat)
@@ -162,20 +163,19 @@ export const ChatInterface: React.FC = () => {
   };
 
 
-  useEffect(() => {
-    const createNewChat = async () => {
-      // If no user is selected, show an alert
-      const selectedsubject="Mathematics"
-       const res =await createUserChat(selectedsubject)
-// console.log(chats[0]._id)
-currentChat.current = chats[0];
-console.log(currentChat.current._id)
+  // useEffect(() => {
+  //   const createNewChat = async () => {
+  //     // If no user is selected, show an alert
+  //     const selectedsubject="Mathematics"
+  //      const res =await createUserChat(selectedsubject)
+  //       // currentChat.current = chats[0];
+  //       // console.log(currentChat.current._id)
 
-      // Handle the request to create a chat
+  //     // Handle the request to create a chat
      
-    };
-    createNewChat();
-  }, [])
+  //   };
+  //   createNewChat();
+  // }, [])
   
 
   return (
@@ -240,7 +240,7 @@ console.log(currentChat.current._id)
           {messages.map((msg) => (
             <div
               key={msg._id}
-              className={`flex ${msg.sender._id === currentChat.current?.participants[0]._id ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${msg.sender._id === currentChat.current?.participants[0]._id ? 'justify-start' : 'justify-end'}`}
             >
               <div className={`max-w-md rounded-lg p-3 ${
                 msg.sender._id === currentChat.current?.participants[0]._id

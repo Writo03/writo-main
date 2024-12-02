@@ -75,29 +75,142 @@ const createOrGetMentorChat = asyncHandler(async (req, res) => {
       subject,
       onLeave: false,
       onBreak: false,
-    }).sort({studentCount : 1}).limit(1)
+    })
+      .sort({ studentCount: -1 })
+      .limit(1)
 
-    if(!availableMentor.length){
-      throw new ApiError(404, "No mentor is available at this moment please try again later")
+    if (!availableMentor.length) {
+      throw new ApiError(
+        404,
+        "No mentor is available at this moment please try again later"
+      )
     }
 
     const chat = await Chat.create({
-        subject,
-        isMentorChat : true,
-        mentor : availableMentor[0]._id,
-        isPrimary,
-        participants : [req.user._id]
+      subject,
+      isMentorChat: true,
+      mentor: availableMentor[0]._id,
+      isPrimary,
+      participants: [req.user._id, availableMentor[0]._id],
     })
 
-    if(!chat){
+    if (!chat) {
       throw new ApiError(500, "Something went wrong while creating chat")
     }
 
-    emitSocketEvent(req, availableMentor[0]._id, ChatEventEnum.NEW_CHAT_EVENT, chat)
+    emitSocketEvent(
+      req,
+      availableMentor[0]._id,
+      ChatEventEnum.NEW_CHAT_EVENT,
+      chat
+    )
 
-    return res.status(201).json(new ApiResponse(201, "Chat created successfully", chat))
-
+    return res
+      .status(201)
+      .json(new ApiResponse(201, "Chat created successfully", chat))
   } catch (error) {
-    throw new ApiError(500, error?.message || "Something went wrong while creating chat")
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while creating chat"
+    )
   }
 })
+
+const getAllChats = asyncHandler(async (req, res) => {
+  try {
+    const { isPrimary } = req.query
+    const chats = await Chat.aggregate([
+      {
+        $match: {
+          isPrimary,
+          participants: {
+            $elemMatch: {
+              $eq: req.user._id,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          updatedAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "participants",
+          foreignField: "_id",
+          as: "participants",
+          pipeline: [
+            {
+              $project: {
+                refreshToken: 0,
+                password: 0,
+                isAdmin: 0,
+                target: 0,
+                institution: 0,
+                studentCount: 0,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "chatmessages",
+          foreignField: "_id",
+          localField: "lastMessage",
+          as: "lastMessage",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "sender",
+                foreignField: "_id",
+                as: "sender",
+                pipeline: [
+                  {
+                    $project: {
+                      fullName: 1,
+                      profilePic: 1,
+                      email: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                sender: {
+                  $first: "$sender",
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          lastMessage: {
+            $first: "$lastMessage",
+          },
+        },
+      },
+    ])
+
+    if (!chats.length) {
+      throw new ApiError(404, "No chat found")
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Chats fetched successfully", chats))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching chats"
+    )
+  }
+})
+
+

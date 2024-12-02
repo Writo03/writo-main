@@ -24,36 +24,39 @@ const UserSchema = new mongoose.Schema(
       index: true,
     },
     phone: { type: Number },
-    profilePic : {
-      type : String,
-      default : ""
+    profilePic: {
+      type: String,
+      default: "",
     },
     target: { type: String }, // E.g., JEE or NEET
     institution: { type: String },
     refreshToken: {
       type: String,
     },
-    isAdmin : {
-      type : Boolean,
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    isMentor: {
+      type: Boolean,
+      default: false,
+    },
+    subject: {
+      type: String,
+      enum: ["Mathematics", "Physics", "Chemistry", "Biology"],
+    },
+    onBreak: {
+      type: Boolean,
       default : false
     },
-    isMentor : {
-      type : Boolean,
+    onLeave: {
+      type: Boolean,
       default : false
     },
-    subject : {
-      type : String,
+    studentCount: {
+      type: Number,
+      default: 0,
     },
-    onBreak : {
-      type : String,
-    },
-    onLeave : {
-      type : String
-    },
-    studentCount : {
-      type : Number,
-      default : 0
-    }
   },
   { timestamps: true }
 )

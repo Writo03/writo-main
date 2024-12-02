@@ -5,7 +5,7 @@ import asyncHandler from "../utils/asyncHandler.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import ApiError from "../utils/ApiError.js"
 import { ChatEventEnum } from "../constants.js"
-import { emitSocketEvent } from "../socket"
+import { emitSocketEvent } from "../socket/index.js"
 import mongoose from "mongoose"
 
 const createOrGetMentorChat = asyncHandler(async (req, res) => {
@@ -52,8 +52,6 @@ const createOrGetMentorChat = asyncHandler(async (req, res) => {
         },
       },
     ])
-
-    console.log(chats)
 
     //if there is existing chat check if mentor is available and return chat id
     if (chats.length) {
@@ -105,9 +103,12 @@ const createOrGetMentorChat = asyncHandler(async (req, res) => {
       chat
     )
 
+    availableMentor[0].studentCount += 1
+    availableMentor[0].save({ validateBeforeSave: false })
+
     return res
       .status(201)
-      .json(new ApiResponse(201, "Chat created successfully", chat))
+      .json(new ApiResponse(201, "Chat created successfully", chat._id))
   } catch (error) {
     throw new ApiError(
       500,
@@ -213,4 +214,4 @@ const getAllChats = asyncHandler(async (req, res) => {
   }
 })
 
-
+export { createOrGetMentorChat, getAllChats }

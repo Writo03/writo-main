@@ -104,15 +104,15 @@ const SignIn = () => {
         dispatch(setSubscriptions(serviceIds)); // Store only the IDs
       }
     } catch (err:unknown) {
-      if (axios.isAxiosError(err)) {
-        console.log(err.response)
-        setError(err.response?.data?.message || '');
-        toast({
-          title: 'No subsciptions',
-          description: error,
-          variant: 'destructive',
-        });
-      }
+      // if (axios.isAxiosError(err)) {
+      //   console.log(err.response)
+      //   setError(err.response?.data?.message || '');
+      //   toast({
+      //     title: 'No subsciptions',
+      //     description: error,
+      //     variant: 'destructive',
+      //   });
+      // }
     }
   };
   if(isloading){

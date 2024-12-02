@@ -23,6 +23,7 @@ import Leaderboard from "./pages/Leaderboard";
 import QuizResultPage from "./components/Resultpage";
 import ManageQuiz from "./pages/admin/ManageQuiz";
 import QuizCreator from "./pages/admin/QuizCreator";
+import { ChatProvider } from "./Context/ChatContext";
 
 import AboutUs from "@/components/About";
 import ContactUs from "@/components/Contact";
@@ -36,6 +37,7 @@ import AddAdminUser from "./pages/admin/Adduser";
 import App from "./App";
 import { serviceIds } from "@/utils/contants";
 import Chat from "./pages/Chat/Chat";
+import { SocketProvider } from "./Context/SocketContext";
 // import Layout from "./pages/admin/Layout";
 
 const router = createBrowserRouter([
@@ -176,7 +178,9 @@ const router = createBrowserRouter([
       },
       {
         path:"chat",
-        element:<Chat />
+        element:(<ChatProvider>
+          <Chat />
+        </ChatProvider>)
       },
       {
         path: "about",
@@ -191,10 +195,11 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
     <Provider store={store}>
+      <SocketProvider>
+
       <RouterProvider router={router} />
+      </SocketProvider>
       <Toaster />
     </Provider>
-  </StrictMode>,
 );

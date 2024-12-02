@@ -8,4 +8,4 @@ router.use(verifyJWT)
 router.route("/create-or-get-mentor-chat/:subject").post(createOrGetMentorChat)
 router.route("/get-all-chats").get(getAllChats)
 
-export default router
+export default router 

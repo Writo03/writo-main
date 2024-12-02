@@ -1,12 +1,10 @@
 import Chat from "../models/chat.model.js"
 import User from "../models/user.model.js"
-import ChatMessage from "../models/message.model.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import ApiError from "../utils/ApiError.js"
 import { ChatEventEnum } from "../constants.js"
 import { emitSocketEvent } from "../socket/index.js"
-import mongoose from "mongoose"
 
 const createOrGetMentorChat = asyncHandler(async (req, res) => {
   try {
@@ -119,7 +117,7 @@ const createOrGetMentorChat = asyncHandler(async (req, res) => {
 
 const getAllChats = asyncHandler(async (req, res) => {
   try {
-    const { isPrimary } = req.query
+    const { isPrimary=true } = req.query
     const chats = await Chat.aggregate([
       {
         $match: {
@@ -198,7 +196,6 @@ const getAllChats = asyncHandler(async (req, res) => {
         },
       },
     ])
-
     if (!chats.length) {
       throw new ApiError(404, "No chat found")
     }

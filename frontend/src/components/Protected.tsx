@@ -16,7 +16,7 @@ const Protected = ({
 
   useEffect(() => {
     if (authentication && !isAuthenticated) {
-      navigate("/login");
+      navigate("/signin");
     } else if (!authentication && isAuthenticated) {
       navigate("/");
     }

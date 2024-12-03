@@ -81,7 +81,7 @@ const router = createBrowserRouter([
           </>
         ),
         children: [
-          { 
+          {
             path: "",
             element: <TestSeriesPage />,
           },
@@ -177,10 +177,14 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path:"chat",
-        element:(<ChatProvider>
-          <Chat />
-        </ChatProvider>)
+        path: "chat",
+        element: (
+          <Protected authentication={true}>
+            <ChatProvider>
+              <Chat />
+            </ChatProvider>
+          </Protected>
+        ),
       },
       {
         path: "about",
@@ -195,11 +199,10 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-    <Provider store={store}>
-      <SocketProvider>
-
+  <Provider store={store}>
+    <SocketProvider>
       <RouterProvider router={router} />
-      </SocketProvider>
-      <Toaster />
-    </Provider>
+    </SocketProvider>
+    <Toaster />
+  </Provider>,
 );

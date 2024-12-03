@@ -19,6 +19,7 @@ import { useChat } from '@/Context/ChatContext';
 import { LocalStorage } from '@/utils/helper';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { useSocket } from '@/Context/SocketContext';
 
 const Sidebar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -34,7 +35,8 @@ const Sidebar = () => {
     getChat
     
   } = useChat();
-  console.log(chats)
+
+const {socket} = useSocket()
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('my');
   const [showFilters, setShowFilters] = useState(false);
@@ -148,6 +150,7 @@ const Sidebar = () => {
               if (currentChat.current?._id === chat._id) return;
               LocalStorage.set("currentChat", chat); // Update local storage
               currentChat.current = chat; // Update context
+              socket?.emit("joinChat", chat._id)
               setMessageHandler(""); // Reset message input
               getMessages(); // Fetch messages for the selected chat
             }}

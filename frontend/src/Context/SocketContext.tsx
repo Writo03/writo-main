@@ -1,12 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from "react";
 import socketio from "socket.io-client";
-import { LocalStorage } from "../utils/helper";
 
 // Function to establish a socket connection with authorization token
 const getSocket = () => {
- // Retrieve jwt token from local storage or cookie
- const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken"); // Retrieve jwt token from local storage or cookie
 
   // Create a socket connection with the provided URI and authentication
   return socketio(import.meta.env.VITE_SERVER_URI, {

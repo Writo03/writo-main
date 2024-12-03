@@ -21,8 +21,7 @@ const TYPING_EVENT = "typing";
 const STOP_TYPING_EVENT = "stopTyping";
 const MESSAGE_RECEIVED_EVENT = "messageReceived";
 const LEAVE_CHAT_EVENT = "leaveChat";
-const UPDATE_GROUP_NAME_EVENT = "updateGroupName";
-const MESSAGE_DELETE_EVENT = "messageDeleted";
+
 
 // Create a context to manage authentication-related data and functions
 const ChatContext = createContext<{
@@ -157,28 +156,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsConnected(false);
   };
 
-  const updateChatLastMessageOnDeletion = (
-    chatToUpdateId: string, //ChatId to find the chat
-    message: ChatMessageInterface //The deleted message
-  ) => {
-    // Search for the chat with the given ID in the chats array
-    const chatToUpdate = chats.find((chat) => chat._id === chatToUpdateId)!;
-
-    //Updating the last message of chat only in case of deleted message and chats last message is same
-    if (chatToUpdate.lastMessage?._id === message._id) {
-      requestHandler(
-        async () => getChatMessages(chatToUpdateId),
-        null,
-        (req) => {
-          const { data } = req;
-
-          chatToUpdate.lastMessage = data[0];
-          setChats([...chats]);
-        },
-        (e) => toast.error(e)
-      );
-    }
-  };
+ 
 
   const updateChatLastMessage = (
     chatToUpdateId: string,
@@ -222,17 +200,6 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsTyping(false);
   };
 
-  const onMessageDelete = (message: ChatMessageInterface) => {
-    if (message?.chat !== currentChat.current?._id) {
-      setUnreadMessages((prev) =>
-        prev.filter((msg) => msg._id !== message._id)
-      );
-    } else {
-      setMessages((prev) => prev.filter((msg) => msg._id !== message._id));
-    }
-
-    updateChatLastMessageOnDeletion(message.chat, message);
-  };
 
   /**
    * Handles the event when a new message is received.
@@ -268,30 +235,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     setChats((prev) => prev.filter((c) => c._id !== chat._id));
   };
 
-  // Function to handle changes in group name
-  const onGroupNameChange = (chat: ChatListItemInterface) => {
-    // Check if the chat being changed is the currently active chat
-    if (chat._id === currentChat.current?._id) {
-      // Update the current chat with the new details
-      currentChat.current = chat;
-
-      // Save the updated chat details to local storage
-      LocalStorage.set("currentChat", chat);
-    }
-
-    // Update the list of chats with the new chat details
-    setChats((prev) => [
-      // Map through the previous chats
-      ...prev.map((c) => {
-        // If the current chat in the map matches the chat being changed, return the updated chat
-        if (c._id === chat._id) {
-          return chat;
-        }
-        // Otherwise, return the chat as-is without any changes
-        return c;
-      }),
-    ]);
-  };
+ 
 
   // Check for saved user and token in local storage during component initialization
   useEffect(() => {
@@ -333,10 +277,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     // Listener for when a user leaves a chat.
     socket.on(LEAVE_CHAT_EVENT, onChatLeave);
     // Listener for when a group's name is updated.
-    socket.on(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
-    //Listener for when a message is deleted
-    socket.on(MESSAGE_DELETE_EVENT, onMessageDelete);
-    // When the component using this hook unmounts or if `socket` or `chats` change:
+
     return () => {
       // Remove all the event listeners we set up to avoid memory leaks and unintended behaviors.
       socket.off(CONNECTED_EVENT, onConnect);
@@ -346,8 +287,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       socket.off(MESSAGE_RECEIVED_EVENT, onMessageReceived);
       socket.off(NEW_CHAT_EVENT, onNewChat);
       socket.off(LEAVE_CHAT_EVENT, onChatLeave);
-      socket.off(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
-      socket.off(MESSAGE_DELETE_EVENT, onMessageDelete);
+     
     };
 
     // Note:
@@ -377,7 +317,6 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setMessagesHandler,
         setMessageHandler,
         getChats,
-        updateChatLastMessageOnDeletion,
         updateChatLastMessage,
       }}
     >

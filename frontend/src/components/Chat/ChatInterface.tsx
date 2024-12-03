@@ -25,6 +25,9 @@ import { useChat } from '@/Context/ChatContext';
 import { useSocket } from '@/Context/SocketContext';
 import { requestHandler } from '@/utils/helper';
 import { sendMessage, deleteMessage, createUserChat } from '@/api';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+
 
 interface UserInterface {
   _id: string;
@@ -54,6 +57,7 @@ export const ChatInterface: React.FC = () => {
   const [sendMessageLoading, setSendMessageLoading] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [selfTyping, setSelfTyping] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const navigate = useNavigate();
 
@@ -71,6 +75,7 @@ export const ChatInterface: React.FC = () => {
     updateChatLastMessage,
   } = useChat();
   const { socket } = useSocket();
+  console.log(socket)
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -87,7 +92,6 @@ export const ChatInterface: React.FC = () => {
   const removeAttachment = (index: number) => {
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
-  console.log(messages)
 
   const sendChatMessage = async () => {
     console.log(currentChat)
@@ -163,19 +167,20 @@ export const ChatInterface: React.FC = () => {
   };
 
 
-  // useEffect(() => {
-  //   const createNewChat = async () => {
-  //     // If no user is selected, show an alert
-  //     const selectedsubject="Mathematics"
-  //      const res =await createUserChat(selectedsubject)
-  //       // currentChat.current = chats[0];
-  //       // console.log(currentChat.current._id)
+  useEffect(() => {
+    const createNewChat = async () => {
+      // If no user is selected, show an alert
+      const selectedsubject="Mathematics"
+       const res =await createUserChat(selectedsubject)
+       console.log(res)
+        // currentChat.current = chats[0];
+        // console.log(currentChat.current._id)
 
-  //     // Handle the request to create a chat
+      // Handle the request to create a chat
      
-  //   };
-  //   createNewChat();
-  // }, [])
+    };
+    createNewChat();
+  }, [])
   
 
   return (
@@ -188,7 +193,7 @@ export const ChatInterface: React.FC = () => {
                 <AvatarFallback>GY</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="font-medium">Garima Yadav</h2>
+                <h2 className="font-medium">{}</h2>
                 <p className="text-sm text-gray-500">Active now</p>
               </div>
             </div>
@@ -235,12 +240,12 @@ export const ChatInterface: React.FC = () => {
        
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1  p-4">
+        <div className="space-y-4 flex flex-col-reverse">
           {messages.map((msg) => (
             <div
               key={msg._id}
-              className={`flex ${msg.sender._id === currentChat.current?.participants[0]._id ? 'justify-start' : 'justify-end'}`}
+              className={`flex ${msg.sender._id === user.userId? 'justify-end' : 'justify-start'}`}
             >
               <div className={`max-w-md rounded-lg p-3 ${
                 msg.sender._id === currentChat.current?.participants[0]._id

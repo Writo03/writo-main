@@ -1,6 +1,5 @@
 // Import necessary modules and utilities
 import axios from "axios";
-import { LocalStorage } from "../utils/helper";
 
 // Create an Axios instance for API requests
 const apiClient = axios.create({

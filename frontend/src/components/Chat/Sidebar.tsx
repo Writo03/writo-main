@@ -17,8 +17,12 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useChat } from '@/Context/ChatContext';
 import { LocalStorage } from '@/utils/helper';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const Sidebar = () => {
+  const user = useSelector((state: RootState) => state.auth.user);
+
   const {
     chats,
     isLoadingChats,
@@ -151,7 +155,8 @@ const Sidebar = () => {
           >
             <div className="flex justify-between items-start">
               <p className="font-medium">
-                {chat.participants?.[0]?.fullName || "Unknown User"}
+                {user.fullName===chat.participants?.[0]?.fullName ? chat.participants?.[1]?.fullName :chat.participants?.[0]?.fullName }
+                {/* {chat.participants?.[1]?.fullName || "Unknown User"} */}
               </p>
               {chat.lastMessage && (
                 <span className="text-xs text-gray-500">

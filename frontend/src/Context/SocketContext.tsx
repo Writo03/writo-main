@@ -5,7 +5,8 @@ import { LocalStorage } from "../utils/helper";
 
 // Function to establish a socket connection with authorization token
 const getSocket = () => {
-  const token = LocalStorage.get("token"); // Retrieve jwt token from local storage or cookie
+ // Retrieve jwt token from local storage or cookie
+ const token = localStorage.getItem("accessToken");
 
   // Create a socket connection with the provided URI and authentication
   return socketio(import.meta.env.VITE_SERVER_URI, {

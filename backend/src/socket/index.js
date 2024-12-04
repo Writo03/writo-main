@@ -28,7 +28,7 @@ const InitializeSocketIO = (io) => {
     try {
       const cookies = cookie.parse(socket.handshake.headers?.cookie || "")
       let token = cookies?.accessToken || socket.handshake.auth?.token
-      console.log("Access token found", token)
+      // console.log("Access token found", token)
 
       if (!token) {
         throw new ApiError(401, "Un-authorized handshake. Token is missing")

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -6,12 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Send,
-  Mic,
   MoreVertical,
   Phone,
   Video,
   PaperclipIcon,
-  SmileIcon,
+  Badge,
+  User2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -20,13 +20,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Typing from './Typing';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useChat } from '@/Context/ChatContext';
 import { useSocket } from '@/Context/SocketContext';
-import { requestHandler } from '@/utils/helper';
-import { sendMessage, deleteMessage, createUserChat } from '@/api';
+import { isImageFile, requestHandler } from '@/utils/helper';
+import { sendMessage, createUserChat } from '@/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 
 
 interface UserInterface {
@@ -55,19 +56,18 @@ const STOP_TYPING_EVENT = "stopTyping";
 
 export const ChatInterface: React.FC = () => {
   const [sendMessageLoading, setSendMessageLoading] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+  const [attachedFiles, setAttachedFiles] = useState<string[]>([]);
   const [selfTyping, setSelfTyping] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const user = useSelector((state: RootState) => state.auth.user);
-
+  const { subject } = useParams<{ subject: string }>();
   const navigate = useNavigate();
 
   const {
     currentChat,
-    chats,
-    isLoadingMessages,
     setMessagesHandler,
     messages,
-    updateChatLastMessageOnDeletion,
     isTyping,
     message,
     setMessageHandler,
@@ -75,26 +75,67 @@ export const ChatInterface: React.FC = () => {
     updateChatLastMessage,
   } = useChat();
   const { socket } = useSocket();
-  console.log(socket)
+ console.log(isTyping)
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const handleFileAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const scrollToBottom = useCallback(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
+
+
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollHeight, scrollTop, clientHeight } = e.currentTarget;
+    setIsScrolledToBottom(Math.abs(scrollHeight - scrollTop - clientHeight) < 1);
+  }, []);
+
+
+
+  const handleFileAttachment = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + attachedFiles.length > 5) {
-      // toast.error("Maximum 5 files can be attached");
+      setError("Maximum 5 files can be attached");
       return;
     }
-    setAttachedFiles(prev => [...prev, ...files]);
+  
+    try {
+      const uploadedFiles = await Promise.all(
+        files.map(async (file) => {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("upload_preset", "spx0jjqq"); // Replace with Cloudinary preset
+          const response = await fetch("https://api.cloudinary.com/v1_1/dlsxjstxo/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          if (data.secure_url) {
+            return data.secure_url; // Return the Cloudinary URL
+          }
+          throw new Error("Upload failed");
+        })
+      );
+  
+      setAttachedFiles((prev) => [...prev, ...uploadedFiles]);
+      setError(null);
+    } catch (error) {
+      setError("Error uploading files. Please try again.");
+    }
   };
+  
 
   const removeAttachment = (index: number) => {
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const sendChatMessage = async () => {
-    console.log(currentChat)
+    // console.log(currentChat)
     if (!currentChat.current?._id || !socket || (!message.trim() && attachedFiles.length === 0)) return;
 
     socket.emit(STOP_TYPING_EVENT, currentChat.current?._id);
@@ -107,28 +148,22 @@ export const ChatInterface: React.FC = () => {
         setAttachedFiles([]);
         setMessagesHandler([res.data, ...messages]);
         updateChatLastMessage(currentChat.current?._id || "", res.data);
+        scrollToBottom();
       },
       (error) => console.log(error)
     );
   };
+  useEffect(() => {
+    if (!isScrolledToBottom && messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages, isScrolledToBottom, scrollToBottom]);
 
-  // const handleMessageDelete = async (messageToDelete: ChatMessageInterface) => {
-  //   await requestHandler(
-  //     async () => await deleteMessage(messageToDelete.chat, messageToDelete._id),
-  //     null,
-  //     (res) => {
-  //       setMessagesHandler(messages.filter(msg => msg._id !== res.data._id));
-  //       updateChatLastMessageOnDeletion(messageToDelete.chat, messageToDelete);
-  //     },
-  //     (error) => toast.error(error.message)
-  //   );
-  // };
   const handleOnMessageChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     // Update the message state with the current input value
     setMessageHandler(e.target.value);
-
     // If socket doesn't exist or isn't connected, exit the function
     if (!socket || !isConnected) return;
 
@@ -166,17 +201,24 @@ export const ChatInterface: React.FC = () => {
     });
   };
 
+  const getOtherParticipant = useCallback((chat: Chat) => {
+    console.log(chat)
+    const participant = chat?.participants.find(
+      (p) => p._id !== user.userId
+    );
+    // Return metadata specific to individual chats.
+    return participant;
+    // return chat.participants.find(p => p._id !== user.userId) || chat.participants[0];
+  }, [user.userId]);
+  const otherParticipant = getOtherParticipant(currentChat.current);
+
 
   useEffect(() => {
     const createNewChat = async () => {
-      // If no user is selected, show an alert
-      const selectedsubject="Mathematics"
-       const res =await createUserChat(selectedsubject)
+    
+      
+       const res =await createUserChat(subject)
        console.log(res)
-        // currentChat.current = chats[0];
-        // console.log(currentChat.current._id)
-
-      // Handle the request to create a chat
      
     };
     createNewChat();
@@ -185,102 +227,141 @@ export const ChatInterface: React.FC = () => {
 
   return (
     <div className="flex-1 h-full flex flex-col bg-gray-50">
-  <div className="p-4 border-b bg-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src="/api/placeholder/32/32" />
-                <AvatarFallback>GY</AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 className="font-medium">{}</h2>
-                <p className="text-sm text-gray-500">Active now</p>
+   <div className="p-4 border-b bg-white shadow-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarImage src={otherParticipant?.profilePic} />
+              <AvatarFallback><User2 /></AvatarFallback>
+            </Avatar>
+            <div>
+              <h2 className="font-medium">{otherParticipant?.fullName}</h2>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                  <span className="text-sm text-gray-500">Active now</span>
+                </span>
+                {isTyping && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Typing />
+                  </Badge>
+                )}
               </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Phone className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Voice Call</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Video className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Video Call</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-  
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <MoreVertical className="h-5 w-5" />
+                    <Phone className="h-5 w-5" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
-                  <DropdownMenuItem>Clear Chat</DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600">Block User</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                </TooltipTrigger>
+                <TooltipContent>Voice Call</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Video className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Video Call</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>View Profile</DropdownMenuItem>
+                <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Clear Chat</DropdownMenuItem>
+                <DropdownMenuItem className="text-red-600">Block User</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
+      </div>
        
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1  p-4">
-        <div className="space-y-4 flex flex-col-reverse">
-          {messages.map((msg) => (
-            <div
-              key={msg._id}
-              className={`flex ${msg.sender._id === user.userId? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`max-w-md rounded-lg p-3 ${
-                msg.sender._id === currentChat.current?.participants[0]._id
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-200 text-gray-900'
-              }`}>
-                <p>{msg.content}</p>
-                {msg.attachments.length > 0 && (
-                  <div className="mt-2 space-y-2">
-                    {msg.attachments.map(attachment => (
-                      <div key={attachment._id} className="flex items-center gap-2">
-                        <a 
-                          href={attachment.url} 
-                          target="_blank" 
+      <ScrollArea 
+          ref={scrollAreaRef}
+          onScroll={handleScroll}
+          className="flex-1 p-4"
+        >
+          <div className="space-y-4 flex flex-col-reverse">
+            {isTyping && <Typing />}
+            {messages.map((msg,index) => (
+              <div
+                key={msg._id}
+                ref={index === 0 ? lastMessageRef : null}
+                className={`flex ${msg.sender._id === user.userId ? 'justify-end' : 'justify-start'}`}
+              >
+                <div 
+                  className={`max-w-md rounded-lg p-3 ${
+                    msg.sender._id === currentChat.current?.participants[0]._id
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-200 text-gray-900'
+                  }`}
+                >
+          <p>{msg.content}</p>
+          
+          {msg.attachments?.length > 0 && (
+            <div className="mt-2 space-y-2">
+              {msg.attachments.map((file) => (
+                <div
+                  key={file._id}
+                  className="group relative aspect-square rounded-xl overflow-hidden w-48"
+                >
+                  {isImageFile(file.url) ? (
+                    <>
+                      <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <a
+                          href={file.url}
+                          download
+                          target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm underline"
+                          className="text-white hover:underline"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {attachment.url.split('/').pop()}
+                          Download
                         </a>
                       </div>
-                    ))}
-                  </div>
-                )}
-                <div className="flex items-center justify-end gap-1 mt-1">
-                  <span className="text-xs opacity-70">
-                    {formatMessageTime(msg.createdAt)}
-                  </span>
+                      <img
+                        src={file.url}
+                        alt="attachment"
+                        className="h-full w-full object-cover"
+                      />
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center h-full w-full bg-gray-100 text-sm p-4">
+                      No preview available
+                    </div>
+                  )}
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-          {isTyping && <Typing />}
+          )}
+          
+          <div className="flex items-center justify-end gap-1 mt-2">
+            <span className="text-xs opacity-70">
+              {formatMessageTime(msg.createdAt)}
+            </span>
+          </div>
         </div>
-      </ScrollArea>
-
+      </div>
+    ))}
+  </div>
+</ScrollArea>
       {/* Input Area */}
       <div className="p-4 border-t bg-white">
         {attachedFiles.length > 0 && (

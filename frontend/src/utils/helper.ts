@@ -75,3 +75,15 @@ export class LocalStorage {
       localStorage.clear();
     }
   }
+
+
+
+  export const isImageFile = (fileUrl: string) => {
+    if (!fileUrl) return false; // Handle cases where fileUrl is an empty string or null
+  
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+    const parts = fileUrl.split(".");
+    const extension = parts.length > 1 ? parts.pop()?.toLowerCase() : "";
+  
+    return extension ? imageExtensions.includes(extension) : false;
+  };

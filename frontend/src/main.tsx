@@ -177,7 +177,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "chat",
+        path: "chat/:subject",
         element: (
           <Protected authentication={true}>
             <ChatProvider>

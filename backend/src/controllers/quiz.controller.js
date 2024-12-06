@@ -3,6 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
+
 const createQuiz = asyncHandler(async (req, res) => {
   try {
     const {
@@ -21,7 +22,7 @@ const createQuiz = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Only admins can create quiz for mentors");
     }
 
-    if (!req.user.isAdmin && !req.user.isMentor) {
+    if (!req.user.isAdmin && (!req.user.isMentor || !req.user.role.includes("QUIZ"))) {
       throw new ApiError(400, "Only admins and mentors can create quiz");
     }
 
@@ -153,7 +154,7 @@ const getQuizById = asyncHandler(async (req, res) => {
 
 const updateQuiz = asyncHandler(async (req, res) => {
   try {
-    if (!req.user.isAdmin && !req.user.isMentor) {
+    if (!req.user.isAdmin && (!req.user.isMentor || !req.user.role.includes("QUIZ"))) {
       throw new ApiError(400, "Only admins and mentors can update quiz");
     }
     const {
@@ -221,6 +222,11 @@ const updateQuiz = asyncHandler(async (req, res) => {
 const deleteQuiz = asyncHandler(async (req, res) => {
   try {
     const { quizId } = req.params;
+
+    if (!req.user.isAdmin && (!req.user.isMentor || !req.user.role.includes("QUIZ"))) {
+      throw new ApiError(400, "Only admins and mentors can delete quiz");
+    }
+
     const quiz = await Quiz.findByIdAndDelete(quizId);
 
     if (!quiz) {

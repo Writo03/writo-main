@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    target: { type: String }, // E.g., JEE or NEET
+    target: { type: String, enum: ["JEE", "NEET"] }, // E.g., JEE or NEET
     institution: { type: String },
     refreshToken: {
       type: String,
@@ -45,13 +45,17 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ["Mathematics", "Physics", "Chemistry", "Biology"],
     },
+    role : {
+      type : [String], 
+      default : []
+    },
     onBreak: {
       type: Boolean,
-      default : false
+      default: false,
     },
     onLeave: {
       type: Boolean,
-      default : false
+      default: false,
     },
     studentCount: {
       type: Number,

@@ -71,6 +71,7 @@ const createOrGetMentorChat = asyncHandler(async (req, res) => {
       subject,
       onLeave: false,
       onBreak: false,
+      role : { $in : ["CHAT"]}
     })
       .sort({ studentCount: -1 })
       .limit(1)

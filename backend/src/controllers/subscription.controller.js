@@ -4,12 +4,13 @@ import ApiResponse from "../utils/ApiResponse.js"
 import ApiError from "../utils/ApiError.js"
 import Razorpay from "razorpay"
 import crypto from "crypto"
+import { ServiceIds } from "../constants.js"
 
 let instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID, 
+  key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 })
- 
+
 const createOrder = asyncHandler(async (req, res) => {
   try {
     const { amount } = req.body
@@ -36,7 +37,7 @@ const createOrder = asyncHandler(async (req, res) => {
 const verifyPayment = asyncHandler(async (req, res) => {
   try {
     const {
-      razorpay_payment_id, 
+      razorpay_payment_id,
       razorpay_signature,
       order_id,
       serviceId,
@@ -47,67 +48,146 @@ const verifyPayment = asyncHandler(async (req, res) => {
     sha.update(`${order_id}|${razorpay_payment_id}`)
     const digest = sha.digest("hex")
 
-    if(digest !== razorpay_signature){
-        throw new ApiError(400, "Payment verification failed")
+    if (digest !== razorpay_signature) {
+      throw new ApiError(400, "Payment verification failed")
     }
 
-    const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    const expiryDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
 
-    //if user is renewing the service 
-    const oldSubscription = await Subscription.findOne({service : serviceId, student : req.user._id})
-    
-    if(oldSubscription){
-      let oldExp = new Date(oldSubscription.endDate)
-      if(oldExp > Date.now()){
-        oldSubscription.endDate = new Date(oldExp.getTime() + 30 * 24 * 60 * 60 * 1000)
-        await oldSubscription.save({validateBeforeSave : false})
-        return res.status(200).json(new ApiResponse(200, "Payment verified successfully - Subscription extended", oldSubscription))
+    //if user is subscribing to doubt session we have to give test series as well
+    if (serviceId === ServiceIds.DOUBT_SESSION) {
+      const freeServiceId =
+        req.user.target === "NEET" ? ServiceIds.NEET : ServiceIds.JEE
+      const freeServiceName = req.user.target === "NEET" ? "NEET" : "JEE"
+      const freeService = await Subscription.findOne({
+        service : freeServiceId,
+        student : req.user._id
+      })
+      if (freeService) {
+        let oldExp = new Date(freeService.endDate)
+        if (oldExp > Date.now()) {
+          freeService.endDate = new Date(
+            oldExp.getTime() + 365 * 24 * 60 * 60 * 1000
+          )
+          await freeService.save({ validateBeforeSave: false })
+        } else {
+          freeService.endDate = expiryDate
+          freeService.startDate = Date.now()
+          await freeService.save({ validateBeforeSave: false })
+        }
       } else {
-        oldSubscription.endDate = expiryDate
-        oldSubscription.startDate = Date.now()
-        await oldSubscription.save({validateBeforeSave : false})
-        return res.status(200).json(new ApiResponse(200, "Payment verified successfully - Subscription renewed", oldSubscription))
+        await Subscription.create({
+          name: freeServiceName,
+          service: freeServiceId,
+          startDate: Date.now(),
+          endDate: expiryDate,
+          student: req.user._id,
+          isExpired: false,
+        })
       }
     }
 
-
-    const subscription = await Subscription.create({
-        name : serviceName,
-        service : serviceId,
-        startDate : Date.now(),
-        endDate : expiryDate,
-        student : req.user._id,
-        isExpired : false
+    //if user is renewing the service
+    const oldSubscription = await Subscription.findOne({
+      service: serviceId,
+      student: req.user._id,
     })
 
-    return res.status(200).json(new ApiResponse(200, "Payment verified successfully - service subscribed", subscription))
+    if (oldSubscription) {
+      let oldExp = new Date(oldSubscription.endDate)
+      if (oldExp > Date.now()) {
+        oldSubscription.endDate = new Date(
+          oldExp.getTime() + 365 * 24 * 60 * 60 * 1000
+        )
+        await oldSubscription.save({ validateBeforeSave: false })
+        return res
+          .status(200)
+          .json(
+            new ApiResponse(
+              200,
+              "Payment verified successfully - Subscription extended",
+              oldSubscription
+            )
+          )
+      } else {
+        oldSubscription.endDate = expiryDate
+        oldSubscription.startDate = Date.now()
+        await oldSubscription.save({ validateBeforeSave: false })
+        return res
+          .status(200)
+          .json(
+            new ApiResponse(
+              200,
+              "Payment verified successfully - Subscription renewed",
+              oldSubscription
+            )
+          )
+      }
+    }
 
+    const subscription = await Subscription.create({
+      name: serviceName,
+      service: serviceId,
+      startDate: Date.now(),
+      endDate: expiryDate,
+      student: req.user._id,
+      isExpired: false,
+    })
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Payment verified successfully - service subscribed",
+          subscription
+        )
+      )
   } catch (error) {
-    throw new ApiError(500, error?.message || "Something went wrong while verifying payment")
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while verifying payment"
+    )
   }
 })
 
-const getUserServices = asyncHandler(async(req, res) => {
+const getUserServices = asyncHandler(async (req, res) => {
   try {
-    const {type} = req.query
-    let subscriptions;
+    const { type } = req.query
+    let subscriptions
 
-    if(type === "active"){
-      subscriptions = await Subscription.find({student : req.user._id, endDate : {$gt : Date.now()} })
-    }else if(type === "expired"){
-      subscriptions = await Subscription.find({student : req.user._id, endDate : {$lt : Date.now()} })
-    }else {
-      subscriptions = await Subscription.find({student : req.user._id})
+    if (type === "active") {
+      subscriptions = await Subscription.find({
+        student: req.user._id,
+        endDate: { $gt: Date.now() },
+      })
+    } else if (type === "expired") {
+      subscriptions = await Subscription.find({
+        student: req.user._id,
+        endDate: { $lt: Date.now() },
+      })
+    } else {
+      subscriptions = await Subscription.find({ student: req.user._id })
     }
 
     // if(!subscriptions.length){
     //   throw new ApiError(404, "No subscriptions found")
     // }
 
-    return res.status(200).json(new ApiResponse(200, "subscriptions fetched successfully", subscriptions))
-
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "subscriptions fetched successfully",
+          subscriptions
+        )
+      )
   } catch (error) {
-    throw new ApiError(500, error?.message || "Something went wrong while fetching subscriptions")
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching subscriptions"
+    )
   }
 })
 

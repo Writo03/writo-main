@@ -135,12 +135,12 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
 const registerMentor = asyncHandler(async (req, res) => {
   try {
-    const { email, password, fullName, phone, subject } = req.body
+    const { email, password, fullName, phone, subject, role } = req.body
     if (!req.user || !req.user.isAdmin) {
       throw new ApiError(400, "Only admins can register mentors")
     }
 
-    if (!email || !password || !fullName || !subject) {
+    if (!email || !password || !fullName || !subject || !role.length) {
       throw new ApiError(400, "All feilds are requried")
     }
 
@@ -150,6 +150,7 @@ const registerMentor = asyncHandler(async (req, res) => {
       fullName,
       phone,
       subject,
+      role,
       isMentor: true,
     })
 

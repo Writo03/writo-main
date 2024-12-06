@@ -27,6 +27,7 @@ import { useState } from 'react';
 import { ErrorApiRes } from '@/types/all';
 import axiosInstance from '@/utils/axiosInstance';
 import { baseSchema } from '@/Schema/admin';
+import { Checkbox } from '@/components/ui/checkbox';
 
 // Subject options for mentors
 const subjects = [
@@ -36,14 +37,20 @@ const subjects = [
   'Biology',
 ] as const;
 
+const ROLES = [
+  { label: "Chat", value: "CHAT" },
+  { label: "Quiz", value: "QUIZ" },
+] as const;
+
 
 const mentorSchema = baseSchema.extend({
   subject: z.enum(subjects, {
     required_error: 'Please select a subject',
   }),
+  role : z.array(z.string()).min(1, "Select at least one role"),
 });
 
-type FormData = z.infer<typeof baseSchema> & { subject?: string };
+type FormData = z.infer<typeof baseSchema> & { subject?: string, role : string[] };
 
 const AddAdminMentor = () => {
   const { role } = useParams();
@@ -60,6 +67,7 @@ const AddAdminMentor = () => {
       fullName: '',
       phone: '',
       subject: '',
+      role : []
     },
   });
 
@@ -187,6 +195,52 @@ const AddAdminMentor = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {!isAdmin && (
+              <FormField
+                control={form.control}
+                name="role"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                      {ROLES.map((role) => (
+                        <FormField
+                          key={role.value}
+                          control={form.control}
+                          name="role"
+                          render={({ field }) => (
+                            <FormItem className="flex items-center space-x-2">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(role.value)}
+                                  onCheckedChange={(checked) => {
+                                    const value = field.value || [];
+                                    if (checked) {
+                                      field.onChange([...value, role.value]);
+                                    } else {
+                                      field.onChange(
+                                        value.filter(
+                                          (val) => val !== role.value,
+                                        ),
+                                      );
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {role.label}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

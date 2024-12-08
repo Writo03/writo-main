@@ -19,7 +19,7 @@ import {
   Video as VideoIcon,
 } from "lucide-react";
 // import { Link } from "react-router-dom";
-
+import { serviceNames,serviceIds } from "@/utils/contants";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,6 +34,9 @@ import { Badge } from "@/components/ui/badge";
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
+import PaymentButton from "../ui/PaymentButton";
+import { toast } from "../hooks/use-toast";
+import { PaymentSuccessDetails } from "../TestSeries/TestSeriesDetails";
 
 const subjects = [
   {
@@ -321,6 +324,20 @@ export default function DoubtSessionPage() {
 }
 
 export function ExclusiveSection({ className }: { className?: string }) {
+  const handlePaymentSuccess = (details: PaymentSuccessDetails) => {
+    toast({
+      title: "Payment Sucessful!!",
+      description: details.serviceName,
+    });
+  };
+
+  const handlePaymentError = (error: Error) => {
+    console.error('Payment failed:', error);
+    toast({
+      title: "Payment failed!!",
+      description:error.message,
+    });
+  }
   return (
     <div className={cn("container mx-auto", className)}>
       <div className="overflow-hidden rounded-lg bg-white shadow-xl">
@@ -340,12 +357,22 @@ export function ExclusiveSection({ className }: { className?: string }) {
             <p className="mb-6 text-lg text-gray-600">
               One-time payment for full access
             </p>
-            <Button
+            {/* <Button
               size="lg"
-              className="bg-purple-600 text-white hover:bg-purple-700"
+              className="bg-purple-600 text-white hover:bg-purple-700" 
             >
+
               Claim Your Offer Now
-            </Button>
+            </Button> */}
+            <PaymentButton
+                price={999}
+                serviceName={serviceNames.doubtSession}
+                serviceId={serviceIds.doubtSession}
+                onSuccess={handlePaymentSuccess}
+                onError={handlePaymentError}
+                currencySymbol="Rs"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              />
           </div>
         </div>
         <div className="bg-purple-100 p-6 text-center">

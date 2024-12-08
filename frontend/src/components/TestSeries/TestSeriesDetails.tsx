@@ -40,7 +40,7 @@ interface AboutProgram {
   list: string[];
 }
 
-interface PaymentSuccessDetails {
+export interface PaymentSuccessDetails {
   paymentId: string;
   orderId: string;
   signature: string;

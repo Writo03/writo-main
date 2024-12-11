@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -92,8 +92,9 @@ const Sidebar = () => {
 
   // Get the other participant in a chat
   const getOtherParticipant = useCallback((chat: Chat) => {
-    return chat.participants.find(p => p._id !== user.userId) || chat.participants[0];
-  }, [user.userId]);
+    const participant = chat.participants.find(p => p._id !== user.userId);
+    return participant || chat.participants[0];
+}, [user.userId]);
   // console.log(unreadMessages)
   // Memoized filtered chats
   const filteredChats = useMemo(() => {
@@ -102,12 +103,13 @@ const Sidebar = () => {
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(chat => {
-        const otherParticipant = getOtherParticipant(chat);
-        return otherParticipant?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               chat.subject.toLowerCase().includes(searchTerm.toLowerCase());
+          const otherParticipant = getOtherParticipant(chat);
+          return (
+              otherParticipant?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              chat.subject.toLowerCase().includes(searchTerm.toLowerCase())
+          );
       });
-    }
-
+  }
     // Filter based on tab
     if (activeTab === 'my') {
       filtered = filtered.filter(chat => 

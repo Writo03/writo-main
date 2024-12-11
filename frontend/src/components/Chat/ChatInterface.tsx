@@ -20,36 +20,64 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Typing from './Typing';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { useChat } from '@/Context/ChatContext';
 import { useSocket } from '@/Context/SocketContext';
 import { isImageFile, requestHandler } from '@/utils/helper';
-import { sendMessage, createUserChat } from '@/api';
+import { sendMessage } from '@/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
+import { toast } from '../hooks/use-toast';
 
 
-interface UserInterface {
+
+interface Chat {
   _id: string;
-  avatar: string;
-  email: string;
-  username: string;
-}
-
-interface ChatMessageInterface {
-  _id: string;
-  sender: Pick<UserInterface, "_id" | "avatar" | "email" | "username">;
-  content: string;
-  chat: string;
-  attachments: {
-    url: string;
-    localPath: string;
-    _id: string;
-  }[];
+  subject: string;
+  isMentorChat: boolean;
+  isPrimary: boolean;
+  mentor: string;
+  participants: Participant[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
+  lastMessage?: LastMessage;
 }
+
+interface Participant {
+  _id: string;
+  email: string;
+  fullName: string;
+  phone: number;
+  profilePic: string;
+  isMentor: boolean;
+  subject?: string; // Optional since not all participants might have a subject
+  onBreak: boolean;
+  onLeave: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface LastMessage {
+  _id: string;
+  sender: Sender;
+  content: string;
+  attachments: string[]; // Assuming attachments are strings (URLs)
+  chat: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface Sender {
+  _id: string;
+  email: string;
+  fullName: string;
+  profilePic: string;
+}
+
 
 const TYPING_EVENT = "typing";
 const STOP_TYPING_EVENT = "stopTyping";
@@ -58,14 +86,13 @@ export const ChatInterface: React.FC = () => {
   const [sendMessageLoading, setSendMessageLoading] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<string[]>([]);
   const [selfTyping, setSelfTyping] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const user = useSelector((state: RootState) => state.auth.user);
-  const { subject } = useParams<{ subject: string }>();
-  const navigate = useNavigate();
+  const { chatid } = useParams<{ chatid: string }>();
 
   const {
     currentChat,
+    chats,
     setMessagesHandler,
     messages,
     isTyping,
@@ -75,7 +102,6 @@ export const ChatInterface: React.FC = () => {
     updateChatLastMessage,
   } = useChat();
   const { socket } = useSocket();
- console.log(isTyping)
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -100,7 +126,9 @@ export const ChatInterface: React.FC = () => {
   const handleFileAttachment = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + attachedFiles.length > 5) {
-      setError("Maximum 5 files can be attached");
+      toast({
+        description:"Maximum 5 files can be attached"
+      });
       return;
     }
   
@@ -123,9 +151,11 @@ export const ChatInterface: React.FC = () => {
       );
   
       setAttachedFiles((prev) => [...prev, ...uploadedFiles]);
-      setError(null);
     } catch (error) {
-      setError("Error uploading files. Please try again.");
+      console.log(error)
+      toast({
+        description: "uploading files. Please try again."
+      });
     }
   };
   
@@ -202,7 +232,6 @@ export const ChatInterface: React.FC = () => {
   };
 
   const getOtherParticipant = useCallback((chat: Chat) => {
-    console.log(chat)
     const participant = chat?.participants.find(
       (p) => p._id !== user.userId
     );
@@ -213,18 +242,27 @@ export const ChatInterface: React.FC = () => {
   const otherParticipant = getOtherParticipant(currentChat.current);
 
 
-  useEffect(() => {
-    const createNewChat = async () => {
+  // useEffect(() => {
+  //   const createNewChat = async () => {
     
       
-       const res =await createUserChat(subject)
-       console.log(res)
+  //      const res =await createUserChat(subject)
+  //      console.log(res)
      
-    };
-    createNewChat();
-  }, [])
+  //   };
+  //   createNewChat();
+  // }, [])
   
 
+  useEffect(() => {
+    const isChatPresent = chats.some((chat) => chat._id === chatid);
+    if (!isChatPresent) {
+      toast({
+        description:"Chat not found."
+      });
+    }
+  }, [chats, chatid]);
+  
   return (
     <div className="flex-1 h-full flex flex-col bg-gray-50">
    <div className="p-4 border-b bg-white shadow-sm">
@@ -242,7 +280,7 @@ export const ChatInterface: React.FC = () => {
                   <span className="text-sm text-gray-500">Active now</span>
                 </span>
                 {isTyping && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge  className="text-xs">
                     <Typing />
                   </Badge>
                 )}
@@ -414,7 +452,7 @@ export const ChatInterface: React.FC = () => {
             size="icon"
             className="bg-purple-600"
             onClick={sendChatMessage}
-            disabled={!message.trim() && attachedFiles.length === 0}
+            disabled={!message.trim() && attachedFiles.length === 0||sendMessageLoading}
           >
             <Send className="h-4 w-4" />
           </Button>
@@ -422,6 +460,7 @@ export const ChatInterface: React.FC = () => {
       </div>
     </div>
   );
+
 };
 
 export default ChatInterface;

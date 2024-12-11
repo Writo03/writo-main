@@ -8,7 +8,7 @@ import { InitializeSocketIO } from "./socket/index.js"
 
 
 
-const allowedOrigins = ["http://localhost:3001", "https://writo-main-bi36.vercel.app"]
+const allowedOrigins = ["http://localhost:3001", "https://writo-main-bi36.vercel.app", "https://www.writo.tech"]
 const app = express()
 const httpServer = http.createServer(app)
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams, Navigate } from "react-router-dom";
 import TestSeriesDetails, { ExamDetailsProps } from "./TestSeriesDetails";
 import {serviceIds,serviceNames} from '../../utils/contants'

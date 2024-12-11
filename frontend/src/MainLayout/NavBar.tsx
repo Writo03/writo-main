@@ -58,6 +58,7 @@ function Navbar() {
   const { toast } = useToast();
 
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isloading, setisloading] = useState<boolean>(false);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
@@ -97,6 +98,7 @@ function Navbar() {
         navigate("/");
         setisloading(false);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error.response?.data?.message);
       toast({
@@ -321,8 +323,10 @@ function Sidebar({
 }: {
   className?: string;
   open: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setOpen: any;
   auth: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logoutHandler: any;
 }) {
   const navigate = useNavigate();
@@ -385,7 +389,8 @@ function Sidebar({
               key={idx}
               className="group relative flex w-full flex-col items-start justify-start active:bg-primary active:text-white"
               onClick={() => {
-                navigate(item.href), setOpen(false);
+                navigate(item.href)
+                setOpen(false);
               }}
             >
               <motion.hr className="h-[2px] w-full bg-primary" />

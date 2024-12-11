@@ -23,6 +23,7 @@ const MemoizedFallback = memo(Fallback);
 const Hero = () => {
   const images = useMemo(
     () => [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
   );
   const navigate = useNavigate();

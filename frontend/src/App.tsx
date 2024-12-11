@@ -87,6 +87,7 @@ export const App: React.FC = () => {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   if (isLoading) {

@@ -11,10 +11,12 @@ interface Question {
   text: string;
   options: string[];
   correctAnswer: string;
+  question : string
+  image : string
 }
 
 interface Quiz {
-  id: string;
+  _id: string;
   name: string;
   duration: number;
   questions: Question[];
@@ -22,11 +24,6 @@ interface Quiz {
 
 type AnswerStatus = 'answered' | 'unanswered';
 
-interface ApiResponse {
-  data: {
-    data: Quiz;
-  };
-}
 
 export const TestSeries: React.FC = () => {
   const navigate = useNavigate();
@@ -43,7 +40,7 @@ export const TestSeries: React.FC = () => {
   useEffect(() => {
     const fetchQuiz = async (): Promise<void> => {
       try {
-        const response = await axiosInstance.get<ApiResponse>(`/quiz/get-quiz/${quizId}`);
+        const response = await axiosInstance.get(`/quiz/get-quiz/${quizId}`);
         const fetchedQuiz = response.data.data;
         setQuiz(fetchedQuiz);
         setAnswers(new Array(fetchedQuiz.questions.length).fill(-1));
@@ -100,7 +97,8 @@ export const TestSeries: React.FC = () => {
       const resultId=response.data.data._id
       localStorage.removeItem("quizEndTime")
       navigate(`/test/quizresult/${resultId}`);
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error : any) {
       console.error('Error submitting test:', error.response?.data || error.message);
     }
   };

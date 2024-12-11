@@ -10,6 +10,10 @@ const initialState: AuthState = {
     fullName: "",
     email: "",
     userId: "",
+    profilePic : "",
+    phone : 0,
+    target : "",
+    institution : "",
     isMentor:false,
     isAdmin:false,
     isLoggedIn: false

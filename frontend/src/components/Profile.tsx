@@ -48,7 +48,7 @@ import { Card, CardContent } from "./ui/card";
 const profileSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
+  phone: z.number().optional(),
   institution: z.string().optional()
 });
 
@@ -61,7 +61,7 @@ const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<string | undefined>(undefined);
  
 
   // Form Hook
@@ -70,7 +70,7 @@ const Profile = () => {
     defaultValues: {
       fullName: user?.fullName || "",
       email: user?.email || "",
-      phone: user?.phone || "",
+      phone: user?.phone || undefined,
       institution: user?.institution || ""
     }
   });
@@ -86,7 +86,7 @@ const Profile = () => {
       formData.append("upload_preset", "spx0jjqq");
 
       const cloudinaryResponse = await axios.post(
-        `https://api.cloudinary.com/v1_1/dlsxjstxo/image/upload`,
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
         formData
       );
 
@@ -109,6 +109,7 @@ const Profile = () => {
           description: "Your profile picture has been successfully updated.",
         });
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Upload Failed",
@@ -149,6 +150,7 @@ const Profile = () => {
 
         setIsModalOpen(false);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Update Failed",
@@ -275,6 +277,7 @@ const Profile = () => {
     name 
   }: { 
     title: string; 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     icon?: any; 
     children: React.ReactNode;
     name: string;

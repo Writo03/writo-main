@@ -196,7 +196,6 @@ const AdminHome = () => {
                   </p>
                 </div>
                 <Button variant="outline" 
-                  variant="outline"
                   className="w-full"
                   onClick={() => navigate("adduser")}
                 >

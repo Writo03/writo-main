@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
 import { useLocation, useParams } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance'; // Adjust based on your project structure
@@ -25,6 +25,7 @@ const Leaderboard = () => {
         const data = response.data.data;
 
         // Map leaderboard data to the required format
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const formattedLeaderboard = data.leaderboard.map((entry: any, index: number) => ({
           rank: index + 1,
           name: entry.student.fullName,

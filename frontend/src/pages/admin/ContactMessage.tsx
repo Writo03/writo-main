@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -42,7 +42,7 @@ const ContactMessages = () => {
     try {
       const response = await axiosInstance.get("/contact/message/all");
       setMessages(response.data.data)
-    } catch (error) {
+    } catch  {
       setError("Failed to fetch contact messages. Please try again later.");
     } finally {
       setLoading(false);

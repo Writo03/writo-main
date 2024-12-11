@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 interface TestStartPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onConfirm: (test:any) => void;
   testDetails?: {
     _id: string;

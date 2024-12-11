@@ -1,17 +1,10 @@
 import axiosInstance from '@/utils/axiosInstance';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import Loading from './ui/Loading';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch,useAppSelector } from '@/redux/hooks';
 import { setSubscriptions } from '@/redux/subscriptions';
-import { useSelector } from 'react-redux';
-import { SubscriptionState } from '@/types/all';
 
-interface ApiResponse {
-  data: {
-    data: Quiz;
-  };
-}
 
 interface Question {
   id: string;
@@ -25,6 +18,7 @@ interface Quiz {
   name: string;
   duration: number;
   questions: Question[];
+  services : string[]
   isForFree: boolean;
   isForMentors: boolean;
 }
@@ -36,7 +30,7 @@ const ServiceTest = () => {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
 
   const dispatch = useAppDispatch();
-  const subscriptions = useSelector((state: SubscriptionState) => state.subscriptions.subscriptions);
+  const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
 
@@ -57,7 +51,7 @@ const ServiceTest = () => {
   // Fetch quiz details
   const fetchQuiz = async () => {
     try {
-      const response = await axiosInstance.get<ApiResponse>(`/quiz/get-quiz/${quizId}`);
+      const response = await axiosInstance.get(`/quiz/get-quiz/${quizId}`);
       const fetchedQuiz = response.data.data;
       setQuiz(fetchedQuiz);
       setIsFree(fetchedQuiz.isForFree);
@@ -74,6 +68,7 @@ const ServiceTest = () => {
       setIsLoading(false);
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, quizId]);
 
   useEffect(() => {
@@ -85,7 +80,7 @@ const ServiceTest = () => {
     if (!hasMatchingService) {
       navigate('/'); // Redirect if the user is not subscribed
     }
-  }, [isLoading, isFree, isMentorQuiz, subscriptions, navigate]);
+  }, [isLoading, isFree, isMentorQuiz, subscriptions, navigate, quiz]);
 
   if (isLoading) {
     return <Loading />;

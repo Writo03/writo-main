@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter,  RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Home from "./pages/Home";
@@ -37,6 +37,7 @@ import App from "./App";
 import { serviceIds } from "@/utils/contants";
 import Chat from "./pages/Chat/Chat";
 import { SocketProvider } from "./Context/SocketContext";
+import TestAuth from "./components/TestSeries/TestAuth";
 // import Layout from "./pages/admin/Layout";
 
 const router = createBrowserRouter([
@@ -74,11 +75,7 @@ const router = createBrowserRouter([
       },
       {
         path: "test-series",
-        element: (
-          <>
-            <Outlet />
-          </>
-        ),
+        element: <TestAuth/>,
         children: [
           {
             path: "",

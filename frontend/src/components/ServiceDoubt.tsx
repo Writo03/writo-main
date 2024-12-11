@@ -1,16 +1,15 @@
 import axiosInstance from '@/utils/axiosInstance';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Loading from './ui/Loading';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setSubscriptions } from '@/redux/subscriptions';
-import { useSelector } from 'react-redux';
-import { SubscriptionState } from '@/types/all';
+
 
 const ServiceDoubt = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
-  const subscriptions = useSelector((state: SubscriptionState) => state.subscriptions);
+  const subscriptions = useAppSelector((state) => state.subscriptions);
 
   const navigate = useNavigate();
 
@@ -39,6 +38,7 @@ const ServiceDoubt = () => {
       setIsLoading(false);
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {

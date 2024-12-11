@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Clock, Award, Check, X, ChevronUp, ChevronDown, HelpCircle, BookOpen, Trophy, Timer } from "lucide-react";
+import { Award, Check, X, ChevronUp, ChevronDown, HelpCircle, BookOpen, Trophy, Timer } from "lucide-react";
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from './ui/button';
 import axiosInstance from '@/utils/axiosInstance';
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface Question {
   question: string;
   chosen: string;
+  options: string[]
   correct: string;
   image?: string;
 }
@@ -45,6 +46,7 @@ const QuizResultPage: React.FC = () => {
         setQuizId(response.data.data[0].quiz)
         setResult(response.data.data[0]);
         setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.response?.data?.message || 'Failed to fetch result');
         setLoading(false);

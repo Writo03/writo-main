@@ -104,6 +104,7 @@ const Footer = () => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SocialIcon = ({ link, icon: Icon }: { link: string; icon: any }) => (
   <a
     href={link}

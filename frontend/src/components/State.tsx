@@ -3,7 +3,7 @@ import { login, setIsAuthenticated } from '@/redux/auth';
 import { useAppDispatch } from '@/redux/hooks';
 import { AuthState, UserState } from '@/types/user';
 import axiosInstance from '@/utils/axiosInstance';
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import Loading from './ui/Loading';
 
 const State = () => {
@@ -51,7 +51,7 @@ const State = () => {
             setisloading(false);
             return;
           }
-        } catch (error: unknown) {
+        } catch {
           dispatch(setIsAuthenticated(false));
         } finally {
           setisloading(false);

@@ -103,6 +103,7 @@ const SignIn = () => {
         const serviceIds = subscriptionresponse.data.data.map((subscription: { service: string }) => subscription.service);
         dispatch(setSubscriptions(serviceIds)); // Store only the IDs
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err:unknown) {
       // if (axios.isAxiosError(err)) {
       //   console.log(err.response)

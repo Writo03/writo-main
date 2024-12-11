@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
   CheckCircle2,
   Trophy,
@@ -83,6 +83,7 @@ const Products = () => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Feature = ({ icon: Icon, text }: { icon: any; text: string }) => (
   <div className="flex items-center">
     <Icon className="h-5 w-5 text-primary" />

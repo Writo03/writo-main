@@ -4,12 +4,13 @@ import { AxiosResponse } from "axios";
 export const isBrowser = typeof window !== "undefined";
 
 export const requestHandler = async (
-  api: () => Promise<AxiosResponse<FreeAPISuccessResponseInterface, any>>,
+  api: () => Promise<AxiosResponse<FreeAPISuccessResponseInterface, never>>,
   setLoading: ((loading: boolean) => void) | null,
   onSuccess: (data: FreeAPISuccessResponseInterface) => void,
   onError: (error: string) => void
 ) => {
   // Show loading state if setLoading function is provided
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   setLoading && setLoading(true);
   try {
     // Make the API request
@@ -20,6 +21,7 @@ export const requestHandler = async (
       // Call the onSuccess callback with the response data
       onSuccess(data);
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Handle error cases, including unauthorized and forbidden cases
     if ([401, 403].includes(error?.response.data?.statusCode)) {
@@ -37,6 +39,7 @@ export const requestHandler = async (
     }
   } finally {
     // Hide loading state if setLoading function is provided
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     setLoading && setLoading(false);
   }
 };
@@ -50,6 +53,7 @@ export class LocalStorage {
       if (value) {
         try {
           return JSON.parse(value);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
           return null;
         }
@@ -58,6 +62,7 @@ export class LocalStorage {
     }
   
     // Set a value in local storage by key
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static set(key: string, value: any) {
       if (!isBrowser) return;
       localStorage.setItem(key, JSON.stringify(value));

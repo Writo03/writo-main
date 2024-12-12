@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useSocket } from '@/Context/SocketContext';
 import debounce from 'lodash/debounce';
+import { unknown } from 'zod';
 
 // Types for our chat data
 interface Participant {
@@ -48,7 +49,7 @@ interface Message {
     profilePic: string;
   };
   content: string;
-  attachments: any[];
+  attachments: unknown[];
   chat: string;
   createdAt: string;
   updatedAt: string;
@@ -176,6 +177,7 @@ const Sidebar = () => {
   }, []);
 
   // Debounced search handler
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((term: string) => setSearchTerm(term), 300),
     []

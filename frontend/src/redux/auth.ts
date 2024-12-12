@@ -57,8 +57,17 @@ const userReducer = createSlice({
       state.error = null;
     },
     
-    updateuser(state, action: PayloadAction<{ user: updateUserState }>) {
-      state.user = { ...action.payload.user };
+    updateuser(state, action: PayloadAction<updateUserState>) {
+      const { fullName, email, userId, isAdmin, isMentor } = action.payload;
+      state.user = {
+        ...state.user,
+        fullName,
+        email,
+        userId,
+        isAdmin,
+        isMentor,
+        isLoggedIn: true // Ensure this property exists
+      };
     },
 
     loginFailed(state, action: PayloadAction<string>) {

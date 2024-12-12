@@ -255,6 +255,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       getMessages();
     }
     // An empty dependency array ensures this useEffect runs only once, similar to componentDidMount.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // This useEffect handles the setting up and tearing down of socket event listeners.
@@ -297,6 +298,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     // This will not cause infinite renders because the functions in the socket are getting mounted and not executed.
     // So, even if some socket callbacks are updating the `chats` state, it's not
     // updating on each `useEffect` call but on each socket call.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, chats]);
 
   // Provide Chatentication-related data and functions through the context
@@ -326,4 +328,5 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 // Export the context, provider component, and custom hook
+// eslint-disable-next-line react-refresh/only-export-components
 export { ChatContext, ChatProvider, useChat };

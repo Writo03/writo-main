@@ -1,5 +1,7 @@
 
 export interface UserInterface {
+    onBreak: any;
+    onLeave: any;
     _id: string;
     avatar: {
       url: string;
@@ -20,6 +22,7 @@ export interface UserInterface {
   }
   
 export interface ChatListItemInterface {
+    subject: any;
     admin: string;
     createdAt: string;
     isGroupChat: boolean;

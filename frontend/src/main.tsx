@@ -38,6 +38,7 @@ import { serviceIds } from "@/utils/contants";
 import Chat from "./pages/Chat/Chat";
 import { SocketProvider } from "./Context/SocketContext";
 import TestAuth from "./components/TestSeries/TestAuth";
+import ServiceDoubt from "./components/ServiceDoubt";
 // import Layout from "./pages/admin/Layout";
 
 const router = createBrowserRouter([
@@ -174,13 +175,18 @@ const router = createBrowserRouter([
       },
       {
         path: "chat/:subject",
-        element: (
-          <Protected authentication={true}>
-            <ChatProvider>
-              <Chat />
-            </ChatProvider>
-          </Protected>
-        ),
+        element:<ServiceDoubt/>,
+        children:[
+          {
+            path:"",
+            element:( <Protected authentication={true}>
+              <ChatProvider>
+  
+                <Chat />
+              </ChatProvider>
+            </Protected>)
+          }
+        ]
       },
       {
         path: "about",

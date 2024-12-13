@@ -58,8 +58,6 @@ function Navbar() {
   const { toast } = useToast();
 
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isloading, setisloading] = useState<boolean>(false);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = scrollYProgress.get();
@@ -89,14 +87,12 @@ function Navbar() {
 
   const logoutHandler = async () => {
     try {
-      setisloading(true);
       const response = await axiosInstance.get("/user/logout");
       if (response.status === 200) {
         dispatch(logout());
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         navigate("/");
-        setisloading(false);
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -106,7 +102,6 @@ function Navbar() {
         description: error.response?.data?.message,
         variant: "default",
       });
-      setisloading(false);
     }
   };
 

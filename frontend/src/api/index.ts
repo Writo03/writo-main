@@ -1,5 +1,6 @@
 // Import necessary modules and utilities
-import axios from "axios";
+import { FreeAPISuccessResponseInterface } from "@/types/api";
+import axios, { AxiosResponse } from "axios";
 
 // Create an Axios instance for API requests
 const apiClient = axios.create({
@@ -30,7 +31,7 @@ const getAvailableUsers = () => {
   return apiClient.get("/chat/users");
 };
 
-const getUserChats = () => {
+const getUserChats = () : Promise<AxiosResponse<FreeAPISuccessResponseInterface, never>> => {
   return apiClient.get(`chat/get-all-chats?isPrimary=true`);
 };
 
@@ -38,11 +39,11 @@ const createUserChat = (subject: string) => {
   return apiClient.post(`chat/create-or-get-mentor-chat/${subject}`);
 };
 
-const getChatMessages = (chatId: string) => {
+const getChatMessages = (chatId: string) : Promise<AxiosResponse<FreeAPISuccessResponseInterface, never>> => {
   return apiClient.get(`message/${chatId}`);
 };
 
-const sendMessage = (chatId: string, content: string, attachments: string[]) => {
+const sendMessage = (chatId: string, content: string, attachments: string[]) : Promise<AxiosResponse<FreeAPISuccessResponseInterface, never>> => {
   // Create a JSON payload instead of FormData since the backend expects plain data
   const updatedAttachments = attachments.map((file: string) => {
     return { url: file }; // Correctly returning an object with the 'url' property

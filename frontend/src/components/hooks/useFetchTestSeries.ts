@@ -6,6 +6,7 @@ export default function useFetchTestSeries(
   isFree: boolean,
   serviceId: string,
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [testSeries_t, setTestSeries] = useState<any[]>([]);
   const [loading_t, setLoading] = useState(true);
   const [error_t, setError] = useState<string | null>(null);
@@ -24,6 +25,7 @@ export default function useFetchTestSeries(
           setTestSeries(response.data.data || []);
           setError(null);
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         if (isMounted)
           setError("Failed to load test series. Please try again later.");

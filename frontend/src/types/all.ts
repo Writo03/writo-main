@@ -10,7 +10,7 @@ export interface Subscription {
   }
   
 export interface SubscriptionState {
-    subscriptions: Subscription[];
+    subscriptions: string[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
   }

@@ -1,4 +1,4 @@
-import { Subscription, SubscriptionState } from "@/types/all";
+import { SubscriptionState } from "@/types/all";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
@@ -13,7 +13,7 @@ const subscriptionReducer = createSlice({
   name: "subscriptions",
   initialState,
   reducers: {
-    setSubscriptions(state, action: PayloadAction<Subscription[]>) {
+    setSubscriptions(state, action: PayloadAction<string[]>) {
       state.subscriptions = action.payload;
       state.status = "succeeded";
     },

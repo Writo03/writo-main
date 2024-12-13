@@ -156,7 +156,7 @@ const QuizResultPage: React.FC = () => {
                 <Progress 
                   className="mt-2" 
                   value={scorePercentage}
-                  indicatorColor={scorePercentage >= 75 ? 'bg-green-500' : scorePercentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}
+                  color={scorePercentage >= 75 ? 'bg-green-500' : scorePercentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}
                 />
                 <p className="text-xs text-gray-500 mt-2">{scorePercentage.toFixed(1)}%</p>
               </motion.div>
@@ -300,10 +300,10 @@ const QuizResultPage: React.FC = () => {
                                     <span className="font-semibold">{optionLabel}:</span>
                                     <span dangerouslySetInnerHTML={{ __html: option }} />
                                     {isCorrect && (
-                                      <Check className="w-5 h-5 text-green-500" title="Correct Answer" />
+                                      <Check className="w-5 h-5 text-green-500" />
                                     )}
                                     {isChosen && !isCorrect && (
-                                      <X className="w-5 h-5 text-red-500" title="Your Answer" />
+                                      <X className="w-5 h-5 text-red-500" />
                                     )}
                                   </div>
                                 );

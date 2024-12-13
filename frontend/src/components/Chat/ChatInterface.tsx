@@ -29,54 +29,55 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { toast } from '../hooks/use-toast';
+import { ChatListItemInterface } from '@/types/chat';
 
 
 
-interface Chat {
-  _id: string;
-  subject: string;
-  isMentorChat: boolean;
-  isPrimary: boolean;
-  mentor: string;
-  participants: Participant[];
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-  lastMessage?: LastMessage;
-}
+// interface Chat {
+//   _id: string;
+//   subject: string;
+//   isMentorChat: boolean;
+//   isPrimary: boolean;
+//   mentor: string;
+//   participants: Participant[];
+//   createdAt: string;
+//   updatedAt: string;
+//   __v: number;
+//   lastMessage?: LastMessage;
+// }
 
-interface Participant {
-  _id: string;
-  email: string;
-  fullName: string;
-  phone: number;
-  profilePic: string;
-  isMentor: boolean;
-  subject?: string; // Optional since not all participants might have a subject
-  onBreak: boolean;
-  onLeave: boolean;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+// interface Participant {
+//   _id: string;
+//   email: string;
+//   fullName: string;
+//   phone: number;
+//   profilePic: string;
+//   isMentor: boolean;
+//   subject?: string; // Optional since not all participants might have a subject
+//   onBreak: boolean;
+//   onLeave: boolean;
+//   createdAt: string;
+//   updatedAt: string;
+//   __v: number;
+// }
 
-interface LastMessage {
-  _id: string;
-  sender: Sender;
-  content: string;
-  attachments: string[]; // Assuming attachments are strings (URLs)
-  chat: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+// interface LastMessage {
+//   _id: string;
+//   sender: Sender;
+//   content: string;
+//   attachments: string[]; // Assuming attachments are strings (URLs)
+//   chat: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   __v: number;
+// }
 
-interface Sender {
-  _id: string;
-  email: string;
-  fullName: string;
-  profilePic: string;
-}
+// interface Sender {
+//   _id: string;
+//   email: string;
+//   fullName: string;
+//   profilePic: string;
+// }
 
 
 const TYPING_EVENT = "typing";
@@ -231,7 +232,8 @@ export const ChatInterface: React.FC = () => {
     });
   };
 
-  const getOtherParticipant = useCallback((chat: Chat) => {
+  const getOtherParticipant = useCallback((chat: ChatListItemInterface | null) => {
+    if(!chat) return 
     const participant = chat?.participants.find(
       (p) => p._id !== user.userId
     );
@@ -406,7 +408,7 @@ export const ChatInterface: React.FC = () => {
           <div className="mb-2 flex flex-wrap gap-2">
             {attachedFiles.map((file, index) => (
               <div key={index} className="flex items-center gap-1 bg-gray-100 rounded p-1">
-                <span className="text-sm truncate max-w-[150px]">{file.name}</span>
+                <span className="text-sm truncate max-w-[150px]">{file}</span>
                 <button
                   onClick={() => removeAttachment(index)}
                   className="text-red-500 hover:text-red-700"

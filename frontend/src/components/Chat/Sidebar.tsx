@@ -23,49 +23,50 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useSocket } from '@/Context/SocketContext';
 import debounce from 'lodash/debounce';
-import { unknown } from 'zod';
+import { ChatListItemInterface } from '@/types/chat';
+
 
 // Types for our chat data
-interface Participant {
-  _id: string;
-  email: string;
-  fullName: string;
-  phone: number;
-  profilePic: string;
-  isMentor: boolean;
-  subject?: string;
-  onBreak: boolean;
-  onLeave: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+// interface Participant {
+//   _id: string;
+//   email: string;
+//   fullName: string;
+//   phone: number;
+//   profilePic: string;
+//   isMentor: boolean;
+//   subject?: string;
+//   onBreak: boolean;
+//   onLeave: boolean;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
-interface Message {
-  _id: string;
-  sender: {
-    _id: string;
-    email: string;
-    fullName: string;
-    profilePic: string;
-  };
-  content: string;
-  attachments: unknown[];
-  chat: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// interface Message {
+//   _id: string;
+//   sender: {
+//     _id: string;
+//     email: string;
+//     fullName: string;
+//     profilePic: string;
+//   };
+//   content: string;
+//   attachments: unknown[];
+//   chat: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
-interface Chat {
-  _id: string;
-  subject: string;
-  isMentorChat: boolean;
-  isPrimary: string;
-  mentor: string;
-  participants: Participant[];
-  createdAt: string;
-  updatedAt: string;
-  lastMessage?: Message;
-}
+// interface Chat {
+//   _id: string;
+//   subject: string;
+//   isMentorChat: boolean;
+//   isPrimary: string;
+//   mentor: string;
+//   participants: Participant[];
+//   createdAt: string;
+//   updatedAt: string;
+//   lastMessage?: Message;
+// }
 
 const Sidebar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -92,7 +93,7 @@ const Sidebar = () => {
   });
 
   // Get the other participant in a chat
-  const getOtherParticipant = useCallback((chat: Chat) => {
+  const getOtherParticipant = useCallback((chat: ChatListItemInterface) => {
     const participant = chat.participants.find(p => p._id !== user.userId);
     return participant || chat.participants[0];
 }, [user.userId]);
@@ -184,7 +185,7 @@ const Sidebar = () => {
   );
 
   // Handle chat selection
-  const handleChatSelect = useCallback(async (chat: Chat) => {
+  const handleChatSelect = useCallback(async (chat: ChatListItemInterface) => {
     try {
       if (currentChat.current?._id === chat._id) return;
       setIsLoading(true);

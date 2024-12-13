@@ -1,13 +1,12 @@
 
 export interface UserInterface {
-    onBreak: any;
-    onLeave: any;
+    onBreak: boolean;
+    onLeave: boolean;
     _id: string;
-    avatar: {
-      url: string;
-      localPath: string;
-      _id: string;
-    };
+    isMentor : boolean;
+    isAdmin : boolean;
+    profilePic : string;
+    fullName : string
     username: string;
     email: string;
     createdAt: string;
@@ -22,6 +21,7 @@ export interface UserInterface {
   }
   
 export interface ChatListItemInterface {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     subject: any;
     admin: string;
     createdAt: string;
@@ -35,7 +35,7 @@ export interface ChatListItemInterface {
   
   export interface ChatMessageInterface {
     _id: string;
-    sender: Pick<UserInterface, "_id" | "avatar" | "email" | "username">;
+    sender: UserInterface;
     content: string;
     chat: string;
     attachments: {

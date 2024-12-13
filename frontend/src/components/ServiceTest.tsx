@@ -74,7 +74,7 @@ const ServiceTest = () => {
   useEffect(() => {
     if (isLoading || isFree || isMentorQuiz) return;
     // Check if the user is subscribed to the required service
-    const requiredServiceId = quiz?.services[0]; // JEE Service ID
+    const requiredServiceId = quiz?.services[0] as string; // JEE Service ID
     const hasMatchingService = subscriptions.includes(requiredServiceId);
 
     if (!hasMatchingService) {

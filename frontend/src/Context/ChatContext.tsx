@@ -105,6 +105,8 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     setMessage(message);
   };
 
+  const updateChatLastMessageOnDeletion = () => {}
+
   const getChats = async () => {
     requestHandler(
       async () => await getUserChats(),
@@ -320,6 +322,7 @@ const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setMessageHandler,
         getChats,
         updateChatLastMessage,
+        updateChatLastMessageOnDeletion
       }}
     >
       {children}

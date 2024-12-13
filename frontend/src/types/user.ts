@@ -13,6 +13,7 @@
     institution:string,
     phone:number,
     target:string
+    role:[]
   }
   export interface updateUserState {
     fullName: string;
@@ -23,7 +24,7 @@
     profilePic:string,
     institution:string,
     phone:number,
-    target:string
+    target:string,
   }
   
   

@@ -5,10 +5,17 @@ import Loading from './ui/Loading';
 import { useAppDispatch,useAppSelector } from '@/redux/hooks';
 import { setSubscriptions } from '@/redux/subscriptions';
 import { serviceIds } from '@/utils/contants';
+import { RootState } from '@/types/state';
+import { useSelector } from 'react-redux';
 
 const ServiceDoubt = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const role = useSelector((state: RootState) => state.auth.user.role);
+  const ismentoraccess = role.map((role)=>{
+    if(role==='CHAT'){
+      return true;
+    }
+  })
   const dispatch = useAppDispatch();
   const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
   const navigate = useNavigate();
@@ -39,7 +46,7 @@ const ServiceDoubt = () => {
   }, [dispatch]); 
 
   useEffect(() => {
-    if (isLoading  ) return;
+    if (isLoading || ismentoraccess ) return;
     // Check if the user is subscribed to the required service
     const requiredServiceId = serviceIds.doubtSession
     const hasMatchingService = subscriptions.includes(requiredServiceId);
@@ -47,7 +54,7 @@ const ServiceDoubt = () => {
     if (!hasMatchingService) {
       navigate('/'); // Redirect if the user is not subscribed
     }
-  }, [isLoading,  subscriptions, navigate]);
+  }, [isLoading,  subscriptions, navigate,ismentoraccess]);
 
   if (isLoading) {
     return <Loading />;

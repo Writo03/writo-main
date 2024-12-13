@@ -16,6 +16,7 @@ const initialState: AuthState = {
     institution : "",
     isMentor:false,
     isAdmin:false,
+    role:[],
     isLoggedIn: false
   },
   error: null,
@@ -38,6 +39,7 @@ const userReducer = createSlice({
         isAdmin,
         userId,
         profilePic,
+        role
       } = action.payload.user;
       state.isAuthenticated = true;
       state.user = {
@@ -52,6 +54,7 @@ const userReducer = createSlice({
         isAdmin,
         userId,
         profilePic,
+        role,
         isLoggedIn: true
       };
       state.error = null;

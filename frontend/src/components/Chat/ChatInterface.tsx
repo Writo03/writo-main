@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Typing from './Typing';
-import {  useParams } from 'react-router-dom';
+// import {  useParams } from 'react-router-dom';
 import { useChat } from '@/Context/ChatContext';
 import { useSocket } from '@/Context/SocketContext';
 import { isImageFile, requestHandler } from '@/utils/helper';
@@ -89,11 +89,10 @@ export const ChatInterface: React.FC = () => {
   const [selfTyping, setSelfTyping] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const user = useSelector((state: RootState) => state.auth.user);
-  const { chatid } = useParams<{ chatid: string }>();
+  // const { chatid } = useParams<{ chatid: string }>();
 
   const {
     currentChat,
-    chats,
     setMessagesHandler,
     messages,
     isTyping,
@@ -256,14 +255,14 @@ export const ChatInterface: React.FC = () => {
   // }, [])
   
 
-  useEffect(() => {
-    const isChatPresent = chats.some((chat) => chat._id === chatid);
-    if (!isChatPresent) {
-      toast({
-        description:"Chat not found."
-      });
-    }
-  }, [chats, chatid]);
+  // useEffect(() => {
+  //   const isChatPresent = chats.some((chat) => chat._id === chatid);
+  //   if (!isChatPresent) {
+  //     toast({
+  //       description:"Chat not found."
+  //     });
+  //   }
+  // }, [chats, chatid]);
   
   return (
     <div className="flex-1 h-full flex flex-col bg-gray-50">

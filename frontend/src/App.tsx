@@ -45,6 +45,7 @@ export const App: React.FC = () => {
         isMentor: user.isMentor,
         profilePic: user.profilePic,
         isLoggedIn: true,
+        role:user?.role
       };
 
       const loginPayload: AuthState = {

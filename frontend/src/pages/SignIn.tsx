@@ -40,6 +40,7 @@ const SignIn = () => {
         password,
       });
       if (response.status === 200) {
+        // console.log(response)
         const user= response.data?.data.user;
         const accessToken: string = response.data?.data.accessToken;
         const refreshToken: string = response.data?.data.refreshToken;
@@ -62,6 +63,7 @@ const SignIn = () => {
           refreshToken: refreshToken,
           profilePic:user?.profilePic,
           isLoggedIn: true,
+          role:user?.role,
         };
         const loginPayload: AuthState = {
           isAuthenticated: true,

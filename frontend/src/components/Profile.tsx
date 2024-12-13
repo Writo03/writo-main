@@ -57,6 +57,7 @@ const profileSchema = z.object({
 const Profile = () => {
   const { toast } = useToast();
   const user = useSelector((state: RootState) => state.auth.user);
+  // console.log(user)
   const dispatch = useDispatch();
 
 

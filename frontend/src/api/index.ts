@@ -1,31 +1,32 @@
 // Import necessary modules and utilities
 import { FreeAPISuccessResponseInterface } from "@/types/api";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import apiClient from "@/utils/axiosInstance";
 
 // Create an Axios instance for API requests
-const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
-  withCredentials: true,
-  timeout: 120000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+// const apiClient = axios.create({
+//   // baseURL: "http://localhost:8080/api/v1",
+//   withCredentials: true,
+//   timeout: 120000,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
  
-// Add an interceptor to set authorization header with user token before requests
-apiClient.interceptors.request.use(
-  function (config) {
-    // Retrieve user token from local storage
-    const token = localStorage.getItem("accessToken");
-    // console.log(token)
-    // Set authorization header with bearer token
-    config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
+// // Add an interceptor to set authorization header with user token before requests
+// apiClient.interceptors.request.use(
+//   function (config) {
+//     // Retrieve user token from local storage
+//     const token = localStorage.getItem("accessToken");
+//     // console.log(token)
+//     // Set authorization header with bearer token
+//     config.headers.Authorization = `Bearer ${token}`;
+//     return config;
+//   },
+//   function (error) {
+//     return Promise.reject(error);
+//   }
+// );
 
 const getAvailableUsers = () => {
   return apiClient.get("/chat/users");

@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter,  RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Home from "./pages/Home";
@@ -76,7 +76,7 @@ const router = createBrowserRouter([
       },
       {
         path: "test-series",
-        element: <TestAuth/>,
+        element: <TestAuth />,
         children: [
           {
             path: "",
@@ -175,18 +175,19 @@ const router = createBrowserRouter([
       },
       {
         path: "chat",
-        element:<ServiceDoubt/>,
-        children:[
+        element: <ServiceDoubt />,
+        children: [
           {
-            path:"",
-            element:( <Protected authentication={true}>
-              <ChatProvider>
-  
-                <Chat />
-              </ChatProvider>
-            </Protected>)
-          }
-        ]
+            path: "",
+            element: (
+              <Protected authentication={true}>
+                <ChatProvider>
+                  <Chat />
+                </ChatProvider>
+              </Protected>
+            ),
+          },
+        ],
       },
       {
         path: "about",

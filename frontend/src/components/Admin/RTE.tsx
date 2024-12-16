@@ -93,7 +93,7 @@ const RichTextEditor = ({initialValue = "", onChange} : {
       formData.append("file", file);
       formData.append(
         "upload_preset",
-        "spx0jjqq",
+        "writo-main",
       );
 
       const response = await axios.post(

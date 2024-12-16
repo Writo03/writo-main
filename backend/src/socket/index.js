@@ -1,5 +1,5 @@
 import { ChatEventEnum } from "../constants.js";
-import cookie from "cookie-parser";
+import cookie from "cookie";
 import ApiError from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";

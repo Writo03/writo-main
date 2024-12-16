@@ -31,6 +31,8 @@ const TestAuth = () => {
         );
         dispatch(setSubscriptions(serviceIds));
       } catch (error) {
+        setIsLoading(false);
+
         console.error("Error fetching subscriptions:", error);
       } finally {
         setIsLoading(false);

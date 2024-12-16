@@ -108,20 +108,26 @@ export const ChatInterface: React.FC = () => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-
   const scrollToBottom = useCallback(() => {
-    if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth', // Smooth scrolling for animation
+      });
     }
   }, []);
-
-
+  
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollHeight, scrollTop, clientHeight } = e.currentTarget;
-    setIsScrolledToBottom(Math.abs(scrollHeight - scrollTop - clientHeight) < 1);
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    // Check if the user is scrolled to the bottom
+    setIsScrolledToBottom(scrollHeight - scrollTop - clientHeight < 1);
   }, []);
-
-
+  
+  useEffect(() => {
+    if (isScrolledToBottom && messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages, isScrolledToBottom, scrollToBottom]);
 
   const handleFileAttachment = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -183,11 +189,7 @@ export const ChatInterface: React.FC = () => {
       (error) => console.log(error)
     );
   };
-  useEffect(() => {
-    if (!isScrolledToBottom && messages.length > 0) {
-      scrollToBottom();
-    }
-  }, [messages, isScrolledToBottom, scrollToBottom]);
+
 
   const handleOnMessageChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -332,12 +334,14 @@ export const ChatInterface: React.FC = () => {
        
 
       {/* Messages Area */}
-      <ScrollArea 
-          ref={scrollAreaRef}
+      <div 
           onScroll={handleScroll}
-          className="flex-1 p-4"
+          className="flex-1 p-4 overflow-y-auto"
+          ref={scrollAreaRef}
         >
-          <div className="space-y-4 flex flex-col-reverse">
+          <div className="space-y-4 flex flex-col-reverse overflow-y-auto" 
+
+          >
             {isTyping && <Typing />}
             {messages.map((msg,index) => (
               <div
@@ -346,7 +350,7 @@ export const ChatInterface: React.FC = () => {
                 className={`flex ${msg.sender._id === user.userId ? 'justify-end' : 'justify-start'}`}
               >
                 <div 
-                  className={`max-w-md rounded-lg p-3 ${
+                  className={`max-w-md rounded-lg p-3 my-1 ${
                     msg.sender._id === currentChat.current?.participants[0]._id
                       ? 'bg-purple-600 text-white'
                       : 'bg-gray-200 text-gray-900'
@@ -400,7 +404,7 @@ export const ChatInterface: React.FC = () => {
       </div>
     ))}
   </div>
-</ScrollArea>
+</div>
       {/* Input Area */}
       <div className="p-4 border-t bg-white">
         {attachedFiles.length > 0 && (

@@ -17,12 +17,10 @@ const TestAuth = () => {
 
   useEffect(() => {
     const getSubscriptions = async () => {
-      if (!isAutheticated){
+      if (!isAutheticated) {
         setIsLoading(false);
-
         return;
       }
-        
       if (subscriptions.length) return;
       try {
         const response = await axiosInstance.get(

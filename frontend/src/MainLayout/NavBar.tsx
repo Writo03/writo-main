@@ -255,7 +255,14 @@ function Navbar() {
                         >
                           <Avatar>
                             <AvatarImage src={user.profilePic} alt="@ks" />
-                            <AvatarFallback>KS</AvatarFallback>
+                            <AvatarFallback>
+                              {user.fullName.includes(" ")
+                                ? user.fullName.split(" ")[0].length <= 3
+                                  ? user.fullName.split(" ")[0]
+                                  : user.fullName.split(" ")[0][0] +
+                                    user.fullName.split(" ")[1][0]
+                                : user.fullName[0]}
+                            </AvatarFallback>
                           </Avatar>
                         </Button>
                       </DropdownMenuTrigger>
@@ -445,7 +452,14 @@ function Sidebar({
                   >
                     <Avatar>
                       <AvatarImage src={user.profilePic} alt="@ks" />
-                      <AvatarFallback>KS</AvatarFallback>
+                      <AvatarFallback>
+                        {user.fullName.includes(" ")
+                          ? user.fullName.split(" ")[0].length <= 3
+                            ? user.fullName.split(" ")[0]
+                            : user.fullName.split(" ")[0][0] +
+                              user.fullName.split(" ")[1][0]
+                          : user.fullName[0]}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>

@@ -71,7 +71,15 @@ const SignIn = () => {
           error: null,
         };
         dispatch(login(loginPayload));
-        navigate('/'); // Redirect on success
+       // Proper navigation logic
+      setTimeout(() => {
+        if (user.isAdmin) {
+          navigate('/admin'); // Redirect to admin page
+        } else {
+          navigate('/'); // Redirect to home
+        }
+      }, 0);
+    
         setisloading(false)
       }
     } catch (err: unknown) {

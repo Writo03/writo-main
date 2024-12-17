@@ -46,22 +46,26 @@ const teamMembers = [
 
 const milestones = [
   {
-    year: 2015,
+    year: 2019,
     achievement:
       "Founded Writo Education with a vision to revolutionize exam preparation",
   },
   {
-    year: 2017,
-    achievement: "Launched our first online courses for NEET and JEE",
+    year: 2020,
+    achievement: "Launched our first online Test Series for NEET and JEE",
   },
-  { year: 2019, achievement: "Reached 100,000 enrolled students milestone" },
+  { year: 2021, achievement: "Reached 1,00,000 enrolled students milestone" },
   {
-    year: 2021,
-    achievement: "Introduced AI-powered personalized learning paths",
+    year: 2022,
+    achievement: "Introduced Doubt Sessions for students to discuss their doubts with subject specific mentors",
   },
   {
     year: 2023,
-    achievement: "Expanded to cover 10+ competitive exams across India",
+    achievement: "Real time chat and Google Meet integration for doubt sessions",
+  },
+  {
+    year: 2024,
+    achievement: "Test Series for mentors to improve their skills",
   },
 ];
 
@@ -98,7 +102,7 @@ function AboutUs() {
               <Card className="bg-gradient-to-br from-primary/50 to-indigo-500 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <Users className="mr-2" /> 100,000+
+                    <Users className="mr-2" /> 150,000+
                   </CardTitle>
                 </CardHeader>
                 <CardContent>Students Enrolled</CardContent>
@@ -106,7 +110,7 @@ function AboutUs() {
               <Card className="bg-gradient-to-br from-pink-400 to-red-500 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <BookOpen className="mr-2" /> 50+
+                    <BookOpen className="mr-2" /> 20+
                   </CardTitle>
                 </CardHeader>
                 <CardContent>Expert Instructors</CardContent>

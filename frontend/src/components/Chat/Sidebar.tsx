@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -24,6 +24,7 @@ import { RootState } from '@/redux/store';
 import { useSocket } from '@/Context/SocketContext';
 import debounce from 'lodash/debounce';
 import { ChatListItemInterface } from '@/types/chat';
+import { useParams } from 'react-router-dom';
 
 
 // Types for our chat data
@@ -91,6 +92,8 @@ const Sidebar = () => {
     recent: true,
     onlyActive: true
   });
+    const { chatid } = useParams<{ chatid: string }>();
+
 
   // Get the other participant in a chat
   const getOtherParticipant = useCallback((chat: ChatListItemInterface) => {
@@ -185,7 +188,7 @@ const Sidebar = () => {
   );
 
   // Handle chat selection
-  const handleChatSelect = useCallback(async (chat: ChatListItemInterface) => {
+  const handleChatSelect = useCallback(async (chat: ChatListItemInterface ) => {
     try {
       if (currentChat.current?._id === chat._id) return;
       setIsLoading(true);
@@ -203,6 +206,16 @@ const Sidebar = () => {
       setIsLoading(false);
     }
   }, [currentChat, socket, setMessageHandler, getMessages]);
+
+   useEffect(() => {
+    const chat = chats.find((chat) => chat._id === chatid);
+    if(chat){
+      console.log(chat)
+      handleChatSelect(chat)
+    }
+   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[chatid,chats]);
 
   return (
     <motion.div 

@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 import PaymentButton from "../ui/PaymentButton";
 import { toast } from "../hooks/use-toast";
 import { PaymentSuccessDetails } from "../TestSeries/TestSeriesDetails";
+import ChatButton from "../Chat/ChatButton";
 
 const subjects = [
   {
@@ -135,7 +136,11 @@ export default function DoubtSessionPage() {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button className="w-full">Schedule Session</Button>
+                    {/* <Button className="w-full">Schedule Session</Button> */}
+                    <ChatButton
+                    buttonText="Schedule Session"
+                    subject={subject.name}
+                     />
                   </CardFooter>
                 </Card>
               ))}

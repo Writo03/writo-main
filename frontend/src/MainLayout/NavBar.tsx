@@ -94,7 +94,7 @@ function Navbar() {
         localStorage.removeItem("refreshToken");
         navigate("/");
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error.response?.data?.message);
       toast({
@@ -221,21 +221,22 @@ function Navbar() {
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
-                  {/* Admin Panel */}
-                  {user.isAdmin && (
-                    <NavigationMenuItem>
-                      <Link to="/admin">
-                        <NavigationMenuLink
-                          className={cn(
-                            navigationMenuTriggerStyle(),
-                            "bg-transparent",
-                          )}
-                        >
-                          Admin Panel
-                        </NavigationMenuLink>
-                      </Link>
-                    </NavigationMenuItem>
-                  )}
+                  {/* Dashboard */}
+                  {user.isAdmin ||
+                    (user.isMentor && (
+                      <NavigationMenuItem>
+                        <Link to="/admin">
+                          <NavigationMenuLink
+                            className={cn(
+                              navigationMenuTriggerStyle(),
+                              "bg-transparent",
+                            )}
+                          >
+                            Dashboard
+                          </NavigationMenuLink>
+                        </Link>
+                      </NavigationMenuItem>
+                    ))}
                 </div>
                 {/* Login/Signin */}
                 {!isAuthenticated ? (
@@ -341,7 +342,13 @@ function Sidebar({
       }}
     >
       <div className="relative mt-2 flex items-center justify-between px-2">
-        <span className="rounded-lg bg-white p-1">
+        <span
+          className="rounded-lg bg-white p-1"
+          onClick={() => {
+            setOpen(false);
+            navigate("/");
+          }}
+        >
           <img src="logo-only.png" className="h-8 w-8" alt="logo" />
         </span>
         <SidebarIcon onClick={() => setOpen(false)} className="h-8" />
@@ -373,6 +380,11 @@ function Sidebar({
               icon: <ArrowUpRight />,
               href: "/contact",
             },
+            {
+              title: "Dashboard",
+              icon: <ArrowUpRight />,
+              href: user.isAdmin || user.isMentor ? "/admin" : "/profile",
+            },
           ].map((item, idx) => (
             <motion.div
               initial={{ opacity: 0, left: "-110vw" }}
@@ -384,7 +396,7 @@ function Sidebar({
               key={idx}
               className="group relative flex w-full flex-col items-start justify-start active:bg-primary active:text-white"
               onClick={() => {
-                navigate(item.href)
+                navigate(item.href);
                 setOpen(false);
               }}
             >
@@ -473,7 +485,7 @@ function Sidebar({
                 <LogOut
                   className="h-6 w-6"
                   onClick={() => {
-                    setOpen(false)
+                    setOpen(false);
                     logoutHandler();
                   }}
                 />

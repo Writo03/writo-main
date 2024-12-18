@@ -358,7 +358,7 @@ export function ExclusiveSection({ className }: { className?: string }) {
     });
   }
   return (
-    <div className={cn("container mx-auto", className)}>
+    <div id="paymentsection" className={cn("container mx-auto", className)}>
       <div className="overflow-hidden rounded-lg bg-white shadow-xl">
         <div className="p-8 md:p-12 lg:flex lg:items-center lg:justify-between">
           <div className="mb-8 lg:mb-0 lg:mr-8">

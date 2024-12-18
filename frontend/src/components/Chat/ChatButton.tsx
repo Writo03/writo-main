@@ -5,14 +5,50 @@ import { useAppSelector } from '@/redux/hooks';
 import { serviceIds } from '@/utils/contants';
 import { toast } from '../hooks/use-toast';
 import axios from 'axios';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+
+interface SubscriptionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubscribe: () => void;
+}
 
 interface ChatButtonProps {
   buttonText: string;
   subject: string
 }
 
+const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, onSubscribe }) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Unlock Doubt Sessions</DialogTitle>
+          <DialogDescription>
+            To access this feature, you need to subscribe to one of our plans. Click below to explore available options.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="mt-4 flex justify-end">
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button className="ml-2" onClick={onSubscribe}>
+            Subscribe
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+
+
+
 const ChatButton: React.FC<ChatButtonProps> = ({ buttonText,subject }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const [responseMessage, setResponseMessage] = useState<string>('');
   const isAutheticated = useAppSelector((state) => state.auth.isAuthenticated);
   const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
@@ -30,7 +66,7 @@ const ChatButton: React.FC<ChatButtonProps> = ({ buttonText,subject }) => {
     const hasMatchingService = subscriptions.includes(requiredServiceId);
     if (!hasMatchingService) {
     //  navigate('/');
-    console.log("open model")
+    setIsModalOpen(true); // Open subscription modal
     setIsLoading(false);
      return;
      // Redirect if the user is not subscribed
@@ -58,7 +94,10 @@ const ChatButton: React.FC<ChatButtonProps> = ({ buttonText,subject }) => {
       setIsLoading(false);
     }
   };
-
+  const handleSubscribe = () => {
+    setIsModalOpen(false);
+    // navigate('#paymentsection'); // Redirect to subscription page
+  };
 
   return (
     <div>
@@ -70,8 +109,20 @@ const ChatButton: React.FC<ChatButtonProps> = ({ buttonText,subject }) => {
         {isLoading ? 'Loading...' : buttonText}
       </button>
       {responseMessage && <p className="mt-2 text-gray-600">{responseMessage}</p>}
+      <SubscriptionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubscribe={handleSubscribe}
+      />
     </div>
   );
 };
 
 export default ChatButton;
+
+
+
+
+
+
+

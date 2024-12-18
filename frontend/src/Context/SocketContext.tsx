@@ -10,6 +10,7 @@ const getSocket = () => {
   return socketio(import.meta.env.VITE_SERVER_URI, {
     withCredentials: true,
     auth: { token },
+    transports: ["websocket"],
   });
 };
 

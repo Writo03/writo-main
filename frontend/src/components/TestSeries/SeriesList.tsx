@@ -20,6 +20,8 @@ import {
 import { Clock, Book, AlertCircle } from "lucide-react";
 import TestStartPopup from "./PopUp";
 import useFetchTestSeries from "@/components/hooks/useFetchTestSeries";
+import axiosInstance from "@/utils/axiosInstance";
+import { idtoService } from "@/utils/contants";
 
 interface TestSeries {
   _id: string;
@@ -28,6 +30,7 @@ interface TestSeries {
   subjects: string;
   duration: string;
   questionNumber: number;
+  services: string[];
   difficulty: "Easy" | "Medium" | "Hard";
 }
 
@@ -80,8 +83,27 @@ export default function TestSeriesList({
   const onClose = () => setIsOpen(false);
 
   const onConfirm = (test: TestSeries) => {
-    setIsOpen(false);
-    window.location.href = `/test/${test._id}`;
+    const res = axiosInstance.get(
+      "/subscription/get-subscriptions?type='active'",
+    );
+    res
+      .then((response) => {
+        const data = response.data.data;
+        let found = false;
+        data.forEach((item: any) => {
+          if (item.service === serviceId) {
+            found = true;
+            window.location.href = `/test/${test._id}`;
+          }
+        });
+        if (!found) {
+          const service =
+            idtoService[test.services[0] as keyof typeof idtoService];
+          window.location.href = "/test-series/details/" + service;
+        }
+      })
+      .catch(console.error)
+      .finally(() => setIsOpen(false));
   };
 
   const handdleStartTest = (test: TestSeries) => {

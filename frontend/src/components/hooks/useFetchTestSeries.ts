@@ -20,7 +20,7 @@ export default function useFetchTestSeries(
         const response = await axiosInstance.get(
           `/quiz/get-quizes?isSubjectTest=${isSubjectTest}&isFree=${isFree}&serviceId=${serviceId}`,
         );
-        console.log(response)
+        // console.log(response)
         if (isMounted) {
           setTestSeries(response.data.data || []);
           setError(null);

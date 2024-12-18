@@ -46,10 +46,10 @@ const Hero = () => {
             you achieve academic excellence.
           </p>
           <div className="flex flex-col justify-center gap-6 sm:flex-row">
-            <Button size="xl">
+            <Button size="xl" onClick={() => navigate("/test-series")}>
               Start Learning <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="xl" variant="outline">
+            <Button size="xl" variant="outline" onClick={() => navigate("/")}>
               Watch Demo
             </Button>
           </div>

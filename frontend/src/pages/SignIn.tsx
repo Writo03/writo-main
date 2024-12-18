@@ -73,13 +73,11 @@ const SignIn = () => {
         dispatch(login(loginPayload));
        // Proper navigation logic
       setTimeout(() => {
-        if (user.isAdmin) {
-          navigate('/admin'); // Redirect to admin page
-        } else {
-          navigate('/'); // Redirect to home
-        }
+      const redirectPath = localStorage.getItem("redirectPath") || (user.isAdmin ? '/admin' : '/');
+      localStorage.removeItem("redirectPath");
+      navigate(redirectPath);
       }, 0);
-    
+ 
         setisloading(false)
       }
     } catch (err: unknown) {

@@ -210,7 +210,6 @@ const Sidebar = () => {
    useEffect(() => {
     const chat = chats.find((chat) => chat._id === chatid);
     if(chat){
-      console.log(chat)
       handleChatSelect(chat)
     }
    

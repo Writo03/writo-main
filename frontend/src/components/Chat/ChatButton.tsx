@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { createUserChat } from '@/api';
-import { useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
+import { useAppSelector } from '@/redux/hooks';
+import { serviceIds } from '@/utils/contants';
+import { toast } from '../hooks/use-toast';
+import axios from 'axios';
 
 interface ChatButtonProps {
   buttonText: string;
@@ -10,18 +14,41 @@ interface ChatButtonProps {
 const ChatButton: React.FC<ChatButtonProps> = ({ buttonText,subject }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>('');
+  const isAutheticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
+
     const navigate = useNavigate()
   const handleClick = async () => {
     setIsLoading(true);
     setResponseMessage('');
+    if (!isAutheticated) {
+      localStorage.setItem("redirectPath", location.pathname); // Save current path
+      navigate('/signin')
+      return;
+    }
+    const requiredServiceId = serviceIds.doubtSession
+    const hasMatchingService = subscriptions.includes(requiredServiceId);
+    if (!hasMatchingService) {
+    //  navigate('/');
+    console.log("open model")
+    setIsLoading(false);
+     return;
+     // Redirect if the user is not subscribed
+    }
 
     try {
         const createNewChat = async () => {
-        const res =await createUserChat(subject)
-        console.log(res)
-        const chatid = res.data.data
-        navigate(`/chat/${chatid}`)
-    
+          try {
+            const res =await createUserChat(subject)
+            const chatid = res.data.data
+            navigate(`/chat/${chatid}`)
+          } catch (error:unknown) {
+            if (axios.isAxiosError(error)) {
+
+              toast({description:error.response?.data.message}) 
+            }
+          }
+
     };
     createNewChat();
     } catch (error) {

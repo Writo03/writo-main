@@ -11,11 +11,7 @@ import { useSelector } from 'react-redux';
 const ServiceDoubt = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const role = useSelector((state: RootState) => state.auth.user.role);
-  const ismentoraccess = role.map((role)=>{
-    if(role==='CHAT'){
-      return true;
-    }
-  })
+  const ismentoraccess = role.some((role)=>role==='CHAT')
   const dispatch = useAppDispatch();
   const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
   const navigate = useNavigate();

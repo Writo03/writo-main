@@ -38,6 +38,9 @@ import PaymentButton from "../ui/PaymentButton";
 import { toast } from "../hooks/use-toast";
 import { PaymentSuccessDetails } from "../TestSeries/TestSeriesDetails";
 import ChatButton from "../Chat/ChatButton";
+// import { useAppSelector } from "@/redux/hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "@/types/state";
 
 const subjects = [
   {
@@ -67,6 +70,17 @@ const subjects = [
 ];
 
 export default function DoubtSessionPage() {
+  const user = useSelector((state: RootState) => state.auth.user);
+  // const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  // Determine which cards to show
+  // const showNEETCard = !isAuthenticated || user.target === "NEET";
+  // const showJEECard = !isAuthenticated || user.target === "JEE";
+  const filteredSubjects = subjects.filter((subject) => {
+    if (user?.target === "NEET" && subject.name === "Mathematics") return false;
+    if (user?.target === "JEE" && subject.name === "Biology") return false;
+    return true;
+  });
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       {/* <header className="bg-primary text-primary-foreground sticky top-0 z-50 shadow-md">
@@ -108,7 +122,7 @@ export default function DoubtSessionPage() {
               Our Expert Mentors
             </h2>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              {subjects.map((subject, index) => (
+              {filteredSubjects.map((subject, index) => (
                 <Card
                   key={index}
                   className="overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
@@ -138,7 +152,7 @@ export default function DoubtSessionPage() {
                   <CardFooter>
                     {/* <Button className="w-full">Schedule Session</Button> */}
                     <ChatButton
-                    buttonText="Schedule Session"
+                    buttonText="Chat with Mentor"
                     subject={subject.name}
                      />
                   </CardFooter>

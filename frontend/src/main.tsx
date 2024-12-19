@@ -39,6 +39,7 @@ import Chat from "./pages/Chat/Chat";
 import { SocketProvider } from "./Context/SocketContext";
 import TestAuth from "./components/TestSeries/TestAuth";
 import ServiceDoubt from "./components/ServiceDoubt";
+import EditMentor from "./pages/admin/EditMentor";
 // import Layout from "./pages/admin/Layout";
 
 const router = createBrowserRouter([
@@ -162,6 +163,10 @@ const router = createBrowserRouter([
           {
             path: "manage-mentors",
             element: <ManageMentors />,
+          },
+          {
+            path: "edit-mentor/:mentorId",
+            element: <EditMentor />,
           },
           {
             path: "adduser",

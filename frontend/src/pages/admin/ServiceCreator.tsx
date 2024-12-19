@@ -22,9 +22,9 @@ import axiosInstance from "@/utils/axiosInstance";
 import { ErrorApiRes } from "@/types/all";
 import { AxiosError } from "axios";
 import { serviceSchema } from "@/Schema/admin";
+import { useAppSelector } from "@/redux/hooks";
 
 // Form validation schema
-
 
 type FormData = z.infer<typeof serviceSchema>;
 
@@ -32,7 +32,8 @@ const ServiceCreator = () => {
   const { serviceId } = useParams();
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const isAdmin = useAppSelector((state) => state.auth.user.isAdmin);
   const form = useForm<FormData>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
@@ -42,7 +43,6 @@ const ServiceCreator = () => {
       discount: 0,
     },
   });
-
 
   useEffect(() => {
     const fetchService = async () => {
@@ -73,25 +73,33 @@ const ServiceCreator = () => {
         setLoading(false);
       }
     };
-
-    fetchService();
-  }, [serviceId, form, toast]);
+    if (isAdmin) {
+      fetchService();
+    } else {
+      navigate("/");
+    }
+  }, [serviceId, form, toast, navigate, isAdmin]);
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-        let response;
-        if(serviceId){
-            response = await axiosInstance.patch(`/service/update-service/${serviceId}`, data)
-        }else {
-            response = await axiosInstance.post(`/service/create-service`, data)
-        }
+      let response;
+      if (serviceId) {
+        response = await axiosInstance.patch(
+          `/service/update-service/${serviceId}`,
+          data,
+        );
+      } else {
+        response = await axiosInstance.post(`/service/create-service`, data);
+      }
       toast({
         title: "Success",
-        description: response.data.message || `Service ${serviceId ? "updated" : "created"} successfully`,
+        description:
+          response.data.message ||
+          `Service ${serviceId ? "updated" : "created"} successfully`,
       });
 
-      navigate('/admin/manage-services')
+      navigate("/admin/manage-services");
 
       if (!serviceId) {
         form.reset();

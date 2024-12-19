@@ -119,7 +119,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
       password,
       fullName,
       phone,
-      isAdmin : true
+      isAdmin: true,
     })
 
     return res
@@ -165,6 +165,30 @@ const registerMentor = asyncHandler(async (req, res) => {
   }
 })
 
+const editOnLeaveBreak = asyncHandler(async (req, res) => {
+  try {
+    const { onBreak = false, onLeave = false } = req.body
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        onBreak,
+        onLeave,
+      },
+      { new: true }
+    )
+
+    console.log(user)
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Mentor details updated successfully", user))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while registering the user"
+    )
+  }
+})
+
 const getAllMentors = asyncHandler(async (req, res) => {
   try {
     if (!req.user || !req.user.isAdmin) {
@@ -185,6 +209,65 @@ const getAllMentors = asyncHandler(async (req, res) => {
     throw new ApiError(
       500,
       error?.message || "Something went wrong while fetching mentors"
+    )
+  }
+})
+
+const getMentorById = asyncHandler(async (req, res) => {
+  try {
+    const { mentorId } = req.params
+    if (!req.user || !req.user.isAdmin) {
+      throw new ApiError(400, "Only admins can see mentors")
+    }
+    const mentor = await User.findById(mentorId).select(
+      "-password -refreshToken"
+    )
+
+    if (!mentor) {
+      throw new ApiError(404, "Mentor not found")
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Mentor fetched successfully", mentor))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching mentors"
+    )
+  }
+})
+
+const updateMentorByAdmin = asyncHandler(async (req, res) => {
+  try {
+    if (!req.user || !req.user.isAdmin) {
+      throw new ApiError(400, "Only admins can update mentors")
+    }
+    const { mentorId } = req.params
+    const { subject, role, onBreak, onLeave } = req.body
+
+    const updatedMentor = await User.findByIdAndUpdate(
+      mentorId,
+      {
+        subject,
+        role,
+        onBreak,
+        onLeave,
+      },
+      { new: true }
+    )
+
+    if (!updatedMentor) {
+      throw new ApiError(404, "Mentor not found")
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Mentor updated successfully"))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while updating mentor"
     )
   }
 })
@@ -221,31 +304,30 @@ const userLogout = asyncHandler(async (req, res) => {
       },
     },
     { new: true }
-  );
+  )
 
   return res
     .status(200)
-    .clearCookie('accessToken', options)
-    .clearCookie('refreshToken', options)
-    .json(new ApiResponse(200, 'User logged out'));
-});
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, "User logged out"))
+})
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
 
   if (!incomingRefreshToken) {
-    throw new ApiError(401, 'Unauthorized request');
+    throw new ApiError(401, "Unauthorized request")
   }
 
   try {
     const decodedToken = jwt.verify(
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
-    );
-    const user = await User.findById(decodedToken?._id);
+    )
+    const user = await User.findById(decodedToken?._id)
     if (!user) {
-      throw new ApiError(401, 'Invalid refresh token');
+      throw new ApiError(401, "Invalid refresh token")
     }
 
     // check if incoming refresh token is same as the refresh token attached in the user document
@@ -253,48 +335,52 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     // Once it is used, we are replacing it with new refresh token below
     if (incomingRefreshToken !== user?.refreshToken) {
       // If token is valid but is used already
-      throw new ApiError(401, 'Refresh token is expired or used');
+      throw new ApiError(401, "Refresh token is expired or used")
     }
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    };
+      secure: process.env.NODE_ENV === "production",
+    }
 
-    const { accessToken, refreshToken: newRefreshToken } =
-      await generateTokens(user._id);
+    const { accessToken, refreshToken: newRefreshToken } = await generateTokens(
+      user._id
+    )
 
     return res
       .status(200)
-      .cookie('accessToken', accessToken, options)
-      .cookie('refreshToken', newRefreshToken, options)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
       .json(
         new ApiResponse(
           200,
           { accessToken, refreshToken: newRefreshToken },
-          'Access token refreshed'
+          "Access token refreshed"
         )
-      );
+      )
   } catch (error) {
-    throw new ApiError(401, error?.message || 'Invalid refresh token');
+    throw new ApiError(401, error?.message || "Invalid refresh token")
   }
-});
+})
 
-const userSelf =asyncHandler(async(req,res)=>{
+const userSelf = asyncHandler(async (req, res) => {
   return res
-  .status(200)
-  .json(new ApiResponse(200,'User fetched successfully', req.user));
-});
+    .status(200)
+    .json(new ApiResponse(200, "User fetched successfully", req.user))
+})
 
 const updateUser = asyncHandler(async (req, res) => {
-  const userId = req.user._id; // Assumes user ID is set in req.user by an authentication middleware
-  const { fullName, email, phone, institution } = req.body;
+  const userId = req.user._id // Assumes user ID is set in req.user by an authentication middleware
+  const { fullName, email, phone, institution } = req.body
 
   // Validation (if not handled on the frontend)
   if (!fullName || fullName.length < 2) {
-    throw new ApiError(400, 'Full name is required and must be at least 2 characters.');
+    throw new ApiError(
+      400,
+      "Full name is required and must be at least 2 characters."
+    )
   }
   if (!email || !/\S+@\S+\.\S+/.test(email)) {
-    throw new ApiError(400, 'A valid email address is required.');
+    throw new ApiError(400, "A valid email address is required.")
   }
 
   try {
@@ -303,62 +389,79 @@ const updateUser = asyncHandler(async (req, res) => {
       userId,
       { fullName, email, phone, institution },
       { new: true, runValidators: true }
-    );
+    )
 
     if (!updatedUser) {
-      throw new ApiError(404, 'User not found');
+      throw new ApiError(404, "User not found")
     }
 
     // Send updated user info back as a response
-    res.status(200)
-    .json(new ApiResponse(200,'User updated successfully', updatedUser));
+    res
+      .status(200)
+      .json(new ApiResponse(200, "User updated successfully", updatedUser))
   } catch (error) {
-    throw new ApiError(500, error.message || 'Internal server error');
+    throw new ApiError(500, error.message || "Internal server error")
   }
-});
+})
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const userId = req.user._id; // Assumes user ID is set in req.user by an authentication middleware
-  const { profilePic } = req.body;
- 
-
+  const userId = req.user._id // Assumes user ID is set in req.user by an authentication middleware
+  const { profilePic } = req.body
 
   if (!profilePic) {
-    throw new ApiError(400, 'Profile Picture is Required');
+    throw new ApiError(400, "Profile Picture is Required")
   }
 
   try {
     // Find and update the user's profile date
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { profilePic},
+      { profilePic },
       { new: true, runValidators: true }
-    );
+    )
 
     if (!updatedUser) {
-      throw new ApiError(404, 'User not found');
+      throw new ApiError(404, "User not found")
     }
 
     // Send updated user info back as a response
-    res.status(200)
-    .json(new ApiResponse(200,'Profile updated successfully', updatedUser.profilePic));
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Profile updated successfully",
+          updatedUser.profilePic
+        )
+      )
   } catch (error) {
-    throw new ApiError(500, error.message || 'Internal server error');
+    throw new ApiError(500, error.message || "Internal server error")
   }
-});
+})
 
 const userRegisterByAdmin = asyncHandler(async (req, res, next) => {
-  const { email, password, fullName, phone, target, services } = req.body;
+  const { email, password, fullName, phone, target, services } = req.body
   // console.log(req.body)
 
-  if (!email || !password || !fullName || !phone || !target || !services || !Array.isArray(services)) {
-    throw new ApiError(400, "All fields are required, and services must be an array");
+  if (
+    !email ||
+    !password ||
+    !fullName ||
+    !phone ||
+    !target ||
+    !services ||
+    !Array.isArray(services)
+  ) {
+    throw new ApiError(
+      400,
+      "All fields are required, and services must be an array"
+    )
   }
 
-  const existingUser = await User.findOne({ email: email });
+  const existingUser = await User.findOne({ email: email })
 
   if (existingUser) {
-    throw new ApiError(400, "User already exists");
+    throw new ApiError(400, "User already exists")
   }
 
   const user = await User.create({
@@ -367,16 +470,16 @@ const userRegisterByAdmin = asyncHandler(async (req, res, next) => {
     fullName,
     phone,
     target,
-  });
+  })
 
   const subscriptionPromises = services.map((service) => {
-    const { name, id } = service;
+    const { name, id } = service
     console.log(service)
     if (!name || !id) {
-      throw new ApiError(400, "Each service must have a name and serviceId");
+      throw new ApiError(400, "Each service must have a name and serviceId")
     }
 
-    const expiryDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 30 days from now
+    const expiryDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 30 days from now
     return Subscription.create({
       name,
       service: id,
@@ -384,28 +487,37 @@ const userRegisterByAdmin = asyncHandler(async (req, res, next) => {
       endDate: expiryDate,
       student: user._id,
       isExpired: false,
-    });
-  });
+    })
+  })
 
-  await Promise.all(subscriptionPromises);
+  await Promise.all(subscriptionPromises)
 
-  const createdUser = await User.findById(user._id).select("-password");
+  const createdUser = await User.findById(user._id).select("-password")
   if (!createdUser) {
-    throw new ApiError(500, "Something went wrong while registering the user");
+    throw new ApiError(500, "Something went wrong while registering the user")
   }
 
   return res.status(200).json(
     new ApiResponse(200, "User registered successfully", {
       user: createdUser,
     })
-  );
-});
+  )
+})
 
-
-export { userRegisterByAdmin,userRegister, userLogin, registerAdmin, registerMentor, getAllMentors, deleteMentor,refreshAccessToken,userSelf,userLogout,updateUser,updateUserProfile}
-   
- 
-
-
-
-
+export {
+  userRegisterByAdmin,
+  userRegister,
+  userLogin,
+  registerAdmin,
+  registerMentor,
+  getAllMentors,
+  deleteMentor,
+  refreshAccessToken,
+  userSelf,
+  userLogout,
+  updateUser,
+  updateUserProfile,
+  editOnLeaveBreak,
+  updateMentorByAdmin,
+  getMentorById,
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -27,12 +27,15 @@ import {
   Mail,
   Phone,
   BookOpen,
-  User
+  User,
+  PenBoxIcon,
 } from "lucide-react";
-import { useToast } from '@/components/hooks/use-toast';
-import { ErrorApiRes } from '@/types/all';
-import { AxiosError } from 'axios';
-import axiosInstance from '@/utils/axiosInstance';
+import { useToast } from "@/components/hooks/use-toast";
+import { ErrorApiRes } from "@/types/all";
+import { AxiosError } from "axios";
+import axiosInstance from "@/utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/redux/hooks";
 
 interface Mentor {
   _id: string;
@@ -41,6 +44,7 @@ interface Mentor {
   phone: string;
   subject: string;
   onBreak: boolean;
+  onLeave: boolean;
 }
 
 const ManageMentors = () => {
@@ -50,49 +54,59 @@ const ManageMentors = () => {
   const [deleteMentorId, setDeleteMentorId] = useState<string | null>(null);
 
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const isAdmin = useAppSelector((state) => state.auth.user.isAdmin);
 
   // Fetch mentors
   useEffect(() => {
     const fetchMentors = async () => {
       try {
         const response = await axiosInstance.get("/user/get-mentors");
-        setMentors(response.data.data)
+        setMentors(response.data.data);
       } catch (err) {
         const axiosError = err as AxiosError<ErrorApiRes>;
-        setError(axiosError.response?.data.message ||'Failed to fetch mentors');
+        setError(
+          axiosError.response?.data.message || "Failed to fetch mentors",
+        );
       } finally {
         setLoading(false);
       }
     };
-
-    fetchMentors();
-  }, []);
+    if (isAdmin) {
+      fetchMentors();
+    } else {
+      navigate("/admin");
+    }
+  }, [isAdmin, navigate]);
 
   const handleDelete = async () => {
     if (!deleteMentorId) return;
 
     try {
-      setMentors(mentors.filter(mentor => mentor._id !== deleteMentorId));
-      const response = await axiosInstance.delete(`/user/delete-mentor/${deleteMentorId}`)
+      setMentors(mentors.filter((mentor) => mentor._id !== deleteMentorId));
+      const response = await axiosInstance.delete(
+        `/user/delete-mentor/${deleteMentorId}`,
+      );
       toast({
-        title: 'Success',
-        description: response.data.message || 'Mentor removed successfully',
+        title: "Success",
+        description: response.data.message || "Mentor removed successfully",
       });
     } catch (err) {
-        const axiosError = err as AxiosError<ErrorApiRes>;
+      const axiosError = err as AxiosError<ErrorApiRes>;
       toast({
-        title: 'Error',
-        description: axiosError.response?.data.message ||'Failed to remove mentor',
-        variant: 'destructive',
+        title: "Error",
+        description:
+          axiosError.response?.data.message || "Failed to remove mentor",
+        variant: "destructive",
       });
     }
-    
+
     setDeleteMentorId(null);
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
@@ -100,7 +114,7 @@ const ManageMentors = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="flex items-center space-x-2 text-destructive">
           <AlertCircle className="h-5 w-5" />
           <p>{error}</p>
@@ -111,7 +125,9 @@ const ManageMentors = () => {
 
   return (
     <div className="container mx-auto p-6 pt-28">
-      <h1 className="text-3xl font-bold text-foreground mb-8">Manage Mentors</h1>
+      <h1 className="mb-8 text-3xl font-bold text-foreground">
+        Manage Mentors
+      </h1>
 
       {/* Desktop View */}
       <div className="hidden md:block">
@@ -129,7 +145,9 @@ const ManageMentors = () => {
             <TableBody>
               {mentors.map((mentor) => (
                 <TableRow key={mentor._id}>
-                  <TableCell className="font-medium">{mentor.fullName}</TableCell>
+                  <TableCell className="font-medium">
+                    {mentor.fullName}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -149,8 +167,16 @@ const ManageMentors = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={mentor.onBreak ? "secondary" : "outline"}>
-                      {mentor.onBreak ? 'On Break' : 'Active'}
+                    <Badge
+                      variant={
+                        mentor.onBreak || mentor.onLeave
+                          ? "secondary"
+                          : "outline"
+                      }
+                    >
+                      {mentor.onBreak || mentor.onLeave
+                        ? "Not Active"
+                        : "Active"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -160,6 +186,15 @@ const ManageMentors = () => {
                       onClick={() => setDeleteMentorId(mentor._id)}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        navigate(`/admin/edit-mentor/${mentor._id}`)
+                      }
+                    >
+                      <PenBoxIcon className="h-4 w-4 text-destructive" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -173,18 +208,27 @@ const ManageMentors = () => {
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {mentors.map((mentor) => (
           <Card key={mentor._id} className="p-4">
-            <div className="flex justify-between items-start mb-4">
+            <div className="mb-4 flex items-start justify-between">
               <div className="flex items-center space-x-2">
                 <User className="h-5 w-5 text-primary" />
                 <h3 className="font-semibold">{mentor.fullName}</h3>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDeleteMentorId(mentor._id)}
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setDeleteMentorId(mentor._id)}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate(`/admin/edit-mentor/${mentor._id}`)}
+                >
+                  <PenBoxIcon className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -201,8 +245,12 @@ const ManageMentors = () => {
                 <span>{mentor.phone}</span>
               </div>
               <div className="pt-2">
-                <Badge variant={mentor.onBreak ? "secondary" : "outline"}>
-                  {mentor.onBreak ? 'On Break' : 'Active'}
+                <Badge
+                  variant={
+                    mentor.onBreak || mentor.onLeave ? "secondary" : "outline"
+                  }
+                >
+                  {mentor.onBreak || mentor.onLeave ? "On Break" : "Active"}
                 </Badge>
               </div>
             </div>
@@ -210,18 +258,21 @@ const ManageMentors = () => {
         ))}
       </div>
 
-      <AlertDialog open={!!deleteMentorId} onOpenChange={() => setDeleteMentorId(null)}>
+      <AlertDialog
+        open={!!deleteMentorId}
+        onOpenChange={() => setDeleteMentorId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently remove the mentor
-              from the system.
+              This action cannot be undone. This will permanently remove the
+              mentor from the system.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >

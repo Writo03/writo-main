@@ -22,6 +22,8 @@ import TestStartPopup from "./PopUp";
 import useFetchTestSeries from "@/components/hooks/useFetchTestSeries";
 import axiosInstance from "@/utils/axiosInstance";
 import { idtoService } from "@/utils/contants";
+import { useNavigate } from "react-router-dom";
+// import { useToast } from '@/components/hooks/use-toast';
 
 interface TestSeries {
   _id: string;
@@ -54,7 +56,7 @@ export default function TestSeriesList({
   const [isFree, setIsFree] = useState(false);
 
   useEffect(() => {
-    setIsSubjectTest(subjectFilter === "all" || subjectFilter === "notall");
+    setIsSubjectTest(subjectFilter === "all");
     setIsFree(subjectFilter === "free");
   }, [subjectFilter]);
 
@@ -84,7 +86,7 @@ export default function TestSeriesList({
 
   const onConfirm = (test: TestSeries) => {
     const res = axiosInstance.get(
-      "/subscription/get-subscriptions?type='active'",
+      "/subscription/get-subscriptions?type=active",
     );
     res
       .then((response) => {
@@ -111,6 +113,9 @@ export default function TestSeriesList({
     setTestDetails(test);
   };
 
+  const navigate = useNavigate();
+  // const { toast } = useToast();
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -129,8 +134,11 @@ export default function TestSeriesList({
           <CardContent>
             <p className="text-center">{error}</p>
           </CardContent>
-          <CardFooter className="justify-center">
+          <CardFooter className="flex items-center justify-center space-x-4">
             <Button onClick={() => window.location.reload()}>Try Again</Button>
+            <Button onClick={() => navigate("/test-series")}>
+              Go Back to Test Series
+            </Button>
           </CardFooter>
         </Card>
       </div>
@@ -192,8 +200,12 @@ export default function TestSeriesList({
                     <CardDescription>{series.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <div className="mb-4 flex items-center justify-between">
-                      <Badge variant="secondary">{series.subjects}</Badge>
+                    <div className="mb-4 flex items-center justify-start space-x-2">
+                      {series.subjects.map((subject:string) => (
+                        <Badge key={subject} variant="secondary">
+                          {subject}
+                        </Badge>
+                      ))}
                       {/* <Badge className={getDifficultyColor(series.difficulty)}>
                         {series.difficulty}
                       </Badge> */}

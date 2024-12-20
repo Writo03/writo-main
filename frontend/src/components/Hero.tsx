@@ -8,7 +8,7 @@ import sliderimg3 from "@/assets/slider!img/3.png";
 import sliderimg4 from "@/assets/slider!img/4.png";
 import sliderimg5 from "@/assets/slider!img/5.png";
 
-import { Suspense, memo, useMemo } from "react";
+import { Suspense, memo } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function Fallback() {
@@ -20,19 +20,28 @@ export function Fallback() {
 }
 const MemoizedFallback = memo(Fallback);
 
+interface Item {
+  src: string;
+  alt: string;
+  href?: string;
+}
+
+const data: Item[] = [
+  { src: sliderimg1, alt: "All India Test Series", href: "/test-series" },
+  { src: sliderimg2, alt: "Doubt Sessions", href: "/doubt-sessions" },
+  { src: sliderimg3, alt: "All India Test Series JEE", href: "/test-series/details/jee" },
+  { src: sliderimg4, alt: "All India Test Series NEET", href: "/test-series/details/neet" },
+  { src: sliderimg5, alt: "School Batch", href: "" },
+];
+
 const Hero = () => {
-  const images = useMemo(
-    () => [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sliderimg1, sliderimg2, sliderimg3, sliderimg4, sliderimg5],
-  );
   const navigate = useNavigate();
 
   return (
     <div className="pt-4 md:pt-10">
       <div className="mt-[5vh] h-[12vh] w-full md:h-[20vh] lg:h-[35vh]">
         <Suspense fallback={<MemoizedFallback />}>
-          <HeroSlider items={images} />
+          <HeroSlider items={data} />
         </Suspense>
       </div>
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8 lg:py-20">

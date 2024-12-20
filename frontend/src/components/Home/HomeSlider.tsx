@@ -6,8 +6,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import { isMobile } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
-function HeroSlider({ items }: { items: string[] }) {
+interface Item {
+  src: string;
+  alt: string;
+  href?: string;
+}
+
+function HeroSlider({ items }: { items: Item[] }) {
+  const navigate = useNavigate();
   return (
     <Swiper
       style={
@@ -29,9 +37,10 @@ function HeroSlider({ items }: { items: string[] }) {
       {items.map((item, idx) => (
         <SwiperSlide key={idx} className="group h-full w-full">
           <img
-            src={item}
-            alt={`Slider ${idx}`}
-            className="h-full w-full md:object-cover object-center lg:transition-all lg:duration-700 lg:ease-in-out lg:group-hover:scale-[1.01]"
+            src={item.src}
+            alt={item.alt}
+            onClick={() => navigate(item.href || "/")}
+            className="h-full w-full object-center md:object-cover lg:transition-all lg:duration-700 lg:ease-in-out lg:group-hover:scale-[1.01]"
           />
         </SwiperSlide>
       ))}

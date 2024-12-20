@@ -3,7 +3,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
-
 const createQuiz = asyncHandler(async (req, res) => {
   try {
     const {
@@ -22,7 +21,10 @@ const createQuiz = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Only admins can create quiz for mentors");
     }
 
-    if (!req.user.isAdmin && (!req.user.isMentor || !req.user.role.includes("QUIZ"))) {
+    if (
+      !req.user.isAdmin &&
+      (!req.user.isMentor || !req.user.role.includes("QUIZ"))
+    ) {
       throw new ApiError(400, "Only admins and mentors can create quiz");
     }
 
@@ -61,27 +63,46 @@ const createQuiz = asyncHandler(async (req, res) => {
 });
 
 const getQuizes = asyncHandler(async (req, res) => {
+  console.log(new Date(), "request to getQuizes");
   try {
-    const {
-      isSubjectTest,
-      isFree = false,
-      isForMentors = false,
-      serviceId,
-    } = req.query;
+    const { isSubjectTest, isFree, isForMentors, serviceId } = req.query;
+    // console.log("isSubjectTest", typeof isSubjectTest, isSubjectTest);
+    // console.log("isFree", typeof isFree, isFree);
+    // console.log("isForMentors", typeof isForMentors, isForMentors);
+    // console.log("serviceId", typeof serviceId, serviceId);
 
     if (isForMentors && !req.user.isAdmin && !req.user.isMentor) {
       throw new ApiError(400, "Only admins and mentors can get mentor quizes");
     }
 
-    const quizes = await Quiz.find({
-      isSubjectTest,
-      isFree,
-      isForMentors,
-      services: { $in: [serviceId] },
-    });
+    let quizes;
 
-    if (!quizes.length) {
-      throw new ApiError(404, "No quizes found");
+    if (isFree === "true") {
+      quizes = await Quiz.find({
+        $or: [
+          {
+            isFree: isFree === "true",
+            isSubjectTest: true,
+            services: { $in: [serviceId] },
+          },
+          { isFree: isFree === "true", services: { $in: [serviceId] } },
+        ],
+      });
+      // console.log("free:", quizes);
+    } else {
+      quizes = await Quiz.find({
+        isSubjectTest: isSubjectTest === "true",
+        isFree: isFree === "true",
+        isForMentors: isForMentors === "true",
+        services: { $in: [serviceId] },
+      });
+      // console.log(isSubjectTest, quizes);
+    }
+
+    if (quizes.length <= 0) {
+      return res
+        .status(209)
+        .json(new ApiResponse(209, "No quizzes found", quizes));
     }
 
     res
@@ -154,7 +175,10 @@ const getQuizById = asyncHandler(async (req, res) => {
 
 const updateQuiz = asyncHandler(async (req, res) => {
   try {
-    if (!req.user.isAdmin && (!req.user.isMentor || !req.user.role.includes("QUIZ"))) {
+    if (
+      !req.user.isAdmin &&
+      (!req.user.isMentor || !req.user.role.includes("QUIZ"))
+    ) {
       throw new ApiError(400, "Only admins and mentors can update quiz");
     }
     const {
@@ -223,7 +247,10 @@ const deleteQuiz = asyncHandler(async (req, res) => {
   try {
     const { quizId } = req.params;
 
-    if (!req.user.isAdmin && (!req.user.isMentor || !req.user.role.includes("QUIZ"))) {
+    if (
+      !req.user.isAdmin &&
+      (!req.user.isMentor || !req.user.role.includes("QUIZ"))
+    ) {
       throw new ApiError(400, "Only admins and mentors can delete quiz");
     }
 

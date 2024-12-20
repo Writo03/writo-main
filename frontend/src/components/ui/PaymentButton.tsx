@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import axiosInstance from '@/utils/axiosInstance';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/types/state';
+import { useAppSelector } from '@/redux/hooks';
+import { useNavigate } from 'react-router-dom';
 
 // Types
 interface PaymentButtonProps {
@@ -87,12 +89,19 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const user = useSelector((state: RootState) => state.auth);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const navigate = useNavigate();
+
   const clearError = useCallback(() => setError(null), []);
 
   const handlePayment = async () => {
     setIsLoading(true);
     setError(null);
-
+    if(!isAuthenticated){
+    localStorage.setItem("redirectPath", location.pathname); // Save current path
+    navigate('/signin')
+    return;
+    }
     try {
       // Validate inputs
       if (price <= 0) throw new Error('Invalid price amount');

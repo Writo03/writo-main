@@ -38,9 +38,12 @@ import PaymentButton from "../ui/PaymentButton";
 import { toast } from "../hooks/use-toast";
 import { PaymentSuccessDetails } from "../TestSeries/TestSeriesDetails";
 import ChatButton from "../Chat/ChatButton";
-// import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const subjects = [
   {
@@ -72,6 +75,11 @@ const subjects = [
 export default function DoubtSessionPage() {
   const user = useSelector((state: RootState) => state.auth.user);
   // const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+    const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
+    const isMentor = useSelector((state: RootState) => state.auth.user.isMentor);
+  const requiredServiceId = serviceIds.doubtSession
+    const hasDoubtService = subscriptions.includes(requiredServiceId);
+    const navigate = useNavigate();
 
   // Determine which cards to show
   // const showNEETCard = !isAuthenticated || user.target === "NEET";
@@ -81,24 +89,21 @@ export default function DoubtSessionPage() {
     if (user?.target === "JEE" && subject.name === "Biology") return false;
     return true;
   });
+
+useEffect(() => {
+  if(isMentor){
+    navigate('/chat/mentor');
+    return;
+  }
+},[isMentor,navigate])
+
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      {/* <header className="bg-primary text-primary-foreground sticky top-0 z-50 shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold">Writo Education</Link>
-          <nav>
-            <ul className="flex space-x-4">
-              <li><Link href="#" className="hover:underline">Home</Link></li>
-              <li><Link href="#" className="hover:underline">Courses</Link></li>
-              <li><Link href="#" className="hover:underline">About</Link></li>
-              <li><Link href="#" className="hover:underline">Contact</Link></li>
-            </ul>
-          </nav>
-        </div>
-      </header> */}
+      
 
       <main className="flex-grow">
-        <section className="bg-gradient-to-r from-purple-600 to-indigo-600 py-20 pt-[20vh] text-white">
+       {!hasDoubtService?( <section className="bg-gradient-to-r from-purple-600 to-indigo-600 py-20 pt-[20vh] text-white">
           <div className="container mx-auto px-4 text-center">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">
               Expert Doubt Resolution Sessions
@@ -114,7 +119,7 @@ export default function DoubtSessionPage() {
               Book Your Session Now
             </Button>
           </div>
-        </section>
+        </section>):("")}
 
         <section className="py-16">
           <div className="container mx-auto px-4">
@@ -162,77 +167,15 @@ export default function DoubtSessionPage() {
           </div>
         </section>
 
-        <section className="bg-gray-100 py-16">
-          {/* <div className="container mx-auto px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">
-              Real-Time Chat Platform
-            </h2>
-            <div className="overflow-hidden rounded-lg bg-white shadow-xl">
-              <div className="p-8 md:p-12 lg:flex lg:items-center lg:justify-between">
-                <div className="mb-8 lg:mb-0 lg:mr-8">
-                  <h3 className="mb-4 text-2xl font-bold">Connect Instantly</h3>
-                  <p className="mb-6 text-xl text-gray-600">
-                    Engage with mentors and fellow students in real-time
-                  </p>
-                  <ul className="space-y-4">
-                    <li className="flex items-center">
-                      <MessageSquare className="mr-4 text-primary" />
-                      <span>Instant messaging with mentors</span>
-                    </li>
-                    <li className="flex items-center">
-                      <UserPlus className="mr-4 text-primary" />
-                      <span>Group chats with other students</span>
-                    </li>
-                    <li className="flex items-center">
-                      <Image className="mr-4 text-primary" />
-                      <span>
-                        Share images and files for better explanations
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="lg:w-1/2">
-                  <Card className="border-2 border-purple-200 bg-gray-50">
-                    <CardHeader>
-                      <CardTitle>Live Chat</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-64 overflow-y-auto">
-                      <div className="space-y-4">
-                        <div className="flex items-start">
-                          <div className="rounded-lg bg-purple-100 p-3">
-                            <p className="font-semibold">Student</p>
-                            <p>
-                              Can someone explain the concept of derivatives?
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-start justify-end">
-                          <div className="rounded-lg bg-blue-100 p-3">
-                            <p className="font-semibold">Mentor</p>
-                            <p>
-                              Derivatives measure the rate of change of a
-                              function...
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <Button className="w-full">Join the Conversation</Button>
-                    </CardFooter>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </div> */}
+        {!hasDoubtService?(<section className="bg-gray-100 py-16">
           <ChatSection />
-        </section>
+        </section>):("")}
 
-        <section className="py-16">
+       {!hasDoubtService?( <section className="py-16">
           <ExclusiveSection className="px-4" />
-        </section>
+        </section>):("")}
 
-        <section className="py-16">
+       {!hasDoubtService?( <section className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="mb-12 text-center text-3xl font-bold">
               Why Choose Our Doubt Sessions?
@@ -289,9 +232,9 @@ export default function DoubtSessionPage() {
               ))}
             </div>
           </div>
-        </section>
+        </section>):("")}
 
-        <section className="bg-gray-900 py-16 text-white">
+        {!hasDoubtService?(<section className="bg-gray-900 py-16 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="mb-8 text-3xl font-bold">
               Ready to Excel in Your Studies?
@@ -304,40 +247,10 @@ export default function DoubtSessionPage() {
               Get Started Now
             </Button>
           </div>
-        </section>
+        </section>):("")}
       </main>
 
-      {/* <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><Link href="#" className="hover:underline">Home</Link></li>
-                <li><Link href="#" className="hover:underline">Courses</Link></li>
-                <li><Link href="#" className="hover:underline">About Us</Link></li>
-                <li><Link href="#" className="hover:underline">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-              <p>Email: info@writo-education.com</p>
-              <p>Phone: +91 1234567890</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-blue-400">Facebook</a>
-                <a href="#" className="hover:text-blue-400">Twitter</a>
-                <a href="#" className="hover:text-blue-400">Instagram</a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 text-center">
-            <p>&copy; 2023 Writo Education. All rights reserved.</p>
-          </div>
-        </div>
-      </footer> */}
+    
     </div>
   );
 }

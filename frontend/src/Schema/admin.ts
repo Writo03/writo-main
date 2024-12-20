@@ -51,7 +51,7 @@ export const formSchema = z.object({
   subjects: z.array(z.string()).min(1, "Select at least one subject"),
   isSubjectTest: z.boolean(),
   isForMentors: z.boolean(),
-  isForFree: z.boolean(),
+  isFree: z.boolean().optional(),
   services: z.array(z.string()).min(1, "Select at least one service"),
   questions: z.array(questionSchema).min(1, "Add at least one question"),
 });

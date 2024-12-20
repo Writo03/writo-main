@@ -65,7 +65,7 @@ const QuizCreator = () => {
       subjects: [],
       isSubjectTest: false,
       isForMentors: false,
-      isForFree: false,
+      isFree: false,
       services: [],
       questions: [
         {
@@ -272,7 +272,7 @@ const QuizCreator = () => {
 
               <FormField
                 control={form.control}
-                name="isForFree"
+                name="isFree"
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <FormControl>

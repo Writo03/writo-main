@@ -133,6 +133,49 @@ const registerAdmin = asyncHandler(async (req, res) => {
   }
 })
 
+const getAllAdmins = asyncHandler(async (req, res) => {
+  try {
+    if (!req.user || !req.user.isAdmin) {
+      throw new ApiError(400, "Only admins can see admins")
+    }
+    const admins = await User.find({ isAdmin: true }).select(
+      "-password -refreshToken"
+    )
+    if (!admins.length) {
+      throw new ApiError(404, "No admins found")
+    }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "admins fetched successfully", admins))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching admins"
+    )
+  }
+})
+
+const deleteAdmin = asyncHandler(async (req, res) => {
+  try {
+    const { adminId } = req.params
+    if (!req.user || !req.user.isAdmin) {
+      throw new ApiError(400, "Only admins can delete admins")
+    }
+    const deletedAdmin = await User.findByIdAndDelete(adminId)
+    if (!deletedAdmin) {
+      throw new ApiError(404, "Admin not found")
+    }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Admin deleted successfully"))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while deleting admin"
+    )
+  }
+})
+
 const registerMentor = asyncHandler(async (req, res) => {
   try {
     const { email, password, fullName, phone, subject, role } = req.body
@@ -520,4 +563,6 @@ export {
   editOnLeaveBreak,
   updateMentorByAdmin,
   getMentorById,
+  getAllAdmins,
+  deleteAdmin,
 }

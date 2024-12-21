@@ -41,6 +41,7 @@ import TestAuth from "./components/TestSeries/TestAuth";
 import ServiceDoubt from "./components/ServiceDoubt";
 import EditMentor from "./pages/admin/EditMentor";
 // import Layout from "./pages/admin/Layout";
+import ManageAdmins from "./pages/admin/ViewAdmins";
 
 const router = createBrowserRouter([
   {
@@ -163,6 +164,10 @@ const router = createBrowserRouter([
           {
             path: "manage-mentors",
             element: <ManageMentors />,
+          },
+          {
+            path: "manage-admins",
+            element: <ManageAdmins />,
           },
           {
             path: "edit-mentor/:mentorId",

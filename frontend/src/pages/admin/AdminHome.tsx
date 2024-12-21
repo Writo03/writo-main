@@ -155,9 +155,11 @@ const AdminHome = () => {
                     View all administrators
                   </p>
                 </div>
+                <Link to={"manage-admins"} className="w-full">
                 <Button variant="outline" className="w-full">
                   View Admins
                 </Button>
+                </Link>
               </div>
             </Card>
             <Card className="bg-card p-6 transition-shadow hover:shadow-lg">

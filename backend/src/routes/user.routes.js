@@ -1,5 +1,5 @@
 import Router from "express";
-import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf, updateUser, updateUserProfile, userRegisterByAdmin, editOnLeaveBreak, updateMentorByAdmin, getMentorById } from "../controllers/user.controller.js";
+import { userLogin, userRegister, registerMentor, getAllMentors, deleteMentor, registerAdmin, refreshAccessToken, userLogout, userSelf, updateUser, updateUserProfile, userRegisterByAdmin, editOnLeaveBreak, updateMentorByAdmin, getMentorById, getAllAdmins, deleteAdmin } from "../controllers/user.controller.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
 
@@ -18,6 +18,8 @@ router.route('/updateprofile').post(verifyJWT,updateUserProfile)
 router.route("/update-leave-detail").patch(verifyJWT, editOnLeaveBreak)
 
 router.route("/add-mentor").post(verifyJWT, registerMentor)
+router.route("/get-admins").get(verifyJWT, getAllAdmins)
+router.route("/delete-admin/:adminId").delete(verifyJWT, deleteAdmin)
 router.route("/get-mentors").get(verifyJWT, getAllMentors)
 router.route("/get-mentor/:mentorId").get(verifyJWT, getMentorById)
 router.route("/update-mentor/:mentorId").patch(verifyJWT, updateMentorByAdmin)

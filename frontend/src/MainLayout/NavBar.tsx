@@ -92,7 +92,7 @@ function Navbar() {
         dispatch(logout());
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        navigate("/");
+        window.location.reload();
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

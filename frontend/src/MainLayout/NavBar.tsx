@@ -222,21 +222,33 @@ function Navbar() {
                     </Link>
                   </NavigationMenuItem>
                   {/* Dashboard */}
-                  {user.isAdmin ||
-                    (user.isMentor && (
-                      <NavigationMenuItem>
-                        <Link to="/admin">
-                          <NavigationMenuLink
-                            className={cn(
-                              navigationMenuTriggerStyle(),
-                              "bg-transparent",
-                            )}
-                          >
-                            Dashboard
-                          </NavigationMenuLink>
-                        </Link>
-                      </NavigationMenuItem>
-                    ))}
+                  {user.isAdmin || user.isMentor ? (
+                    <NavigationMenuItem>
+                      <Link to="/admin">
+                        <NavigationMenuLink
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "bg-transparent",
+                          )}
+                        >
+                          Dashboard
+                        </NavigationMenuLink>
+                      </Link>
+                    </NavigationMenuItem>
+                  ) : (
+                    <NavigationMenuItem>
+                      <Link to="/profile">
+                        <NavigationMenuLink
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "bg-transparent",
+                          )}
+                        >
+                          Dashboard
+                        </NavigationMenuLink>
+                      </Link>
+                    </NavigationMenuItem>
+                  )}
                 </div>
                 {/* Login/Signin */}
                 {!isAuthenticated ? (

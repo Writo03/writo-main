@@ -62,7 +62,7 @@ const TestimonialCard = ({
 const testimonialData = [
   {
     name: "Priya Sharma",
-    role: "GATE Aspirant",
+    role: "NEET Student",
     image: "/testimonials/images__2_.jpeg",
     content:
       "The test series helped me track my preparation effectively. The detailed analytics showed me exactly where I needed to improve.",

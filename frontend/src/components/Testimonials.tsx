@@ -63,20 +63,20 @@ const testimonialData = [
   {
     name: "Priya Sharma",
     role: "GATE Aspirant",
-    image: "/testimonials/images__1_.jpeg",
+    image: "/testimonials/images__2_.jpeg",
     content:
       "The test series helped me track my preparation effectively. The detailed analytics showed me exactly where I needed to improve.",
   },
   {
     name: "Rahul Verma",
     role: "JEE Student",
-    image: "/testimonials/images__2_.jpeg",
+    image: "/testimonials/images__1_.jpeg",
     content:
       "Live doubt sessions are a game-changer! Getting instant solutions from expert mentors helped me understand complex topics easily.",
   },
   {
-    name: "Anjali Patel",
-    role: "UPSC Aspirant",
+    name: "Sujeet Patel",
+    role: "NEET Student",
     image: "/testimonials/images__3_.jpeg",
     content:
       "The quality of mentors and their dedication to helping students is remarkable. Best educational platform I've used!",

@@ -23,6 +23,8 @@ import useFetchTestSeries from "@/components/hooks/useFetchTestSeries";
 import axiosInstance from "@/utils/axiosInstance";
 import { idtoService } from "@/utils/contants";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 // import { useToast } from '@/components/hooks/use-toast';
 
 interface TestSeries {
@@ -108,9 +110,14 @@ export default function TestSeriesList({
       .finally(() => setIsOpen(false));
   };
 
+  const user = useSelector((state: RootState) => state.auth.user);
   const handdleStartTest = (test: TestSeries) => {
-    setIsOpen(true);
-    setTestDetails(test);
+    if (user.accessToken === null && user.refreshToken === null) {
+      window.location.href = "/signin";
+    } else {
+      setIsOpen(true);
+      setTestDetails(test);
+    }
   };
 
   const navigate = useNavigate();
@@ -201,7 +208,7 @@ export default function TestSeriesList({
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <div className="mb-4 flex items-center justify-start space-x-2">
-                      {series.subjects.map((subject:string) => (
+                      {series.subjects.map((subject: string) => (
                         <Badge key={subject} variant="secondary">
                           {subject}
                         </Badge>

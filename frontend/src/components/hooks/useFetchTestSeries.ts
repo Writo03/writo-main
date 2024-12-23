@@ -5,6 +5,7 @@ export default function useFetchTestSeries(
   isSubjectTest: boolean,
   isFree: boolean,
   serviceId: string,
+  isForMentors: boolean,
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [testSeries_t, setTestSeries] = useState<any[]>([]);
@@ -21,7 +22,7 @@ export default function useFetchTestSeries(
       setLoading(true);
       try {
         const response = await axiosInstance.get(
-          `/quiz/get-quizes?isSubjectTest=${isSubjectTest}&isFree=${isFree}&serviceId=${serviceId}`,
+          `/quiz/get-quizes?isSubjectTest=${isSubjectTest}&isFree=${isFree}&serviceId=${serviceId}&isForMentors=${isForMentors}`,
         );
         if (isMounted) {
           setTestSeries(response.data.data || []);

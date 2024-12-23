@@ -56,17 +56,26 @@ export default function TestSeriesList({
 
   const [isSubjectTest, setIsSubjectTest] = useState(true);
   const [isFree, setIsFree] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     setIsSubjectTest(subjectFilter === "all");
     setIsFree(subjectFilter === "free");
   }, [subjectFilter]);
 
-  const {
-    testSeries_t: testSeries,
-    loading_t: loading,
-    error_t: error,
-  } = useFetchTestSeries(isSubjectTest, isFree, serviceId);
+  if (user.isMentor) {
+    var {
+      testSeries_t: testSeries,
+      loading_t: loading,
+      error_t: error,
+    } = useFetchTestSeries(false, false, serviceId, true);
+  } else {
+    var {
+      testSeries_t: testSeries,
+      loading_t: loading,
+      error_t: error,
+    } = useFetchTestSeries(isSubjectTest, isFree, serviceId, false);
+  }
 
   const filteredTestSeries = useMemo(() => {
     return testSeries.filter((test) =>
@@ -110,7 +119,6 @@ export default function TestSeriesList({
       .finally(() => setIsOpen(false));
   };
 
-  const user = useSelector((state: RootState) => state.auth.user);
   const handdleStartTest = (test: TestSeries) => {
     if (user.accessToken === null && user.refreshToken === null) {
       window.location.href = "/signin";
@@ -157,11 +165,14 @@ export default function TestSeriesList({
       <div className="min-h-screen bg-gray-50 px-4 py-12 pt-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h1 className="mb-4 text-center text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Available Test Series of {pageTitle}
+            {user.isMentor
+              ? ` Available Test Series for Mentors`
+              : `Available Test Series of ${pageTitle}`}
           </h1>
           <p className="mb-8 text-center text-xl text-gray-500">
-            Explore our comprehensive range of test series to boost your{" "}
-            {pageDescription} exam preparation
+            {user.isMentor
+              ? `Explore comprehensive range of test series to Enhance and Improve your skills`
+              : `Explore our comprehensive range of test series to boost your ${pageDescription} exam preparation`}
           </p>
 
           <div className="mb-8 flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">

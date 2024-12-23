@@ -108,6 +108,16 @@ const router = createBrowserRouter([
               />
             ),
           },
+          {
+            path: "mentor/all",
+            element: (
+              <TestSeriesList
+                pageTitle="Mentors"
+                pageDescription=""
+                serviceId={serviceIds.neet}
+              />
+            ),
+          },
         ],
       },
       {

@@ -49,6 +49,7 @@ function Navbar() {
   );
 
   const user = useSelector((state: RootState) => state.auth.user);
+  console.log("USER", user);
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
@@ -106,21 +107,21 @@ function Navbar() {
   };
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        initial={{
-          opacity: 1,
-          y: -100,
-        }}
-        animate={{
-          y: visible ? 0 : -100,
-          opacity: visible ? 1 : 0,
-        }}
-        transition={{
-          duration: 0.2,
-        }}
-        className="fixed inset-x-0 z-[5000] flex items-center justify-center"
-      >
+    // <AnimatePresence mode="wait">
+    //   <motion.div
+    //     initial={{
+    //       opacity: 1,
+    //       y: -100,
+    //     }}
+    //     animate={{
+    //       y: visible ? 0 : -100,
+    //       opacity: visible ? 1 : 0,
+    //     }}
+    //     transition={{
+    //       duration: 0.2,
+    //     }}
+    //     className="fixed inset-x-0 z-[5000] flex items-center justify-center"
+    //   >
         <NavigationMenu>
           <NavigationMenuList className="mt-1 w-[98vw] justify-between rounded-[var(--radius)] bg-[rgba(255,255,255,0.5)] px-3 py-1 text-base backdrop-blur-sm md:mt-2 md:px-6 md:py-3 md:text-xl lg:text-2xl">
             {/* Logo */}
@@ -324,8 +325,8 @@ function Navbar() {
             )}
           </NavigationMenuList>
         </NavigationMenu>
-      </motion.div>
-    </AnimatePresence>
+    //   </motion.div>
+    // </AnimatePresence>
   );
 }
 

@@ -71,32 +71,31 @@ const AdminHome = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6">
-        {/* Quiz Management */}
-        <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
-          <div className="flex flex-col items-center space-y-4 text-center">
-            <div className="rounded-full bg-accent/10 p-4">
-              <BrainCircuit className="h-8 w-8 text-accent-foreground" />
+      {isAdmin ? (
+        <div className="grid grid-cols-1 gap-6">
+          {/* Quiz Management */}
+          <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="rounded-full bg-accent/10 p-4">
+                <BrainCircuit className="h-8 w-8 text-accent-foreground" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-card-foreground">
+                  Quiz Management
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Create and manage quizzes
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate("manage-quiz")}
+                variant={"outline"}
+                className="w-full"
+              >
+                Manage Quizzes
+              </Button>
             </div>
-            <div>
-              <h3 className="text-xl font-semibold text-card-foreground">
-                Quiz Management
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Create and manage quizzes
-              </p>
-            </div>
-            <Button
-              onClick={() => navigate("manage-quiz")}
-              variant={"outline"}
-              className="w-full"
-            >
-              Manage Quizzes
-            </Button>
-          </div>
-        </Card>
-
-        {isAdmin && (
+          </Card>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
               <div className="flex flex-col items-center space-y-4 text-center">
@@ -156,9 +155,9 @@ const AdminHome = () => {
                   </p>
                 </div>
                 <Link to={"manage-admins"} className="w-full">
-                <Button variant="outline" className="w-full">
-                  View Admins
-                </Button>
+                  <Button variant="outline" className="w-full">
+                    View Admins
+                  </Button>
                 </Link>
               </div>
             </Card>
@@ -197,7 +196,8 @@ const AdminHome = () => {
                     Add user with Services
                   </p>
                 </div>
-                <Button variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full"
                   onClick={() => navigate("adduser")}
                 >
@@ -206,8 +206,57 @@ const AdminHome = () => {
               </div>
             </Card>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Quiz Management */}
+          <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="rounded-full bg-accent/10 p-4">
+                <BrainCircuit className="h-8 w-8 text-accent-foreground" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-card-foreground">
+                  Quiz Management
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Create and manage quizzes
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate("manage-quiz")}
+                variant={"outline"}
+                className="w-full"
+              >
+                Manage Quizzes
+              </Button>
+            </div>
+          </Card>
+          {/* Quizs for Mentors */}
+          <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="rounded-full bg-accent/10 p-4">
+                <BrainCircuit className="h-8 w-8 text-accent-foreground" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-card-foreground">
+                  Mentor Quizs
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Learn and Enhance your skills by taking quizzes
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate("/test-series/mentor/all")}
+                variant={"outline"}
+                className="w-full"
+              >
+                Explore Quizzes
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

@@ -144,6 +144,24 @@ const getQuizesAll = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllMentorQuizes = asyncHandler(async(req, res) => {
+  try {
+    if(!req.user || !req.user.isMentor) {
+      throw new ApiError(400, "Only mentors can get their quizes")
+    }
+    const quizes = await Quiz.find({isForMentors : true})
+    if(!quizes.length) {
+      throw new ApiError(404, "No quizes found")
+    }
+    res.status(200).json(new ApiResponse(200, "Quizes fetched successfully", quizes))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching quizes",
+    )
+  }
+})
+
 const getQuizById = asyncHandler(async (req, res) => {
   try {
     const { quizId } = req.params;
@@ -278,4 +296,5 @@ export {
   updateQuiz,
   deleteQuiz,
   getQuizesAll,
+  getAllMentorQuizes
 };

@@ -19,7 +19,7 @@ import {
   Video as VideoIcon,
 } from "lucide-react";
 // import { Link } from "react-router-dom";
-import { serviceNames,serviceIds } from "@/utils/contants";
+import { serviceNames, serviceIds } from "@/utils/contants";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -43,7 +43,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/types/state";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 
 const subjects = [
   {
@@ -75,11 +74,13 @@ const subjects = [
 export default function DoubtSessionPage() {
   const user = useSelector((state: RootState) => state.auth.user);
   // const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-    const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
-    const isMentor = useSelector((state: RootState) => state.auth.user.isMentor);
-  const requiredServiceId = serviceIds.doubtSession
-    const hasDoubtService = subscriptions.includes(requiredServiceId);
-    const navigate = useNavigate();
+  const subscriptions = useAppSelector(
+    (state) => state.subscriptions.subscriptions,
+  );
+  const isMentor = useSelector((state: RootState) => state.auth.user.isMentor);
+  const requiredServiceId = serviceIds.doubtSession;
+  const hasDoubtService = subscriptions.includes(requiredServiceId);
+  const navigate = useNavigate();
 
   // Determine which cards to show
   // const showNEETCard = !isAuthenticated || user.target === "NEET";
@@ -90,38 +91,41 @@ export default function DoubtSessionPage() {
     return true;
   });
 
-useEffect(() => {
-  if(isMentor){
-    navigate('/chat/mentor');
-    return;
-  }
-},[isMentor,navigate])
-
+  useEffect(() => {
+    if (isMentor) {
+      navigate("/chat/mentor");
+      return;
+    }
+  }, [isMentor, navigate]);
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      
-
       <main className="flex-grow">
-       {!hasDoubtService?( <section className="bg-gradient-to-r from-purple-600 to-indigo-600 py-20 pt-[20vh] text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl">
-              Expert Doubt Resolution Sessions
-            </h1>
-            <p className="mb-8 text-xl">
-              Connect directly with our experienced mentors and clear all your
-              Doubts
-            </p>
-            <Button
-              size="lg"
-              className="bg-white text-primary hover:bg-gray-100"
-            >
-              Book Your Session Now
-            </Button>
-          </div>
-        </section>):("")}
+        {!hasDoubtService ? (
+          <section className="bg-gradient-to-r from-purple-600 to-indigo-600 py-20 pt-[20vh] text-white">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+                Expert Doubt Resolution Sessions
+              </h1>
+              <p className="mb-8 text-xl">
+                Connect directly with our experienced mentors and clear all your
+                Doubts
+              </p>
+              <a href="#our-mentors">
+                <Button
+                  size="lg"
+                  className="bg-white text-primary hover:bg-gray-100"
+                >
+                  Book Your Session Now
+                </Button>
+              </a>
+            </div>
+          </section>
+        ) : (
+          ""
+        )}
 
-        <section className="py-16">
+        <section id="our-mentors" className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="mb-12 text-center text-3xl font-bold">
               Our Expert Mentors
@@ -157,9 +161,9 @@ useEffect(() => {
                   <CardFooter>
                     {/* <Button className="w-full">Schedule Session</Button> */}
                     <ChatButton
-                    buttonText="Chat with Mentor"
-                    subject={subject.name}
-                     />
+                      buttonText="Chat with Mentor"
+                      subject={subject.name}
+                    />
                   </CardFooter>
                 </Card>
               ))}
@@ -167,90 +171,110 @@ useEffect(() => {
           </div>
         </section>
 
-        {!hasDoubtService?(<section className="bg-gray-100 py-16">
-          <ChatSection />
-        </section>):("")}
+        {!hasDoubtService ? (
+          <section className="bg-gray-100 py-16">
+            <ChatSection />
+          </section>
+        ) : (
+          ""
+        )}
 
-       {!hasDoubtService?( <section className="py-16">
-          <ExclusiveSection className="px-4" />
-        </section>):("")}
+        {!hasDoubtService ? (
+          <section className="py-16">
+            <ExclusiveSection className="px-4" />
+          </section>
+        ) : (
+          ""
+        )}
 
-       {!hasDoubtService?( <section className="py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="mb-12 text-center text-3xl font-bold">
-              Why Choose Our Doubt Sessions?
-            </h2>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  icon: Users,
-                  title: "Expert Mentors",
-                  description:
-                    "Learn from experienced professionals in their respective fields",
-                },
-                {
-                  icon: Clock,
-                  title: "Flexible Scheduling",
-                  description:
-                    "Book sessions at your convenience, 7 days a week",
-                },
-                {
-                  icon: BookOpen,
-                  title: "Comprehensive Coverage",
-                  description: "Get help with any topic in your syllabus",
-                },
-                {
-                  icon: CheckCircle,
-                  title: "Personalized Attention",
-                  description: "One-on-one sessions tailored to your needs",
-                },
-                {
-                  icon: Cpu,
-                  title: "Advanced Learning Tools",
-                  description:
-                    "Access to digital whiteboards and screen sharing",
-                },
-                {
-                  icon: Calculator,
-                  title: "Practice Resources",
-                  description:
-                    "Receive curated practice problems after each session",
-                },
-              ].map((feature, index) => (
-                <Card
-                  key={index}
-                  className="text-center transition-shadow duration-300 hover:shadow-lg"
-                >
-                  <CardContent className="pt-6">
-                    <feature.icon className="mx-auto mb-4 h-12 w-12 text-primary" />
-                    <h3 className="mb-2 text-xl font-semibold">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
+        {!hasDoubtService ? (
+          <section className="py-16">
+            <div className="container mx-auto px-4">
+              <h2 className="mb-12 text-center text-3xl font-bold">
+                Why Choose Our Doubt Sessions?
+              </h2>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {[
+                  {
+                    icon: Users,
+                    title: "Expert Mentors",
+                    description:
+                      "Learn from experienced professionals in their respective fields",
+                  },
+                  {
+                    icon: Clock,
+                    title: "Flexible Scheduling",
+                    description:
+                      "Book sessions at your convenience, 7 days a week",
+                  },
+                  {
+                    icon: BookOpen,
+                    title: "Comprehensive Coverage",
+                    description: "Get help with any topic in your syllabus",
+                  },
+                  {
+                    icon: CheckCircle,
+                    title: "Personalized Attention",
+                    description: "One-on-one sessions tailored to your needs",
+                  },
+                  {
+                    icon: Cpu,
+                    title: "Advanced Learning Tools",
+                    description:
+                      "Access to digital whiteboards and screen sharing",
+                  },
+                  {
+                    icon: Calculator,
+                    title: "Practice Resources",
+                    description:
+                      "Receive curated practice problems after each session",
+                  },
+                ].map((feature, index) => (
+                  <Card
+                    key={index}
+                    className="text-center transition-shadow duration-300 hover:shadow-lg"
+                  >
+                    <CardContent className="pt-6">
+                      <feature.icon className="mx-auto mb-4 h-12 w-12 text-primary" />
+                      <h3 className="mb-2 text-xl font-semibold">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>):("")}
+          </section>
+        ) : (
+          ""
+        )}
 
-        {!hasDoubtService?(<section className="bg-gray-900 py-16 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="mb-8 text-3xl font-bold">
-              Ready to Excel in Your Studies?
-            </h2>
-            <p className="mb-8 text-xl lg:px-[20%]">
-              Join our Doubt sessions today and experience the difference
-              personalized mentoring can make!
-            </p>
-            <Button variant="outline" size="lg" className="text-lg text-black">
-              Get Started Now
-            </Button>
-          </div>
-        </section>):("")}
+        {!hasDoubtService ? (
+          <section className="bg-gray-900 py-16 text-white">
+            <div className="container mx-auto px-4 text-center">
+              <h2 className="mb-8 text-3xl font-bold">
+                Ready to Excel in Your Studies?
+              </h2>
+              <p className="mb-8 text-xl lg:px-[20%]">
+                Join our Doubt sessions today and experience the difference
+                personalized mentoring can make!
+              </p>
+              <a href="#our-mentors">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="text-lg text-black"
+                >
+                  Get Started Now
+                </Button>
+              </a>
+            </div>
+          </section>
+        ) : (
+          ""
+        )}
       </main>
-
-    
     </div>
   );
 }
@@ -264,12 +288,12 @@ export function ExclusiveSection({ className }: { className?: string }) {
   };
 
   const handlePaymentError = (error: Error) => {
-    console.error('Payment failed:', error);
+    console.error("Payment failed:", error);
     toast({
       title: "Payment failed!!",
-      description:error.message,
+      description: error.message,
     });
-  }
+  };
   return (
     <div id="paymentsection" className={cn("container mx-auto", className)}>
       <div className="overflow-hidden rounded-lg bg-white shadow-xl">
@@ -297,14 +321,14 @@ export function ExclusiveSection({ className }: { className?: string }) {
               Claim Your Offer Now
             </Button> */}
             <PaymentButton
-                price={999}
-                serviceName={serviceNames.doubtSession}
-                serviceId={serviceIds.doubtSession}
-                onSuccess={handlePaymentSuccess}
-                onError={handlePaymentError}
-                currencySymbol="Rs"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              />
+              price={999}
+              serviceName={serviceNames.doubtSession}
+              serviceId={serviceIds.doubtSession}
+              onSuccess={handlePaymentSuccess}
+              onError={handlePaymentError}
+              currencySymbol="Rs"
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            />
           </div>
         </div>
         <div className="bg-purple-100 p-6 text-center">
@@ -438,7 +462,9 @@ export function ChatSection() {
             ))} */}
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Try Now</Button>
+            <a href="#our-mentors">
+              <Button className="w-full">Try Now</Button>
+            </a>
             {/* <form
               onSubmit={(e) => {
                 e.preventDefault();

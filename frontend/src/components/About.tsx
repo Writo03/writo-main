@@ -9,38 +9,37 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Heart,
-  Users,
-  BookOpen,
-  Target,
-  ArrowRight,
-} from "lucide-react";
+import { Heart, Users, BookOpen, Target, ArrowRight } from "lucide-react";
+
+import ravinder from "@/assets/about/ravinder.jpg";
+import op from "@/assets/about/op.png";
+import ravi from "@/assets/about/ravi-sir.jpg";
+import kamal from "@/assets/about/ks-sir.jpg";
 
 const teamMembers = [
   {
-    name: "Dr. Aisha Patel",
+    name: "Om Prakash Singh",
     role: "Founder & CEO",
-    image: "/placeholder.svg?height=200&width=200",
-    bio: "Former IIT professor with 20+ years of experience in education",
+    image: op,
+    bio: "Former IIT professor with 5+ years of experience in education",
   },
   {
-    name: "Rahul Sharma",
+    name: "Ravinder Chautala",
     role: "Head of Curriculum",
-    image: "/placeholder.svg?height=200&width=200",
-    bio: "NEET top scorer and curriculum design expert",
+    image: ravinder,
+    bio: "Curriculum design expert with over 2+ years of experience in education",
   },
   {
-    name: "Priya Gupta",
-    role: "Chief Technology Officer",
-    image: "/placeholder.svg?height=200&width=200",
-    bio: "EdTech innovator with a passion for accessible learning",
+    name: "Ravi Sir",
+    role: "Faculty of Subject Chemistry",
+    image: ravi,
+    bio: "Chemistry enthusiast with a passion for science and technology",
   },
   {
-    name: "Vikram Singh",
-    role: "Lead JEE Instructor",
-    image: "/placeholder.svg?height=200&width=200",
-    bio: "IIT-Delhi alumnus and JEE preparation specialist",
+    name: "Kamal Singh Sir",
+    role: "Faculty of Subject Physics",
+    image: kamal,
+    bio: "Physics enthusiast with a passion for physics and technology",
   },
 ];
 
@@ -57,11 +56,13 @@ const milestones = [
   { year: 2021, achievement: "Reached 1,00,000 enrolled students milestone" },
   {
     year: 2022,
-    achievement: "Introduced Doubt Sessions for students to discuss their doubts with subject specific mentors",
+    achievement:
+      "Introduced Doubt Sessions for students to discuss their doubts with subject specific mentors",
   },
   {
     year: 2023,
-    achievement: "Real time chat and Google Meet integration for doubt sessions",
+    achievement:
+      "Real time chat and Google Meet integration for doubt sessions",
   },
   {
     year: 2024,
@@ -94,9 +95,11 @@ function AboutUs() {
                 the tools, resources, and support needed to unlock that
                 potential.
               </p>
-              <Button className="bg-primary hover:bg-primary/90">
-                Learn More About Our Approach
-              </Button>
+              <a href="#our-journey">
+                <Button className="bg-primary hover:bg-primary/90">
+                  Learn More About Our Approach
+                </Button>
+              </a>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <Card className="bg-gradient-to-br from-primary/50 to-indigo-500 text-white">
@@ -182,7 +185,11 @@ function AboutUs() {
               >
                 <CardHeader>
                   <Avatar className="mx-auto mb-4 h-24 w-24">
-                    <AvatarImage src={member.image} alt={member.name} />
+                    <AvatarImage
+                      src={member.image}
+                      alt={member.name}
+                      className="object-cover object-top"
+                    />
                     <AvatarFallback>
                       {member.name
                         .split(" ")
@@ -203,7 +210,7 @@ function AboutUs() {
           </div>
         </section>
 
-        <section className="mb-16">
+        <section id="our-journey" className="mb-16">
           <h2 className="mb-8 text-center text-3xl font-bold">Our Journey</h2>
           <div className="space-y-8">
             {milestones.map((milestone, index) => (

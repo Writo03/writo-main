@@ -14,7 +14,7 @@ interface TestStartPopupProps {
   isOpen: boolean;
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onConfirm: (test:any) => void;
+  onConfirm?: (test:any) => void;
   testDetails?: {
     _id: string;
     name: string;
@@ -106,7 +106,7 @@ export default function TestStartPopup({
             Cancel
           </Button>
           <Button
-            onClick={()=>{onConfirm(testDetails)}}
+            onClick={()=>{onConfirm && onConfirm(testDetails)}}
             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700"
           >
             <BarChart className="mr-2 h-4 w-4" />

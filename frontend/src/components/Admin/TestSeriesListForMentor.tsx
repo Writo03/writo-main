@@ -18,10 +18,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Clock, Book, AlertCircle } from "lucide-react";
-import TestStartPopup from "./PopUp";
-import useFetchTestSeries from "@/components/hooks/useFetchTestSeries";
+import TestStartPopup from "@/components/TestSeries/PopUp";
+// import useFetchTestSeries from "@/components/hooks/useFetchTestSeries";
 import axiosInstance from "@/utils/axiosInstance";
-import { idtoService } from "@/utils/contants";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -38,17 +37,7 @@ interface TestSeries {
   difficulty: "Easy" | "Medium" | "Hard";
 }
 
-interface TestSeriesPageProps {
-  pageTitle: string;
-  pageDescription: string;
-  serviceId: string;
-}
-
-export default function TestSeriesList({
-  pageTitle,
-  pageDescription,
-  serviceId,
-}: TestSeriesPageProps) {
+export default function TestSeriesList() {
   const [subjectFilter, setSubjectFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,11 +52,43 @@ export default function TestSeriesList({
     setIsFree(subjectFilter === "free");
   }, [subjectFilter]);
 
-  const {
-    testSeries_t: testSeries,
-    loading_t: loading,
-    error_t: error,
-  } = useFetchTestSeries(isSubjectTest, isFree, serviceId);
+  //   /get-mentor-quizzes
+
+  const [testSeries, setTestSeries] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // console.log("isSubjectTest", isSubjectTest);
+  // console.log("isFree", isFree);
+  // console.log");
+
+  useEffect(() => {
+    let isMounted = true; // Prevent updates if the component is unmounted
+    const fetchTestSeries = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get(`/quiz/get-mentor-quizzes`);
+        if (isMounted) {
+          setTestSeries(response.data.data || []);
+          setError(null);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (err: any) {
+        if (isMounted)
+          setError(
+            err.response.data.message ||
+              "Something went wrong while fetching the test series!",
+          );
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchTestSeries();
+    return () => {
+      isMounted = false;
+    };
+  }, [isSubjectTest, isFree]);
 
   const filteredTestSeries = useMemo(() => {
     return testSeries.filter((test) =>
@@ -86,30 +107,6 @@ export default function TestSeriesList({
   const [isOpen, setIsOpen] = useState(false);
   const [testDetails, setTestDetails] = useState<TestSeries>();
   const onClose = () => setIsOpen(false);
-
-  const onConfirm = (test: TestSeries) => {
-    const res = axiosInstance.get(
-      "/subscription/get-subscriptions?type=active",
-    );
-    res
-      .then((response) => {
-        const data = response.data.data;
-        let found = false;
-        data.forEach((item: any) => {
-          if (item.service === serviceId) {
-            found = true;
-            window.location.href = `/test/${test._id}`;
-          }
-        });
-        if (!found) {
-          const service =
-            idtoService[test.services[0] as keyof typeof idtoService];
-          window.location.href = "/test-series/details/" + service;
-        }
-      })
-      .catch(console.error)
-      .finally(() => setIsOpen(false));
-  };
 
   const handdleStartTest = (test: TestSeries) => {
     if (user.accessToken === null && user.refreshToken === null) {
@@ -157,11 +154,11 @@ export default function TestSeriesList({
       <div className="min-h-screen bg-gray-50 px-4 py-12 pt-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h1 className="mb-4 text-center text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Available Test Series of {pageTitle}
+            Available Test Series for Mentors
           </h1>
           <p className="mb-8 text-center text-xl text-gray-500">
-            Explore our comprehensive range of test series to boost your
-            {pageDescription} exam preparation
+            Explore comprehensive range of test series to Enhance and Improve
+            your skills
           </p>
 
           <div className="mb-8 flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
@@ -254,7 +251,6 @@ export default function TestSeriesList({
       <TestStartPopup
         isOpen={isOpen}
         onClose={onClose}
-        onConfirm={onConfirm}
         testDetails={testDetails}
       />
     </>

@@ -42,6 +42,7 @@ import ServiceDoubt from "./components/ServiceDoubt";
 import EditMentor from "./pages/admin/EditMentor";
 // import Layout from "./pages/admin/Layout";
 import ManageAdmins from "./pages/admin/ViewAdmins";
+import TestSeriesListForMentor from "@/components/Admin/TestSeriesListForMentor";
 
 const router = createBrowserRouter([
   {
@@ -110,13 +111,7 @@ const router = createBrowserRouter([
           },
           {
             path: "mentor/all",
-            element: (
-              <TestSeriesList
-                pageTitle="Mentors"
-                pageDescription=""
-                serviceId={serviceIds.neet}
-              />
-            ),
+            element: <TestSeriesListForMentor />,
           },
         ],
       },

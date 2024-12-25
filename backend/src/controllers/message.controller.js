@@ -141,6 +141,71 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
 })
 
+const sendMessageToAllStudents = asyncHandler(async (req, res) => {
+  try {
+    const { content } = req.body
+    if (!req.user || !req.user.isMentor || !req.user.role.includes("CHAT")) {
+      throw new ApiError(
+        400,
+        "Only mentors with chat role can send message to all students"
+      )
+    }
+    //get all the mentor chats
+    const chats = await Chat.find({
+      isMentorChat: true,
+      mentor: req.user._id,
+      isPrimary: true,
+    })
+
+    if (!chats.length) {
+      throw new ApiError(404, "No primary chat found")
+    }
+
+    chats.forEach(async (chat) => {
+      const message = await ChatMessage.create({
+        sender: req.user._id,
+        content,
+        attachments: [],
+        chat: chat._id,
+      })
+
+      chat.lastMessage = message._id
+      await chat.save({ validateBeforeSave: false })
+
+      const messages = await ChatMessage.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(message._id),
+          },
+        },
+        ...chatMessageCommonAggregation(),
+      ])
+
+      const receivedMessage = messages[0]
+
+      chat.participants.forEach((id) => {
+        if (id.toString() === req.user._id.toString()) return
+
+        emitSocketEvent(
+          req,
+          id.toString(),
+          ChatEventEnum.MESSAGE_RECEIVED_EVENT,
+          receivedMessage
+        )
+      })
+    })
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Message broadcasted successfully"))
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while sending message to all students"
+    )
+  }
+})
+
 const deleteMessage = asyncHandler(async (req, res) => {
   try {
     const { chatId, messageId } = req.params
@@ -207,4 +272,4 @@ const deleteMessage = asyncHandler(async (req, res) => {
   }
 })
 
-export { getAllMessages, sendMessage, deleteMessage }
+export { getAllMessages, sendMessage, sendMessageToAllStudents, deleteMessage }

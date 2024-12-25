@@ -30,6 +30,7 @@ const ServiceTest = () => {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
 
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state)=> state.auth.user)
   const subscriptions = useAppSelector((state) => state.subscriptions.subscriptions);
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const ServiceTest = () => {
   }, [dispatch, quizId]); 
 
   useEffect(() => {
-    if (isLoading || isFree || isMentorQuiz) return;
+    if (isLoading || isFree || isMentorQuiz || user.isAdmin || user.isMentor) return;
     // Check if the user is subscribed to the required service
     const requiredServiceId = quiz?.services[0] as string; // JEE Service ID
     const hasMatchingService = subscriptions.includes(requiredServiceId);
@@ -80,7 +81,7 @@ const ServiceTest = () => {
     if (!hasMatchingService) {
       navigate('/'); // Redirect if the user is not subscribed
     }
-  }, [isLoading, isFree, isMentorQuiz, subscriptions, navigate, quiz]);
+  }, [isLoading, isFree, isMentorQuiz, subscriptions, navigate, quiz, user]);
 
   if (isLoading) {
     return <Loading />;

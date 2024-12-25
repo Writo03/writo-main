@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Plus, Edit2, Trash2, AlertCircle, Loader2 } from "lucide-react";
+import { Clock, Plus, Edit2, Trash2, AlertCircle, Loader2, Eye } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -135,6 +135,12 @@ const ManageQuiz = () => {
           </Badge>
         ))}
       </div>
+      <Link to={`/test/leaderboard/${quiz._id}`}>
+        <Button className='mt-3'>
+          <Eye className="h-4 w-4 mr-2" />
+          View Leaderboard
+        </Button>
+        </Link>
     </Card>
   );
 

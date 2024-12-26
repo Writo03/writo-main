@@ -45,18 +45,9 @@ export default function TestSeriesList() {
 
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // useEffect(() => {
-  // }, [subjectFilter]);
-
-  //   /get-mentor-quizzes
-
   const [testSeries, setTestSeries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // console.log("isSubjectTest", isSubjectTest);
-  // console.log("isFree", isFree);
-  // console.log");
 
   useEffect(() => {
     let isMounted = true; // Prevent updates if the component is unmounted
@@ -87,7 +78,6 @@ export default function TestSeriesList() {
   }, []);
 
   const filteredTestSeries = useMemo(() => {
-    console.log(testSeries);
     if (searchTerm) {
       let data1 = testSeries.filter((test) =>
         test.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -98,7 +88,9 @@ export default function TestSeriesList() {
         );
         return subjects.toString().includes(searchTerm.toLowerCase());
       });
-      return [...data1, ...data2];
+      return Array.from(
+        new Map([...data1, ...data2].map((item) => [item._id, item])).values(),
+      );
     }
     if (subjectFilter === "all") return testSeries;
     return testSeries.filter((test) => test.subjects.includes(subjectFilter));

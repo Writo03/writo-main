@@ -13,17 +13,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/hooks";
 
 const AdminHome = () => {
-  const isAdmin = useAppSelector((state) => state.auth.user.isAdmin);
+  const user = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
   // const sub = useAppSelector(state => state.subscriptions.subscriptions)
 
   return (
     <div className="container mx-auto space-y-8 p-6 pt-32">
       <h1 className="mb-8 text-3xl font-bold text-foreground">
-        {isAdmin ? "Admin" : "Mentor"} Dashboard
+        {user.isAdmin ? "Admin" : "Mentor"} Dashboard
       </h1>
 
-      {isAdmin && (
+      {user.isAdmin && (
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
             <div className="flex items-center space-x-4">
@@ -71,7 +71,7 @@ const AdminHome = () => {
         </div>
       )}
 
-      {isAdmin ? (
+      {user.isAdmin ? (
         <div className="grid grid-cols-1 gap-6">
           {/* Quiz Management */}
           <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
@@ -208,30 +208,57 @@ const AdminHome = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Quiz Management */}
-          <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="rounded-full bg-accent/10 p-4">
-                <BrainCircuit className="h-8 w-8 text-accent-foreground" />
+          {user.role.includes("QUIZ") && (
+            <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <div className="rounded-full bg-accent/10 p-4">
+                  <BrainCircuit className="h-8 w-8 text-accent-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-card-foreground">
+                    Quiz Management
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Create and manage quizzes
+                  </p>
+                </div>
+                <Button
+                  onClick={() => navigate("manage-quiz")}
+                  variant={"outline"}
+                  className="w-full"
+                >
+                  Manage Quizzes
+                </Button>
               </div>
-              <div>
-                <h3 className="text-xl font-semibold text-card-foreground">
-                  Quiz Management
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Create and manage quizzes
-                </p>
+            </Card>
+          )}
+          {user.role.includes("CHAT") && (
+            <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <div className="rounded-full bg-accent/10 p-4">
+                  <MessageSquare className="h-8 w-8 text-accent-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-card-foreground">
+                    Chat
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Chat with students
+                  </p>
+                </div>
+                <Button
+                  onClick={() => navigate("/chat")}
+                  variant={"outline"}
+                  className="w-full"
+                >
+                  Chat
+                </Button>
               </div>
-              <Button
-                onClick={() => navigate("manage-quiz")}
-                variant={"outline"}
-                className="w-full"
-              >
-                Manage Quizzes
-              </Button>
-            </div>
-          </Card>
+            </Card>
+          )}
+
           {/* Quizs for Mentors */}
           <Card className="bg-card p-6 transition-shadow hover:shadow-lg">
             <div className="flex flex-col items-center space-y-4 text-center">

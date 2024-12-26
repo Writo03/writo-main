@@ -189,7 +189,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "chat/:chatid",
+        path: "chat/:chatid?",
         element: <ServiceDoubt />,
         children: [
           {

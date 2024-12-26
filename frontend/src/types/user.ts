@@ -13,7 +13,7 @@
     institution:string,
     phone:number,
     target:string
-    role:[]
+    role: string[]
   }
   export interface updateUserState {
     fullName: string;

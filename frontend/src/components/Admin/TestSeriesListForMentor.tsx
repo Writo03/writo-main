@@ -43,14 +43,10 @@ export default function TestSeriesList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const [isSubjectTest, setIsSubjectTest] = useState(true);
-  const [isFree, setIsFree] = useState(false);
   const user = useSelector((state: RootState) => state.auth.user);
 
-  useEffect(() => {
-    setIsSubjectTest(subjectFilter === "all");
-    setIsFree(subjectFilter === "free");
-  }, [subjectFilter]);
+  // useEffect(() => {
+  // }, [subjectFilter]);
 
   //   /get-mentor-quizzes
 
@@ -88,13 +84,25 @@ export default function TestSeriesList() {
     return () => {
       isMounted = false;
     };
-  }, [isSubjectTest, isFree]);
+  }, []);
 
   const filteredTestSeries = useMemo(() => {
-    return testSeries.filter((test) =>
-      test.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [testSeries, searchTerm]);
+    console.log(testSeries);
+    if (searchTerm) {
+      let data1 = testSeries.filter((test) =>
+        test.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+      let data2 = testSeries.filter((test) => {
+        const subjects = test.subjects.map((subject: string) =>
+          subject.toLowerCase(),
+        );
+        return subjects.toString().includes(searchTerm.toLowerCase());
+      });
+      return [...data1, ...data2];
+    }
+    if (subjectFilter === "all") return testSeries;
+    return testSeries.filter((test) => test.subjects.includes(subjectFilter));
+  }, [testSeries, searchTerm, subjectFilter]);
 
   const paginatedTestSeries = useMemo(() => {
     return filteredTestSeries.slice(
@@ -176,9 +184,11 @@ export default function TestSeriesList() {
                 <SelectValue placeholder="Filter by subject" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Subjects</SelectItem>
-                <SelectItem value="notall">Mock Test</SelectItem>
-                <SelectItem value="free">Free</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="Maths">Maths</SelectItem>
+                <SelectItem value="Physics">Physics</SelectItem>
+                <SelectItem value="Chemistry">Chemistry</SelectItem>
+                <SelectItem value="Biology">Biology</SelectItem>
               </SelectContent>
             </Select>
           </div>

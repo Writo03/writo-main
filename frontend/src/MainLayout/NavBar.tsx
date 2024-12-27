@@ -49,7 +49,6 @@ function Navbar() {
   );
 
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log("USER", user);
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);

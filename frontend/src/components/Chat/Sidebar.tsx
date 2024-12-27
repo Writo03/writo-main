@@ -16,6 +16,7 @@ import {
   Loader2,
   BookOpen,
   Clock,
+  CornerLeftUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChat } from "@/Context/ChatContext";
@@ -29,6 +30,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import { useToast } from "../hooks/use-toast";
 import { AxiosError } from "axios";
 import { ErrorApiRes } from "@/types/all";
+import { Link } from "react-router-dom";
 
 // Types for our chat data
 // interface Participant {
@@ -89,7 +91,7 @@ const Sidebar = () => {
   const [isBroadCastSending, setIsBroadcastingSending] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState("");
 
-  const {toast} = useToast()
+  const { toast } = useToast();
 
   const [filters, setFilters] = useState({
     subject: "",
@@ -225,25 +227,27 @@ const Sidebar = () => {
 
   //send broadcast message
   const handleBroadcastSend = async () => {
-    setIsBroadcastingSending(true)
+    setIsBroadcastingSending(true);
     try {
-      if(!broadcastMessage.trim()) return
-      const res = await axiosInstance.post("/message//broadcast-message", {content : broadcastMessage})
+      if (!broadcastMessage.trim()) return;
+      const res = await axiosInstance.post("/message//broadcast-message", {
+        content: broadcastMessage,
+      });
       toast({
-        title : "Message sent",
-        description : res.data.message || "Message sent successfully"
-      })
-      
+        title: "Message sent",
+        description: res.data.message || "Message sent successfully",
+      });
     } catch (error) {
-      const axiosError = error as AxiosError<ErrorApiRes>
+      const axiosError = error as AxiosError<ErrorApiRes>;
       toast({
-        title : "Error",
-        description : axiosError.response?.data.message || "Something went wrong"
-      })
-    }finally {
-      setIsBroadcastingSending(false)
+        title: "Error",
+        description:
+          axiosError.response?.data.message || "Something went wrong",
+      });
+    } finally {
+      setIsBroadcastingSending(false);
     }
-  }
+  };
 
   useEffect(() => {
     const chat = chats.find((chat) => chat._id === chatid);
@@ -263,7 +267,12 @@ const Sidebar = () => {
       {/* Header Section */}
       <div className="border-b p-4">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Messages</h2>
+          <div className="flex items-center gap-2">
+            <Link to="/">
+              <CornerLeftUp />
+            </Link>
+            <h2 className="text-xl font-semibold">Messages</h2>
+          </div>
           <div className="flex gap-2">
             <Button
               variant="ghost"
@@ -281,15 +290,16 @@ const Sidebar = () => {
           </div>
         </div>
 
-        
-          <div className="flex gap-2 flex-col mb-3">
-            <Input
-              placeholder="Type message to broadcast"
-              className="pl-2 pr-8 focus:ring-2 focus:ring-blue-500"
-              onChange={(e) => setBroadcastMessage(e.target.value)}
-            />
-            <Button disabled={isBroadCastSending} onClick={handleBroadcastSend}>Send</Button>
-          </div>
+        <div className="mb-3 flex flex-col gap-2">
+          <Input
+            placeholder="Type message to broadcast"
+            className="pl-2 pr-8 focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setBroadcastMessage(e.target.value)}
+          />
+          <Button disabled={isBroadCastSending} onClick={handleBroadcastSend}>
+            Send
+          </Button>
+        </div>
 
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
@@ -315,10 +325,10 @@ const Sidebar = () => {
       </div>
 
       {/* Tab Section */}
-      <div className="flex gap-1 p-2">
+      <div className="flex flex-wrap gap-1 p-2">
         <Button
           variant={activeTab === "my" ? "default" : "outline"}
-          className="flex-1 hover:bg-gray-100"
+          className="flex-1 hover:bg-gray-100 hover:text-black"
           onClick={() => setActiveTab("my")}
         >
           <Users className="mr-2 h-4 w-4" />

@@ -54,30 +54,6 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/profile",
-        element: (
-          <Protected authentication={true}>
-            <Profile />
-          </Protected>
-        ),
-      },
-      {
-        path: "/signin",
-        element: (
-          <Protected authentication={false}>
-            <SignIn />
-          </Protected>
-        ),
-      },
-      {
-        path: "/signup",
-        element: (
-          <Protected authentication={false}>
-            <SignUp />
-          </Protected>
-        ),
-      },
-      {
         path: "test-series",
         element: <TestAuth />,
         children: [
@@ -189,22 +165,6 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "chat/:chatid?",
-        element: <ServiceDoubt />,
-        children: [
-          {
-            path: "",
-            element: (
-              <Protected authentication={true}>
-                <ChatProvider>
-                  <Chat />
-                </ChatProvider>
-              </Protected>
-            ),
-          },
-        ],
-      },
-      {
         path: "about",
         element: <AboutUs />,
       },
@@ -213,6 +173,46 @@ const router = createBrowserRouter([
         element: <ContactUs />,
       },
     ],
+  },
+  {
+    path: "chat/:chatid?",
+    element: <ServiceDoubt />,
+    children: [
+      {
+        path: "",
+        element: (
+          <Protected authentication={true}>
+            <ChatProvider>
+              <Chat />
+            </ChatProvider>
+          </Protected>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/profile",
+    element: (
+      <Protected authentication={true}>
+        <Profile />
+      </Protected>
+    ),
+  },
+  {
+    path: "/signin",
+    element: (
+      <Protected authentication={false}>
+        <SignIn />
+      </Protected>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <Protected authentication={false}>
+        <SignUp />
+      </Protected>
+    ),
   },
 ]);
 

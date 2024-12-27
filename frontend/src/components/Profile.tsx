@@ -1,22 +1,22 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-nocheck
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { 
-  User as UserIcon, 
-  Edit3, 
-  Camera, 
-  Save, 
-  ChevronDown, 
-  Loader2, 
-  Mail, 
-  Phone, 
-  Building2, 
+import {
+  User as UserIcon,
+  Edit3,
+  Camera,
+  Save,
+  ChevronDown,
+  Loader2,
+  Mail,
+  Phone,
+  Building2,
 } from "lucide-react";
 import {
   Accordion,
@@ -28,44 +28,59 @@ import { RootState } from "@/types/state";
 import axiosInstance from "@/utils/axiosInstance";
 import { updateuser } from "@/redux/auth";
 
-import { useToast } from '@/components/hooks/use-toast';
+import { useToast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import TestList from "./Testlist";
 import { Card, CardContent } from "./ui/card";
+import Navbar from "@/MainLayout/NavBar";
+
+const MemoizedNavbar = React.memo(Navbar);
 
 // Validation Schema
 const profileSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.number().optional(),
-  institution: z.string().optional()
+  institution: z.string().optional(),
 });
 
 const Profile = () => {
+  // useEffect(async ()=>{
+  //   const res = await axiosInstance.get("/chat/get-all-chats");
+  //   console.log("CHATS:",res);
+  // },[])
+
   const { toast } = useToast();
   const user = useSelector((state: RootState) => state.auth.user);
   // console.log(user)
   const dispatch = useDispatch();
 
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | undefined>(undefined);
- 
+  const [activeSection, setActiveSection] = useState<string | undefined>(
+    undefined,
+  );
 
   // Form Hook
   const form = useForm<z.infer<typeof profileSchema>>({
@@ -74,15 +89,15 @@ const Profile = () => {
       fullName: user?.fullName || "",
       email: user?.email || "",
       phone: user?.phone || undefined,
-      institution: user?.institution || ""
-    }
+      institution: user?.institution || "",
+    },
   });
 
   // Profile Picture Upload
   const handleProfilePictureUpload = async (file: File) => {
     try {
       setIsUploading(true);
-      
+
       // Cloudinary Upload
       const formData = new FormData();
       formData.append("file", file);
@@ -90,33 +105,36 @@ const Profile = () => {
 
       const cloudinaryResponse = await axios.post(
         `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        formData
+        formData,
       );
 
       // Backend Update
-      const backendResponse = await axiosInstance.post('/user/updateprofile', { 
-        profilePic: cloudinaryResponse.data.url 
+      const backendResponse = await axiosInstance.post("/user/updateprofile", {
+        profilePic: cloudinaryResponse.data.url,
       });
 
       if (backendResponse.status === 200) {
         setImagePreview(cloudinaryResponse.data.url);
-        dispatch(updateuser({ 
-          user: { 
-            ...user, 
-            profilePic: cloudinaryResponse.data.url 
-          } 
-        }));
+        dispatch(
+          updateuser({
+            user: {
+              ...user,
+              profilePic: cloudinaryResponse.data.url,
+            },
+          }),
+        );
 
         toast({
           title: "Profile Picture Updated",
           description: "Your profile picture has been successfully updated.",
         });
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Upload Failed",
-        description: error.response?.data?.error?.message || "Failed to upload image",
+        description:
+          error.response?.data?.error?.message || "Failed to upload image",
         variant: "destructive",
       });
     } finally {
@@ -127,24 +145,26 @@ const Profile = () => {
   // Profile Update Submit Handler
   const onSubmit = async (data: z.infer<typeof profileSchema>) => {
     try {
-      const response = await axiosInstance.put('/user/self', data);
-      
+      const response = await axiosInstance.put("/user/self", data);
+
       if (response.status === 200) {
         const updatedUser = response.data?.data;
-        
-        dispatch(updateuser({ 
-          user: {
-            userId: updatedUser._id,
-            email: updatedUser.email,
-            fullName: updatedUser.fullName,
-            institution: updatedUser.institution,
-            phone: updatedUser.phone,
-            target: updatedUser.target || "",
-            isAdmin: updatedUser.isAdmin,
-            isMentor: updatedUser.isMentor,
-            profilePic: updatedUser.profilePic || "",
-          } 
-        }));
+
+        dispatch(
+          updateuser({
+            user: {
+              userId: updatedUser._id,
+              email: updatedUser.email,
+              fullName: updatedUser.fullName,
+              institution: updatedUser.institution,
+              phone: updatedUser.phone,
+              target: updatedUser.target || "",
+              isAdmin: updatedUser.isAdmin,
+              isMentor: updatedUser.isMentor,
+              profilePic: updatedUser.profilePic || "",
+            },
+          }),
+        );
 
         toast({
           title: "Profile Updated",
@@ -153,7 +173,7 @@ const Profile = () => {
 
         setIsModalOpen(false);
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Update Failed",
@@ -176,7 +196,7 @@ const Profile = () => {
                 <UserIcon className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-medium ">Name</p>
+                <p className="text-sm font-medium">Name</p>
                 <p className="text-foreground">{user?.fullName}</p>
               </div>
             </div>
@@ -187,7 +207,7 @@ const Profile = () => {
                 <Mail className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-medium ">Email</p>
+                <p className="text-sm font-medium">Email</p>
                 <p className="text-foreground">{user?.email}</p>
               </div>
             </div>
@@ -198,7 +218,7 @@ const Profile = () => {
                 <Phone className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-medium ">Phone</p>
+                <p className="text-sm font-medium">Phone</p>
                 <p className="text-foreground">{user?.phone}</p>
               </div>
             </div>
@@ -209,13 +229,12 @@ const Profile = () => {
                 <Building2 className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-medium ">Institution</p>
+                <p className="text-sm font-medium">Institution</p>
                 <p className="text-foreground">{user?.institution}</p>
               </div>
             </div>
           </div>
         </div>
-        
       ),
     },
     // {
@@ -273,34 +292,32 @@ const Profile = () => {
     setOpenItem(openItem === value ? null : value);
   };
 
-  const ProfileSection = ({ 
-    title, 
-    icon: Icon, 
-    children, 
-    name 
-  }: { 
-    title: string; 
+  const ProfileSection = ({
+    title,
+    icon: Icon,
+    children,
+    name,
+  }: {
+    title: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    icon?: any; 
+    icon?: any;
     children: React.ReactNode;
     name: string;
   }) => (
     <AccordionItem value={name} className="border-b">
-      <AccordionTrigger className="hover:no-underline py-4">
+      <AccordionTrigger className="py-4 hover:no-underline">
         <div className="flex items-center space-x-3">
-          {Icon && <Icon className="w-5 h-5 text-muted-foreground" />}
+          {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
           <span className="text-lg font-medium">{title}</span>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="pt-0">
-        {children}
-      </AccordionContent>
+      <AccordionContent className="pt-0">{children}</AccordionContent>
     </AccordionItem>
   );
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background p-6 animate-pulse">
+      <div className="min-h-screen animate-pulse bg-background p-6">
         <Card>
           <CardContent className="p-8">
             <div className="space-y-3">
@@ -318,25 +335,25 @@ const Profile = () => {
     <div className="min-h-screen bg-background py-20">
       {/* Profile Header */}
       <div className="bg-gradient-to-r from-primary to-primary/80 py-12 shadow-lg">
-        <div className="container max-w-4xl mx-auto px-4 text-center">
-          <div className="relative group">
-            <Avatar className="h-32 w-32 mx-auto border-4 border-white shadow-xl">
-              <AvatarImage 
-                src={imagePreview || user.profilePic} 
-                alt="Profile Picture" 
+        <div className="container mx-auto max-w-4xl px-4 text-center">
+          <div className="group relative">
+            <Avatar className="mx-auto h-32 w-32 border-4 border-white shadow-xl">
+              <AvatarImage
+                src={imagePreview || user.profilePic}
+                alt="Profile Picture"
               />
               <AvatarFallback>
                 <UserIcon className="h-16 w-16 text-gray-400" />
               </AvatarFallback>
-              
-              <label 
-                htmlFor="profile-upload" 
-                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+
+              <label
+                htmlFor="profile-upload"
+                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
               >
                 {isUploading ? (
-                  <Loader2 className="w-10 h-10 text-white animate-spin" />
+                  <Loader2 className="h-10 w-10 animate-spin text-white" />
                 ) : (
-                  <Camera className="w-10 h-10 text-white" />
+                  <Camera className="h-10 w-10 text-white" />
                 )}
                 <Input
                   id="profile-upload"
@@ -352,18 +369,20 @@ const Profile = () => {
             </Avatar>
           </div>
 
-          <h2 className="mt-4 text-2xl font-bold text-white">{user.fullName}</h2>
+          <h2 className="mt-4 text-2xl font-bold text-white">
+            {user.fullName}
+          </h2>
           <Badge variant="secondary" className="mt-2">
             {user.target || "No target set"}
           </Badge>
           <p className="mt-2 text-white/80">{user.email}</p>
-          
+
           <Button
             variant="secondary"
             className="mt-4"
             onClick={() => setIsModalOpen(true)}
           >
-            <Edit3 className="w-4 h-4 mr-2" />
+            <Edit3 className="mr-2 h-4 w-4" />
             Edit Profile
           </Button>
         </div>
@@ -382,7 +401,7 @@ const Profile = () => {
                   onClick={() => toggleItem(item.value)}
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-colors ">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-colors">
                       {item.icon}
                     </div>
                     <span className="text-lg font-medium text-foreground">
@@ -410,11 +429,10 @@ const Profile = () => {
             ))}
           </div>
         </div>
-        </div>
-        <div className="mx-auto max-w-3xl  px-4 ">
-
+      </div>
+      <div className="mx-auto max-w-3xl px-4">
         <TestList />
-        </div>
+      </div>
       {/* Edit Profile Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-md">
@@ -424,109 +442,122 @@ const Profile = () => {
               Update your personal information
             </DialogDescription>
           </DialogHeader>
-          <Accordion 
-            type="single" 
-            collapsible 
+          <Accordion
+            type="single"
+            collapsible
             className="w-full"
             value={activeSection}
             onValueChange={setActiveSection}
           >
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <ProfileSection 
-              title="Personal Information" 
-              icon={UserIcon} 
-              name="personal"
-            >
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="Enter your email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </ProfileSection>
-              <ProfileSection 
-              title="Contact Details" 
-              icon={Phone} 
-              name="contact"
-            >
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="institution"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Institution</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your institution" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-             </ProfileSection>
-
-
-
-
-              <DialogFooter className="mt-4">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsModalOpen(false)}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <ProfileSection
+                  title="Personal Information"
+                  icon={UserIcon}
+                  name="personal"
                 >
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={form.formState.isSubmitting}>
-                  {form.formState.isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your full name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </ProfileSection>
+                <ProfileSection
+                  title="Contact Details"
+                  icon={Phone}
+                  name="contact"
+                >
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your phone number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="institution"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Institution</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your institution"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </ProfileSection>
+
+                <DialogFooter className="mt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Changes
+                      </>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
           </Accordion>
         </DialogContent>
       </Dialog>
@@ -534,4 +565,11 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default function () {
+  return (
+    <div className="min-h-screen flex-col bg-gray-50">
+      <MemoizedNavbar className="absolute"/>
+      <Profile />
+    </div>
+  );
+}

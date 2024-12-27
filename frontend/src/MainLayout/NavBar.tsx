@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useMotionValueEvent,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import {
   GraduationCap,
@@ -43,15 +38,15 @@ import { useToast } from "@/components/hooks/use-toast";
 // import Loading from "@/components/ui/Loading";
 // import { setIsAuthenticated } from "@/redux/auth";
 
-function Navbar() {
+function Navbar({className}:{className?:string}) {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
 
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const { scrollYProgress } = useScroll();
-  const [visible, setVisible] = useState(true);
+  // const { scrollYProgress } = useScroll();
+  // const [visible, setVisible] = useState(true);
   const [isSidbarOpen, setIsSidbarOpen] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -59,31 +54,31 @@ function Navbar() {
 
   const navigate = useNavigate();
 
-  useMotionValueEvent(scrollYProgress, "change", () => {
-    const current = scrollYProgress.get();
-    const previous = scrollYProgress.getPrevious();
+  // useMotionValueEvent(scrollYProgress, "change", () => {
+  //   const current = scrollYProgress.get();
+  //   const previous = scrollYProgress.getPrevious();
 
-    if (previous !== undefined) {
-      const direction = current - previous;
+  //   if (previous !== undefined) {
+  //     const direction = current - previous;
 
-      if (current < 0.05) {
-        setVisible(true); // Show the nav when scrolled to the top
-      } else {
-        if (direction < 0) {
-          setVisible(true);
-        } else {
-          setVisible(false);
-        }
-      }
-    } else {
-      // Handle the case when previous is undefined
-      if (current < 0.05) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
-    }
-  });
+  //     if (current < 0.05) {
+  //       setVisible(true); // Show the nav when scrolled to the top
+  //     } else {
+  //       if (direction < 0) {
+  //         setVisible(true);
+  //       } else {
+  //         setVisible(false);
+  //       }
+  //     }
+  //   } else {
+  //     // Handle the case when previous is undefined
+  //     if (current < 0.05) {
+  //       setVisible(true);
+  //     } else {
+  //       setVisible(false);
+  //     }
+  //   }
+  // });
 
   const logoutHandler = async () => {
     try {
@@ -121,209 +116,199 @@ function Navbar() {
     //     }}
     //     className="fixed inset-x-0 z-[5000] flex items-center justify-center"
     //   >
-        <NavigationMenu>
-          <NavigationMenuList className="mt-1 w-[98vw] justify-between rounded-[var(--radius)] bg-[rgba(255,255,255,0.5)] px-3 py-1 text-base backdrop-blur-sm md:mt-2 md:px-6 md:py-3 md:text-xl lg:text-2xl">
-            {/* Logo */}
-            <NavigationMenuItem>
-              <Link to="/">
-                <img
-                  src="/logo-with-text.png"
-                  alt="Logo"
-                  className="w-18 h-6 cursor-pointer md:h-6 md:w-24 lg:h-7 lg:w-28"
-                />
-              </Link>
-            </NavigationMenuItem>
-            {!isMobile() ? (
-              <>
-                {/* Navigation Menu */}
-                <div className="flex">
-                  {/* Test Series */}
-                  <NavigationMenuItem
-                    className="relative"
-                    onClick={() => navigate("/test-series")}
+    <NavigationMenu className={className}>
+      <NavigationMenuList className="mt-1 w-[98vw] justify-between rounded-[var(--radius)] bg-[rgba(255,255,255,0.5)] px-3 py-1 text-base backdrop-blur-sm md:mt-2 md:px-6 md:py-3 md:text-xl lg:text-2xl">
+        {/* Logo */}
+        <NavigationMenuItem>
+          <Link to="/">
+            <img
+              src="/logo-with-text.png"
+              alt="Logo"
+              className="w-18 h-6 cursor-pointer md:h-6 md:w-24 lg:h-7 lg:w-28"
+            />
+          </Link>
+        </NavigationMenuItem>
+        {!isMobile() ? (
+          <>
+            {/* Navigation Menu */}
+            <div className="flex">
+              {/* Test Series */}
+              <NavigationMenuItem
+                className="relative"
+                onClick={() => navigate("/test-series")}
+              >
+                <NavigationMenuTrigger>Test Series</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
+                    <li className="row-span-3">
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                          href="/test-series"
+                        >
+                          <GraduationCap className="h-6 w-6" />
+                          <div className="mb-2 mt-4 text-lg font-medium">
+                            Writo All India Test Series
+                          </div>
+                          <p className="text-sm leading-tight text-muted-foreground">
+                            Achieve your best with Writo All India Test Series -
+                            Realistic exam practice for real results.
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                    <ListItem href="/test-series/neet/all" title="NEET Exam">
+                      Re-usable components built using Radix UI and Tailwind
+                      CSS.
+                    </ListItem>
+                    <ListItem
+                      href="/test-series/jee/all"
+                      title="JEE(Main + Adv)"
+                    >
+                      How to install dependencies and structure your app.
+                    </ListItem>
+                    <ListItem href="/test-series" title="Learn More">
+                      Styles for headings, paragraphs, lists...etc
+                    </ListItem>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              {/* Doubt Sessions */}
+              <NavigationMenuItem>
+                <Link to="/doubt-sessions">
+                  <NavigationMenuLink
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "bg-transparent",
+                    )}
                   >
-                    <NavigationMenuTrigger>Test Series</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
-                        <li className="row-span-3">
-                          <NavigationMenuLink asChild>
-                            <a
-                              className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                              href="/test-series"
-                            >
-                              <GraduationCap className="h-6 w-6" />
-                              <div className="mb-2 mt-4 text-lg font-medium">
-                                Writo All India Test Series
-                              </div>
-                              <p className="text-sm leading-tight text-muted-foreground">
-                                Achieve your best with Writo All India Test
-                                Series - Realistic exam practice for real
-                                results.
-                              </p>
-                            </a>
-                          </NavigationMenuLink>
-                        </li>
-                        <ListItem
-                          href="/test-series/neet/all"
-                          title="NEET Exam"
-                        >
-                          Re-usable components built using Radix UI and Tailwind
-                          CSS.
-                        </ListItem>
-                        <ListItem
-                          href="/test-series/jee/all"
-                          title="JEE(Main + Adv)"
-                        >
-                          How to install dependencies and structure your app.
-                        </ListItem>
-                        <ListItem href="/test-series" title="Learn More">
-                          Styles for headings, paragraphs, lists...etc
-                        </ListItem>
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  {/* Doubt Sessions */}
-                  <NavigationMenuItem>
-                    <Link to="/doubt-sessions">
-                      <NavigationMenuLink
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent",
-                        )}
-                      >
-                        Doubt Sessions
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                  {/* About Us */}
-                  <NavigationMenuItem>
-                    <Link to="/about">
-                      <NavigationMenuLink
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent",
-                        )}
-                      >
-                        About
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                  {/* Contact Us */}
-                  <NavigationMenuItem>
-                    <Link to="/contact">
-                      <NavigationMenuLink
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent",
-                        )}
-                      >
-                        Contact
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                  {/* Dashboard */}
-                  {user.isAdmin || user.isMentor ? (
-                    <NavigationMenuItem>
-                      <Link to="/admin">
-                        <NavigationMenuLink
-                          className={cn(
-                            navigationMenuTriggerStyle(),
-                            "bg-transparent",
-                          )}
-                        >
-                          Dashboard
-                        </NavigationMenuLink>
-                      </Link>
-                    </NavigationMenuItem>
-                  ) : (
-                    <NavigationMenuItem>
-                      <Link to="/profile">
-                        <NavigationMenuLink
-                          className={cn(
-                            navigationMenuTriggerStyle(),
-                            "bg-transparent",
-                          )}
-                        >
-                          Dashboard
-                        </NavigationMenuLink>
-                      </Link>
-                    </NavigationMenuItem>
-                  )}
-                </div>
-                {/* Login/Signin */}
-                {!isAuthenticated ? (
-                  <NavigationMenuItem>
-                    <Link to="/signin">
-                      <Button>Login</Button>
-                    </Link>
-                  </NavigationMenuItem>
-                ) : (
-                  <NavigationMenuItem className="flex items-center justify-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="relative h-8 w-8 rounded-full"
-                        >
-                          <Avatar>
-                            <AvatarImage src={user.profilePic} alt="@ks" />
-                            <AvatarFallback>
-                              {user.fullName.includes(" ")
-                                ? user.fullName.split(" ")[0].length <= 3
-                                  ? user.fullName.split(" ")[0]
-                                  : user.fullName.split(" ")[0][0] +
-                                    user.fullName.split(" ")[1][0]
-                                : user.fullName[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        <DropdownMenuItem>
-                          <Link
-                            to="/profile"
-                            className="flex w-full items-center"
-                          >
-                            {user.fullName}
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Link
-                            to="/profile"
-                            className="flex w-full items-center"
-                          >
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logoutHandler}>
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Logout
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </NavigationMenuItem>
-                )}
-              </>
-            ) : (
-              <>
+                    Doubt Sessions
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              {/* About Us */}
+              <NavigationMenuItem>
+                <Link to="/about">
+                  <NavigationMenuLink
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "bg-transparent",
+                    )}
+                  >
+                    About
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              {/* Contact Us */}
+              <NavigationMenuItem>
+                <Link to="/contact">
+                  <NavigationMenuLink
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "bg-transparent",
+                    )}
+                  >
+                    Contact
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              {/* Dashboard */}
+              {user.isAdmin || user.isMentor ? (
                 <NavigationMenuItem>
-                  <SidebarIcon
-                    className="h-8"
-                    onClick={() => setIsSidbarOpen(true)}
-                  />
-                  <Sidebar
-                    open={isSidbarOpen}
-                    setOpen={setIsSidbarOpen}
-                    auth={isAuthenticated}
-                    logoutHandler={logoutHandler}
-                  />
+                  <Link to="/admin">
+                    <NavigationMenuLink
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        "bg-transparent",
+                      )}
+                    >
+                      Dashboard
+                    </NavigationMenuLink>
+                  </Link>
                 </NavigationMenuItem>
-              </>
+              ) : (
+                <NavigationMenuItem>
+                  <Link to="/profile">
+                    <NavigationMenuLink
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        "bg-transparent",
+                      )}
+                    >
+                      Dashboard
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              )}
+            </div>
+            {/* Login/Signin */}
+            {!isAuthenticated ? (
+              <NavigationMenuItem>
+                <Link to="/signin">
+                  <Button>Login</Button>
+                </Link>
+              </NavigationMenuItem>
+            ) : (
+              <NavigationMenuItem className="flex items-center justify-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
+                      <Avatar>
+                        <AvatarImage src={user.profilePic} alt="@ks" />
+                        <AvatarFallback>
+                          {user.fullName.includes(" ")
+                            ? user.fullName.split(" ")[0].length <= 3
+                              ? user.fullName.split(" ")[0]
+                              : user.fullName.split(" ")[0][0] +
+                                user.fullName.split(" ")[1][0]
+                            : user.fullName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem>
+                      <Link to="/profile" className="flex w-full items-center">
+                        {user.fullName}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/profile" className="flex w-full items-center">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logoutHandler}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
             )}
-          </NavigationMenuList>
-        </NavigationMenu>
+          </>
+        ) : (
+          <>
+            <NavigationMenuItem>
+              <SidebarIcon
+                className="h-8"
+                onClick={() => setIsSidbarOpen(true)}
+              />
+              <Sidebar
+                open={isSidbarOpen}
+                setOpen={setIsSidbarOpen}
+                auth={isAuthenticated}
+                logoutHandler={logoutHandler}
+              />
+            </NavigationMenuItem>
+          </>
+        )}
+      </NavigationMenuList>
+    </NavigationMenu>
     //   </motion.div>
     // </AnimatePresence>
   );

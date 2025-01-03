@@ -93,7 +93,13 @@ const router = createBrowserRouter([
       },
       {
         path: "doubt-sessions",
-        element: <DoubtSessionPage />,
+        element: <ServiceDoubt />,
+        children : [
+          {
+            path : "",
+            element : <DoubtSessionPage/>
+          }
+        ]
       },
       {
         path: "test",

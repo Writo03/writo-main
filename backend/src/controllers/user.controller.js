@@ -522,7 +522,7 @@ const userRegisterByAdmin = asyncHandler(async (req, res, next) => {
       throw new ApiError(400, "Each service must have a name and serviceId")
     }
 
-    const expiryDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 30 days from now
+    const expiryDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
     return Subscription.create({
       name,
       service: id,

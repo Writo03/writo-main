@@ -290,7 +290,7 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <div className="mb-3 flex flex-col gap-2">
+        {user.isMentor && <div className="mb-3 flex flex-col gap-2">
           <Input
             placeholder="Type message to broadcast"
             className="pl-2 pr-8 focus:ring-2 focus:ring-blue-500"
@@ -299,7 +299,7 @@ const Sidebar = () => {
           <Button disabled={isBroadCastSending} onClick={handleBroadcastSend}>
             Send
           </Button>
-        </div>
+        </div>}
 
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />

@@ -201,7 +201,7 @@ const AdminHome = () => {
                   className="w-full"
                   onClick={() => navigate("adduser")}
                 >
-                  View Messages
+                  Add User
                 </Button>
               </div>
             </Card>

@@ -277,10 +277,10 @@ export const ChatInterface: React.FC = () => {
             <div>
               <h2 className="font-medium">{otherParticipant?.fullName}</h2>
               <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1">
+                {!user.isMentor && <span className="flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                  <span className="text-sm text-gray-500">Active now</span>
-                </span>
+                  <span className="text-sm text-gray-500">{otherParticipant?.onBreak || otherParticipant?.onLeave ? "Offline": "Online"}</span>
+                </span>}
                 {isTyping && (
                   <Badge  className="text-xs">
                     <Typing />

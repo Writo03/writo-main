@@ -8,8 +8,10 @@ import { useToast } from "@/components/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import Navbar from "@/MainLayout/NavBar";
 
+// eslint-disable-next-line react-refresh/only-export-components
 const MemoizedNavbar = React.memo(Navbar);
 
+// eslint-disable-next-line react-refresh/only-export-components
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -41,7 +43,11 @@ const SignUp: React.FC = () => {
         target,
       });
       if (response.status === 200) {
-        navigate("/"); // Redirect on success
+        toast({
+          title: "Success",
+          description: response.data.message || "Registration successful",
+        })
+        navigate("/signin"); // Redirect on success
         setisloading(false);
       }
     } catch (err: unknown) {
@@ -63,7 +69,7 @@ const SignUp: React.FC = () => {
           variant: "destructive",
         });
       }
-      console.error("Sign up failed:", err);
+      // console.error("Sign up failed:", err);
       toast({
         title: "Error while signup!",
         description: error,
@@ -220,11 +226,13 @@ const SignUp: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 function LockKeyholeOpen({
   className,
   onClick,
 }: {
   className?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick?: any;
 }) {
   return (
@@ -248,6 +256,7 @@ function LockKeyholeOpen({
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default function () {
   return (
     <div className="min-h-screen flex-col bg-gray-50">
